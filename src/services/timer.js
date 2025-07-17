@@ -85,8 +85,11 @@ export const startTimer = () => {
 };
 
 export const resumeTimer = () => {
-  const { isTimerRunning, secondsLeft, intervalId } = useUserStore.getState();
-  if (!isTimerRunning || intervalId) return;
+  const { secondsLeft, intervalId, setIsTimerRunning } =
+    useUserStore.getState();
+
+  if (secondsLeft <= 0 || intervalId) return;
+  setIsTimerRunning(true);
 
   const id = setInterval(() => {
     const { secondsLeft: current, activeTaskId, completeTask } =

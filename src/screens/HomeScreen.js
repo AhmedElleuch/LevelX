@@ -7,7 +7,6 @@ import {
   FlatList,
   StyleSheet,
   Alert,
-  ScrollView,
 } from 'react-native';
 import { useUserStore } from '../store/userStore';
 import TaskCard from '../components/TaskCard';
@@ -71,59 +70,63 @@ export default function HomeScreen() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Welcome back!</Text>
-      <Text style={styles.sub}>Level {level} - XP {xp}</Text>
-      <Text style={styles.sub}>Daily XP {dailyXp} • Streak {streak}</Text>
+    <FlatList
+      data={tasks}
+      keyExtractor={(item) => item.id}
+      renderItem={({ item }) => <TaskCard task={item} />}
+      ListHeaderComponent={
+        <View>
+          <Text style={styles.title}>Welcome back!</Text>
+          <Text style={styles.sub}>Level {level} - XP {xp}</Text>
+          <Text style={styles.sub}>Daily XP {dailyXp} • Streak {streak}</Text>
+          <ProductionTimer />
+          <TimerDisplay />
 
-      {MISSIONS.slice(0, 3).map((m) => (
-        <View key={m.id} style={styles.mission}>
-          <Text style={styles.missionText}>{m.title}</Text>
-          <TouchableOpacity
-            style={styles.accept}
-            onPress={() => acceptMission(m)}
-          >
-            <Text style={styles.acceptText}>Accept</Text>
+          {MISSIONS.slice(0, 3).map((m) => (
+            <View key={m.id} style={styles.mission}>
+              <Text style={styles.missionText}>{m.title}</Text>
+              <TouchableOpacity
+                style={styles.accept}
+                onPress={() => acceptMission(m)}
+              >
+                <Text style={styles.acceptText}>Accept</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+
+         <TouchableOpacity
+            style={styles.challengeButton}
+            onPress={() => addXp(5)}
+           >
+            <Text style={styles.challengeText}>Start Challenge</Text>
+          </TouchableOpacity>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter task..."
+            value={taskTitle}
+            onChangeText={setTaskTitle}
+          />
+
+          <View style={styles.priorityContainer}>
+            {priorities.map((p) => (
+              <TouchableOpacity
+                key={p}
+                onPress={() => setPriority(p)}
+                style={[styles.priorityButton, priority === p && styles.selected]}
+              >
+                <Text>{p}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          <TouchableOpacity style={styles.addButton} onPress={addTask}>
+            <Text style={styles.addButtonText}>+ Add Task</Text>
           </TouchableOpacity>
         </View>
-      ))}
-
-      <TouchableOpacity
-        style={styles.challengeButton}
-        onPress={() => addXp(5)}
-      >
-        <Text style={styles.challengeText}>Start Challenge</Text>
-      </TouchableOpacity>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter task..."
-        value={taskTitle}
-        onChangeText={setTaskTitle}
-      />
-
-      <View style={styles.priorityContainer}>
-        {priorities.map((p) => (
-          <TouchableOpacity
-            key={p}
-            onPress={() => setPriority(p)}
-            style={[styles.priorityButton, priority === p && styles.selected]}
-          >
-            <Text>{p}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      <TouchableOpacity style={styles.addButton} onPress={addTask}>
-        <Text style={styles.addButtonText}>+ Add Task</Text>
-      </TouchableOpacity>
-
-      <FlatList
-        data={tasks}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <TaskCard task={item} />}
-        contentContainerStyle={styles.taskList}
-      />
-    </ScrollView>
+      }
+      style={styles.container}
+      contentContainerStyle={styles.taskList}
+    />
     
   );
 }

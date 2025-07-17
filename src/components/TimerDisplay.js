@@ -1,12 +1,12 @@
 import React from 'react';
 import { Text, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { useUserStore } from '../store/userStore';
-import { stopTimer } from '../services/timer';
+import { stopTimer, resumeTimer } from '../services/timer';
 
 export default function TimerDisplay() {
   const { isTimerRunning, secondsLeft } = useUserStore();
 
-  if (!isTimerRunning) return null;
+  if (secondsLeft <= 0) return null;
 
   const minutes = String(Math.floor(secondsLeft / 60)).padStart(2, '0');
   const seconds = String(secondsLeft % 60).padStart(2, '0');
@@ -14,8 +14,13 @@ export default function TimerDisplay() {
   return (
     <View style={styles.container}>
       <Text style={styles.timer}>⏱️ {minutes}:{seconds}</Text>
-      <TouchableOpacity style={styles.stopButton} onPress={stopTimer}>
-        <Text style={styles.stopText}>Stop</Text>
+      <TouchableOpacity
+        style={styles.stopButton}
+        onPress={isTimerRunning ? stopTimer : resumeTimer}
+      >
+        <Text style={styles.stopText}>
+          {isTimerRunning ? 'Stop' : 'Resume'}
+        </Text>
       </TouchableOpacity>
     </View>
   );
