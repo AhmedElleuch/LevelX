@@ -29,7 +29,12 @@ export const startProductionTimer = () => {
 };
 
 export const resumeProductionTimer = () => {
-  const { isProductionActive } = useUserStore.getState();
+  const { isProductionActive, activeTaskId } = useUserStore.getState();
+
+  if (isProductionActive && !activeTaskId) {
+    stopProductionTimer();
+    return;
+  }
   if (isProductionActive && !productionInterval) {
     productionInterval = setInterval(() => {
       const { productionStartTime, setProductionSeconds } =
@@ -47,7 +52,7 @@ export const stopProductionTimer = () => {
   clearInterval(productionInterval);
   productionInterval = null;
   setIsProductionActive(false);
-  startwasteTimer();
+  startWasteTimer();
 };
 
 export const startTimer = () => {

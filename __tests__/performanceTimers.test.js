@@ -1,4 +1,10 @@
-import { startProductionTimer, stopProductionTimer, startWasteTimer } from '../src/services/timer';
+import {
+  startProductionTimer,
+  stopProductionTimer,
+  startWasteTimer,
+  resumeProductionTimer,
+} from '../src/services/timer';
+
 import { useUserStore } from '../src/store/userStore';
 
 jest.useFakeTimers();
@@ -31,6 +37,14 @@ describe('timers interaction', () => {
   test('stopping production starts waste timer', () => {
     startProductionTimer();
     stopProductionTimer();
+    expect(useUserStore.getState().isProductionActive).toBe(false);
+    expect(useUserStore.getState().isWasteActive).toBe(true);
+  });
+
+  test('production timer stops when no task is active', () => {
+    startProductionTimer();
+    useUserStore.getState().setActiveTaskId(null);
+    resumeProductionTimer();
     expect(useUserStore.getState().isProductionActive).toBe(false);
     expect(useUserStore.getState().isWasteActive).toBe(true);
   });
