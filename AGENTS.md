@@ -6,6 +6,7 @@ This repository is a React Native project built with Expo. Follow these rules wh
 2. Indent JavaScript and JSX using **2 spaces**.
 3. Prefer **arrow functions** for component definitions.
 4. Ensure every file ends with a newline.
+5. write a test to every new feature
 
 ## Programmatic Checks
 
