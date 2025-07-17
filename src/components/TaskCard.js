@@ -5,11 +5,14 @@ import { startTimer } from '../services/timer';
 import { sortTasks } from '../utils/sortTasks';
 
 export default function TaskCard({ task }) {
-  const { tasks, setTasks } = useUserStore();
+  const { tasks, setTasks, setActiveTaskId } = useUserStore();
 
   const startTask = (id) => {
-    const updated = tasks.map((t) => t.id === id ? { ...t, isStarted: true } : t);
+    const updated = tasks.map((t) =>
+      t.id === id ? { ...t, isStarted: true } : t
+    );
     setTasks(sortTasks(updated));
+    setActiveTaskId(id);
     startTimer();
   };
 
@@ -19,7 +22,9 @@ export default function TaskCard({ task }) {
         {task.title} - <Text style={styles[`priority${task.priority}`]}>{task.priority}</Text>
       </Text>
 
-      {!task.isStarted ? (
+      {task.isCompleted ? (
+        <Text style={styles.completed}>✅ Done</Text>
+      ) : !task.isStarted ? (
         <TouchableOpacity style={styles.button} onPress={() => startTask(task.id)}>
           <Text style={styles.buttonText}>▶ Start</Text>
         </TouchableOpacity>
@@ -38,6 +43,7 @@ const styles = StyleSheet.create({
   },
   buttonText: { color: '#fff', fontWeight: 'bold' },
   locked: { marginTop: 10, color: 'gray', fontStyle: 'italic' },
+  completed: { marginTop: 10, color: 'green', fontStyle: 'italic' },
   priorityHigh: { color: 'red', fontWeight: 'bold' },
   priorityMedium: { color: 'orange' },
   priorityLow: { color: 'green' },

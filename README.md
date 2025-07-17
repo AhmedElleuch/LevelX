@@ -28,4 +28,12 @@ LevelX is your **personal upgrade assistant**, helping you reclaim attention, sk
 - 🧘 **Daily challenges** – Sharpen your focus, memory, and emotional control with evolving challenges  
 - 📊 **Performance dashboards** – See real-time data on your focus, growth, and goals
 
+---
 
+### 🚀 MVP Usage
+
+1. Add tasks on the **Home** tab and assign a priority.
+2. Start a task to begin a focus timer. When the timer ends the task is marked complete.
+3. Use **Start Production** to run a production timer tracking your work session.
+4. Adjust default focus minutes in the **Config** tab.
+5. All tasks and timers persist locally thanks to AsyncStorage.

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, Alert,
 } from 'react-native';
@@ -6,8 +6,14 @@ import { useUserStore } from '../store/userStore';
 import TaskCard from '../components/TaskCard';
 import TimerDisplay from '../components/TimerDisplay';
 import { sortTasks } from '../utils/sortTasks';
-import { startProductionTimer, stopProductionTimer } from '../services/timer';
+import {
+  startProductionTimer,
+  stopProductionTimer,
+  resumeProductionTimer,
+  resumeTimer,
+} from '../services/timer';
 import ProductionTimer from '../components/ProductionTimer';
+import { PRIORITIES } from '../constants/priorities';
 
 export default function HomeScreen() {
   const {
@@ -16,7 +22,12 @@ export default function HomeScreen() {
     tasks, setTasks,
   } = useUserStore();
 
-  const priorities = ['High', 'Medium', 'Low'];
+  const priorities = PRIORITIES;
+
+  useEffect(() => {
+    resumeProductionTimer();
+    resumeTimer();
+  }, []);
 
   const addTask = () => {
     if (taskTitle.trim() === '') {
@@ -29,6 +40,7 @@ export default function HomeScreen() {
       title: taskTitle,
       priority,
       isStarted: false,
+      isCompleted: false,
     };
 
     const updated = sortTasks([...tasks, newTask]);
