@@ -2,7 +2,6 @@ import React from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, Alert,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { useUserStore } from '../store/userStore';
 import TaskCard from '../components/TaskCard';
 import TimerDisplay from '../components/TimerDisplay';
@@ -17,7 +16,6 @@ export default function HomeScreen() {
     tasks, setTasks,
   } = useUserStore();
 
-  const navigation = useNavigation();
   const priorities = ['High', 'Medium', 'Low'];
 
   const addTask = () => {
@@ -44,9 +42,6 @@ export default function HomeScreen() {
       <Text style={styles.title}>Leveling</Text>
       <TimerDisplay />
       <ProductionTimer />
-      <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('Config')}>
-      <Text style={styles.addButtonText}>⚙ Config</Text>
-      </TouchableOpacity>
       <TouchableOpacity style={styles.addButton} onPress={startProductionTimer}>
       <Text style={styles.addButtonText}>▶ Start Production</Text>
       </TouchableOpacity>

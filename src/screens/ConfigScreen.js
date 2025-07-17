@@ -1,11 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import ConfigMenu from '../components/ConfigMenu';
 
 export default function ConfigScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.placeholder}>Login placeholder</Text>
-      <Text style={styles.placeholder}>Variable settings placeholder</Text>
+      <ConfigMenu />
     </View>
   );
 }

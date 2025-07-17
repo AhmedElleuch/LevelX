@@ -16,6 +16,7 @@ export default function ConfigMenu({ onClose }) {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.label}>Focus minutes</Text>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
@@ -35,4 +36,5 @@ const styles = StyleSheet.create({
   input: { borderWidth: 1, borderColor: '#ccc', padding: 10, borderRadius: 8, marginBottom: 10 },
   button: { backgroundColor: '#00aaff', padding: 12, borderRadius: 8, alignItems: 'center' },
   buttonText: { color: '#fff', fontWeight: 'bold' },
+  label: { marginBottom: 5, fontWeight: 'bold' },
 });
