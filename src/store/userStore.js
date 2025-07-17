@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 export const useUserStore = create((set) => ({
-    //Timer production
+  //Timer production
   isProductionActive: false,
   productionStartTime: null,
   productionSeconds: 0,
@@ -10,7 +10,7 @@ export const useUserStore = create((set) => ({
   setProductionStartTime: (time) => set({ productionStartTime: time }),
   setProductionSeconds: (sec) => set({ productionSeconds: sec }),
 
-    //Tasks
+  //Tasks
   taskTitle: '',
   setTaskTitle: (title) => set({ taskTitle: title }),
 
@@ -19,6 +19,9 @@ export const useUserStore = create((set) => ({
 
   tasks: [],
   setTasks: (tasks) => set({ tasks }),
+
+  focusMinutes: 25,
+  setFocusMinutes: (m) => set({ focusMinutes: m }),
 
   isTimerRunning: false,
   setIsTimerRunning: (v) => set({ isTimerRunning: v }),
@@ -29,3 +32,5 @@ export const useUserStore = create((set) => ({
   intervalId: null,
   setIntervalId: (id) => set({ intervalId: id }),
 }));
+
+

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, Alert,
 } from 'react-native';
@@ -8,6 +8,7 @@ import TimerDisplay from '../components/TimerDisplay';
 import { sortTasks } from '../utils/sortTasks';
 import { startProductionTimer, stopProductionTimer } from '../services/timer';
 import ProductionTimer from '../components/ProductionTimer';
+import ConfigMenu from '../components/ConfigMenu';
 
 export default function HomeScreen() {
   const {
@@ -17,6 +18,8 @@ export default function HomeScreen() {
   } = useUserStore();
 
   const priorities = ['High', 'Medium', 'Low'];
+
+  const [showConfig, setShowConfig] = useState(false);
 
   const addTask = () => {
     if (taskTitle.trim() === '') {
@@ -42,6 +45,10 @@ export default function HomeScreen() {
       <Text style={styles.title}>Leveling</Text>
       <TimerDisplay />
       <ProductionTimer />
+      <TouchableOpacity style={styles.addButton} onPress={() => setShowConfig(!showConfig)}>
+      <Text style={styles.addButtonText}>⚙ Config</Text>
+      </TouchableOpacity>
+      {showConfig && <ConfigMenu onClose={() => setShowConfig(false)} />}
       <TouchableOpacity style={styles.addButton} onPress={startProductionTimer}>
       <Text style={styles.addButtonText}>▶ Start Production</Text>
       </TouchableOpacity>

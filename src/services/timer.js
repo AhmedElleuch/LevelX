@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, StyleSheet, View } from 'react-native';
+import { Text, StyleSheet, View, Alert } from 'react-native';
 import { useUserStore } from '../store/userStore';
 
 export default function ProductionTimer() {
@@ -35,11 +35,11 @@ export const startProductionTimer = () => {
   } = useUserStore.getState();
 
   if (isProductionActive) {
-    console.log("⚠️ Production already running");
+    console.log("Production already running");
     return;
   }
 
-  console.log("✅ Starting production timer...");
+  console.log("Starting production timer...");
   setIsProductionActive(true);
   setProductionStartTime(Date.now());
   setProductionSeconds(0);
@@ -56,20 +56,20 @@ export const stopProductionTimer = () => {
   const { isProductionActive, setIsProductionActive } = useUserStore.getState();
 
   if (!isProductionActive) {
-    console.log("⚠️ Production already stopped");
+    console.log("Production already stopped");
     return;
   }
 
-  console.log("🛑 Stopping production timer");
+  console.log("Stopping production timer");
   clearInterval(intervalId);
   intervalId = null;
   setIsProductionActive(false);
 };
 
 export const startTimer = () => {
-  const { setSecondsLeft, setIsTimerRunning, setIntervalId } = useUserStore.getState();
+  const { setSecondsLeft, setIsTimerRunning, setIntervalId, focusMinutes } = useUserStore.getState();
 
-  setSecondsLeft(25 * 60);
+  setSecondsLeft(focusMinutes * 60);
   setIsTimerRunning(true);
 
   const id = setInterval(() => {
