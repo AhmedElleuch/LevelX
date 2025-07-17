@@ -10,6 +10,15 @@ export const useUserStore = create(
       productionStartTime: null,
       productionSeconds: 0,
 
+      // Waste timer
+      isWasteActive: false,
+      wasteStartTime: null,
+      wasteSeconds: 0,
+
+      setIsWasteActive: (val) => set({ isWasteActive: val }),
+      setWasteStartTime: (time) => set({ wasteStartTime: time }),
+      setWasteSeconds: (sec) => set({ wasteSeconds: sec }),
+
       setIsProductionActive: (val) => set({ isProductionActive: val }),
       setProductionStartTime: (time) => set({ productionStartTime: time }),
       setProductionSeconds: (sec) => set({ productionSeconds: sec }),

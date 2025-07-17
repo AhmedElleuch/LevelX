@@ -2,6 +2,7 @@ import { Alert } from 'react-native';
 import { useUserStore } from '../store/userStore';
 
 let productionInterval = null;
+let wasteInterval = null;
 
 export const startProductionTimer = () => {
   const {
@@ -9,9 +10,12 @@ export const startProductionTimer = () => {
     setIsProductionActive,
     setProductionStartTime,
     setProductionSeconds,
+    isWasteActive,
   } = useUserStore.getState();
 
   if (isProductionActive) return;
+
+  if (isWasteActive) stopWasteTimer();
 
   setIsProductionActive(true);
   setProductionStartTime(Date.now());
@@ -43,6 +47,7 @@ export const stopProductionTimer = () => {
   clearInterval(productionInterval);
   productionInterval = null;
   setIsProductionActive(false);
+  startwasteTimer();
 };
 
 export const startTimer = () => {
@@ -64,6 +69,7 @@ export const startTimer = () => {
       setIsTimerRunning(false);
       setSecondsLeft(0);
       completeTask(activeTaskId);
+      stopWasteTimer();
       Alert.alert('Focus session complete! ✅');
     } else {
       setSecondsLeft(secondsLeft - 1);
@@ -86,6 +92,7 @@ export const resumeTimer = () => {
       useUserStore.getState().setIsTimerRunning(false);
       useUserStore.getState().setSecondsLeft(0);
       completeTask(activeTaskId);
+      stopProductionTimer();
       Alert.alert('Focus session complete! ✅');
     } else {
       useUserStore.getState().setSecondsLeft(current - 1);
@@ -102,4 +109,46 @@ export const stopTimer = () => {
     setIntervalId(null);
   }
   setIsTimerRunning(false);
+ stopProductionTimer();
+};
+
+export const startWasteTimer = () => {
+  const {
+    isWasteActive,
+    setIsWasteActive,
+    setWasteStartTime,
+    setWasteSeconds,
+  } = useUserStore.getState();
+
+  if (isWasteActive) return;
+
+  setIsWasteActive(true);
+  setWasteStartTime(Date.now());
+  setWasteSeconds(0);
+
+  wasteInterval = setInterval(() => {
+    const { wasteStartTime } = useUserStore.getState();
+    const elapsed = Math.floor((Date.now() - wasteStartTime) / 1000);
+    setWasteSeconds(elapsed);
+  }, 1000);
+};
+
+export const resumeWasteTimer = () => {
+  const { isWasteActive } = useUserStore.getState();
+  if (isWasteActive && !wasteInterval) {
+    wasteInterval = setInterval(() => {
+      const { wasteStartTime, setWasteSeconds } = useUserStore.getState();
+      const elapsed = Math.floor((Date.now() - wasteStartTime) / 1000);
+      setWasteSeconds(elapsed);
+    }, 1000);
+  }
+};
+
+export const stopWasteTimer = () => {
+  const { isWasteActive, setIsWasteActive } = useUserStore.getState();
+  if (!isWasteActive) return;
+
+  clearInterval(wasteInterval);
+  wasteInterval = null;
+  setIsWasteActive(false);
 };

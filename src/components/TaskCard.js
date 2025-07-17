@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useUserStore } from '../store/userStore';
-import { startTimer } from '../services/timer';
+import { startTimer, startProductionTimer } from '../services/timer';
 import { sortTasks } from '../utils/sortTasks';
 import PriorityBadge from './PriorityBadge';
 
@@ -14,6 +14,7 @@ export default function TaskCard({ task }) {
     );
     setTasks(sortTasks(updated));
     setActiveTaskId(id);
+    startProductionTimer();
     startTimer();
   };
 

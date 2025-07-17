@@ -7,9 +7,8 @@ import TaskCard from '../components/TaskCard';
 import TimerDisplay from '../components/TimerDisplay';
 import { sortTasks } from '../utils/sortTasks';
 import {
-  startProductionTimer,
-  stopProductionTimer,
   resumeProductionTimer,
+  resumeWasteTimer,
   resumeTimer,
 } from '../services/timer';
 import ProductionTimer from '../components/ProductionTimer';
@@ -26,6 +25,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
     resumeProductionTimer();
+    resumeWasteTimer();
     resumeTimer();
   }, []);
 
@@ -54,15 +54,6 @@ export default function HomeScreen() {
       <Text style={styles.title}>Leveling</Text>
       <TimerDisplay />
       <ProductionTimer />
-      <TouchableOpacity style={styles.addButton} onPress={startProductionTimer}>
-      <Text style={styles.addButtonText}>▶ Start Production</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.stopButton} onPress={stopProductionTimer}>
-      <Text style={styles.addButtonText}>⏹ Stop</Text>
-      </TouchableOpacity>
-      
-      
       <TextInput
         style={styles.input}
         placeholder="Enter task..."
