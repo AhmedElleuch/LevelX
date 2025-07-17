@@ -1,12 +1,14 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Swipeable } from 'react-native-gesture-handler';
 import { useUserStore } from '../store/userStore';
 import { startTimer, startProductionTimer } from '../services/timer';
 import { sortTasks } from '../utils/sortTasks';
 import PriorityBadge from './PriorityBadge';
 
-export default function TaskCard({ task }) {
-  const { tasks, setTasks, setActiveTaskId, removeTask } = useUserStore();
+export default function TaskCard({ task, onLongPress }) {
+  const { tasks, setTasks, setActiveTaskId, removeTask, completeTask } =
+    useUserStore();
 
   const startTask = (id) => {
     const updated = tasks.map((t) =>
@@ -18,27 +20,37 @@ export default function TaskCard({ task }) {
     startTimer();
   };
 
+    const right = () => (
+    <TouchableOpacity style={styles.swipeButton} onPress={() => removeTask(task.id)}>
+      <Text style={styles.deleteText}>Delete</Text>
+    </TouchableOpacity>
+  );
+
+  const left = () => (
+    <TouchableOpacity style={styles.swipeButton} onPress={() => completeTask(task.id)}>
+      <Text style={styles.completeText}>Done</Text>
+    </TouchableOpacity>
+  );
+
   return (
-    <View style={styles.card}>
-      <View style={styles.header}>
-        <Text style={styles.text}>{task.title}</Text>
-        <PriorityBadge level={task.priority} />
-      </View>
+    <Swipeable renderRightActions={right} renderLeftActions={left}>
+      <TouchableOpacity style={styles.card} onLongPress={onLongPress}>
+        <View style={styles.header}>
+          <Text style={styles.text}>{task.title}</Text>
+          <PriorityBadge level={task.priority} />
+        </View>
 
-      {task.isCompleted ? (
-        <Text style={styles.completed}>✅ Done</Text>
-      ) : !task.isStarted ? (
-        <TouchableOpacity style={styles.button} onPress={() => startTask(task.id)}>
-          <Text style={styles.buttonText}>▶ Start</Text>
-        </TouchableOpacity>
-      ) : (
-        <Text style={styles.locked}>🔒 Started</Text>
-      )}
-
-      <TouchableOpacity style={styles.deleteButton} onPress={() => removeTask(task.id)}>
-        <Text style={styles.deleteText}>Delete</Text>
+        {task.isCompleted ? (
+          <Text style={styles.completed}>✅ Done</Text>
+        ) : !task.isStarted ? (
+          <TouchableOpacity style={styles.button} onPress={() => startTask(task.id)}>
+            <Text style={styles.buttonText}>▶ Start</Text>
+          </TouchableOpacity>
+        ) : (
+          <Text style={styles.locked}>🔒 Started</Text>
+        )}
       </TouchableOpacity>
-    </View>
+    </Swipeable>
   );
 }
 
@@ -54,6 +66,8 @@ const styles = StyleSheet.create({
   completed: { marginTop: 10, color: 'green', fontStyle: 'italic' },
   deleteButton: { marginTop: 8, alignSelf: 'flex-start' },
   deleteText: { color: '#ff5555' },
+  swipeButton: { justifyContent: 'center', paddingHorizontal: 20 },
+  completeText: { color: 'green' },
   priorityHigh: { color: 'red', fontWeight: 'bold' },
   priorityMedium: { color: 'orange' },
   priorityLow: { color: 'green' },

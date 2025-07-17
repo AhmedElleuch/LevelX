@@ -7,6 +7,9 @@ import {
   FlatList,
   StyleSheet,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
 } from 'react-native';
 import { useUserStore } from '../store/userStore';
 import TaskCard from '../components/TaskCard';
@@ -34,12 +37,16 @@ export default function HomeScreen() {
     dailyXp,
     streak,
     addXp,
+    acceptedMissions,
+    acceptMission,
+    moveTaskToTop,
   } = useUserStore();
 
   const priorities = PRIORITIES;
   
-  const acceptMission = (mission) => {
+  const handleAcceptMission = (mission) => {
     addXp(mission.xp);
+    acceptMission(mission.id);
     Alert.alert('Mission accepted!');
   };
 
@@ -70,11 +77,17 @@ export default function HomeScreen() {
   };
 
   return (
-    <FlatList
-      data={tasks}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }) => <TaskCard task={item} />}
-      ListHeaderComponent={
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <FlatList
+        data={tasks}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <TaskCard task={item} onLongPress={() => moveTaskToTop(item.id)} />
+        )}
+        ListHeaderComponent={
         <View>
           <Text style={styles.title}>Welcome back!</Text>
           <Text style={styles.sub}>Level {level} - XP {xp}</Text>
@@ -82,12 +95,24 @@ export default function HomeScreen() {
           <ProductionTimer />
           <TimerDisplay />
 
-          {MISSIONS.slice(0, 3).map((m) => (
+          {acceptedMissions.length > 0 && (
+            <View>
+              <Text style={styles.section}>Active Missions</Text>
+              {MISSIONS.filter((m) => acceptedMissions.includes(m.id)).map((m) => (
+                <View key={m.id} style={styles.mission}>
+                  <Text style={styles.missionText}>{m.title}</Text>
+                </View>
+              ))}
+            </View>
+          )}
+
+          <Text style={styles.section}>Available Missions</Text>
+          {MISSIONS.filter((m) => !acceptedMissions.includes(m.id)).map((m) => (
             <View key={m.id} style={styles.mission}>
               <Text style={styles.missionText}>{m.title}</Text>
               <TouchableOpacity
                 style={styles.accept}
-                onPress={() => acceptMission(m)}
+                onPress={() => handleAcceptMission(m)}
               >
                 <Text style={styles.acceptText}>Accept</Text>
               </TouchableOpacity>
@@ -126,7 +151,9 @@ export default function HomeScreen() {
       }
       style={styles.container}
       contentContainerStyle={styles.taskList}
-    />
+      />
+    </KeyboardAvoidingView>
+
     
   );
 }
@@ -169,4 +196,5 @@ const styles = StyleSheet.create({
   addButtonText: { color: '#fff', fontWeight: 'bold' },
   taskList: { gap: 10 },
   stopButton: { backgroundColor: '#ff5555',padding: 12,borderRadius: 8,alignItems: 'center',marginBottom: 20,},
+  section: { fontWeight: 'bold', marginBottom: 6, marginTop: 10 },
 });
