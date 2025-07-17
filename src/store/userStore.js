@@ -55,8 +55,23 @@ export const useUserStore = create(
       secondsLeft: 0,
       setSecondsLeft: (v) => set({ secondsLeft: v }),
 
-      intervalId: null,
-      setIntervalId: (id) => set({ intervalId: id }),
+    intervalId: null,
+    setIntervalId: (id) => set({ intervalId: id }),
+
+      // Level and XP
+      xp: 0,
+      dailyXp: 0,
+      level: 1,
+      streak: 0,
+      setXp: (val) => set({ xp: val }),
+      addXp: (val) =>
+        set((state) => ({ xp: state.xp + val, dailyXp: state.dailyXp + val })),
+      setLevel: (val) => set({ level: val }),
+
+      // Theme
+      theme: 'light',
+      toggleTheme: () =>
+      set((state) => ({ theme: state.theme === 'light' ? 'dark' : 'light' })),
     }),
     {
       name: 'levelx-store',

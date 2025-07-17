@@ -5,14 +5,14 @@ This document explains the main structure of the LevelX React Native app. It ref
 ## Navigation Setup
 
 - **`App.js`** sets up a bottom tab navigator using `@react-navigation/native` and `@react-navigation/bottom-tabs`.
-- Two screens are registered: `Home` (`HomeScreen`) and `Config` (`ConfigScreen`).
+- Two screens are registered: `Home` (`HomeScreen`) and `Performance` (`PerformanceScreen`). The menu button in the header opens a dropdown with settings and other options.
 - **`index.js`** registers `App` as the root component so Expo can bootstrap the app.
 
 ```
 NavigationContainer
   └─ Tab.Navigator
       ├─ Home → HomeScreen
-      └─ Config → ConfigScreen
+      └─ Performance → PerformanceScreen
 ```
 
 ## State Management with Zustand
@@ -46,11 +46,11 @@ Timer logic lives in **`src/services/timer.js`**.
 ## Screens
 
 - **`HomeScreen.js`** – Main interface where tasks are added and timers are started. It renders `TimerDisplay`, `ProductionTimer`, and the list of `TaskCard` components.
-- **`ConfigScreen.js`** – Presents the `ConfigMenu` for adjusting settings.
+- **`PerformanceScreen.js`** – Shows timers and progress charts.
 
 ## Data Flow
 
-1. **User interaction** – Pressing buttons or entering text on `HomeScreen` or `ConfigScreen`.
+1. **User interaction** – Pressing buttons or entering text on `HomeScreen` or the dropdown menu.
 2. **Store update** – Components call setters from `useUserStore` or timer functions (`startProductionTimer`, `startTimer`, `stopProductionTimer`).
 3. **Timers** – `setInterval` in `timer.js` updates values such as `productionSeconds` or `secondsLeft` in the store.
 4. **UI refresh** – Components that subscribe to the store (`ProductionTimer`, `TimerDisplay`, `TaskCard`, etc.) automatically re-render with the new data.
