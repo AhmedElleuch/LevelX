@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const useUserStore = create(
@@ -23,7 +23,9 @@ export const useUserStore = create(
 
       tasks: [],
       setTasks: (tasks) => set({ tasks }),
-
+      removeTask: (id) =>
+      set((state) => ({ tasks: state.tasks.filter((t) => t.id !== id) })),
+      
       activeTaskId: null,
       setActiveTaskId: (id) => set({ activeTaskId: id }),
 
@@ -49,7 +51,7 @@ export const useUserStore = create(
     }),
     {
       name: 'levelx-store',
-      getStorage: () => AsyncStorage,
+      storage: createJSONStorage(() => AsyncStorage),
     }
   )
 );

@@ -36,4 +36,5 @@ LevelX is your **personal upgrade assistant**, helping you reclaim attention, sk
 2. Start a task to begin a focus timer. When the timer ends the task is marked complete.
 3. Use **Start Production** to run a production timer tracking your work session.
 4. Adjust default focus minutes in the **Config** tab.
-5. All tasks and timers persist locally thanks to AsyncStorage.
+5. Delete tasks with the **Delete** button if you no longer need them.
+6. All tasks and timers persist locally thanks to AsyncStorage and resume when the app restarts.

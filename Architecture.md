@@ -26,7 +26,7 @@ Global state lives in **`src/store/userStore.js`** using the `zustand` library. 
 
 Screens and components call these setters to update state and subscribe to changes with `useUserStore()`.
 
-State is persisted with the `persist` middleware so tasks and timer values survive app restarts using AsyncStorage.
+State is persisted with the `persist` middleware using `createJSONStorage` so tasks and timer values survive app restarts via AsyncStorage.
 
 ## Timers
 
