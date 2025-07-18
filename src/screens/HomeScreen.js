@@ -41,6 +41,7 @@ export default function HomeScreen() {
     acceptedMissions,
     acceptMission,
     moveTaskToTop,
+    TouchableOpacity,
   } = useUserStore();
 
   const priorities = PRIORITIES;
