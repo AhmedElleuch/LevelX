@@ -85,9 +85,11 @@ export default function HomeScreen() {
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={80}
     >
       <FlatList
         data={tasks}
+        keyboardShouldPersistTaps='handled'
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <TaskCard task={item} onLongPress={() => moveTaskToTop(item.id)} />
