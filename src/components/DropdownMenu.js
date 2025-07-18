@@ -1,14 +1,37 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity, Text, Modal, StyleSheet } from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  Modal,
+  StyleSheet,
+  TextInput,
+  Alert,
+} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUserStore } from '../store/userStore';
 import ConfigMenu from './ConfigMenu';
 
 export default function DropdownMenu() {
   const [visible, setVisible] = useState(false);
   const [showConfig, setShowConfig] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
   const toggleTheme = useUserStore((s) => s.toggleTheme);
+  const { name, setName, level, difficulty, setDifficulty } = useUserStore();
 
   const close = () => setVisible(false);
+
+  const exportData = async () => {
+    const data = await AsyncStorage.getItem('levelx-store');
+    Alert.alert('Export', data || 'No data');
+    close();
+  };
+
+  const logout = async () => {
+    await AsyncStorage.removeItem('levelx-store');
+    Alert.alert('Logged out');
+    close();
+  };
 
   return (
     <View>
@@ -18,7 +41,7 @@ export default function DropdownMenu() {
       <Modal transparent visible={visible} animationType='fade'>
         <TouchableOpacity style={styles.overlay} onPress={close}>
           <View style={styles.menu}>
-            <TouchableOpacity style={styles.item} onPress={() => alert('Profile')}>
+            <TouchableOpacity style={styles.item} onPress={() => setShowProfile(true)}>
               <Text>Profile</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.item} onPress={() => setShowConfig(true)}>
@@ -27,12 +50,26 @@ export default function DropdownMenu() {
             <TouchableOpacity style={styles.item} onPress={() => { toggleTheme(); close(); }}>
               <Text>Switch Theme</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.item} onPress={() => alert('Sync / Export')}>
+            <TouchableOpacity style={styles.item} onPress={exportData}>
               <Text>Sync/Export</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.item} onPress={() => alert('Logout')}>
+            <TouchableOpacity style={styles.item} onPress={logout}>
               <Text>Logout</Text>
             </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      </Modal>
+      <Modal transparent visible={showProfile} animationType='slide'>
+        <TouchableOpacity style={styles.overlay} onPress={() => setShowProfile(false)}>
+          <View style={styles.menu}>
+            <Text style={styles.header}>Profile</Text>
+            <TextInput
+              style={styles.input}
+              placeholder='Name'
+              value={name}
+              onChangeText={setName}
+            />
+            <Text>Level {level}</Text>
           </View>
         </TouchableOpacity>
       </Modal>
@@ -53,4 +90,7 @@ const styles = StyleSheet.create({
   overlay: { flex: 1, justifyContent: 'flex-start', alignItems: 'flex-end', backgroundColor: 'rgba(0,0,0,0.3)' },
   menu: { backgroundColor: '#fff', padding: 10, borderRadius: 6, marginTop: 40, marginRight: 10 },
   item: { paddingVertical: 8 },
+  header: { fontWeight: 'bold', marginBottom: 8 },
+  input: { borderWidth: 1, borderColor: '#ccc', padding: 6, borderRadius: 6, marginBottom: 10, width: 150 },
 });
+

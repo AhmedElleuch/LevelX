@@ -7,6 +7,7 @@ let wasteInterval = null;
 export const startProductionTimer = () => {
   const {
     isProductionActive,
+    activeTaskId,
     setIsProductionActive,
     setProductionStartTime,
     setProductionSeconds,
@@ -14,6 +15,7 @@ export const startProductionTimer = () => {
   } = useUserStore.getState();
 
   if (isProductionActive) return;
+  if (!activeTaskId) return;
 
   if (isWasteActive) stopWasteTimer();
 
@@ -160,3 +162,17 @@ export const stopWasteTimer = () => {
   wasteInterval = null;
   setIsWasteActive(false);
 };
+
+export const resetProduction = () => {
+  const {
+    setProductionSeconds,
+    setProductionStartTime,
+    setWasteSeconds,
+    setWasteStartTime,
+  } = useUserStore.getState();
+  setProductionSeconds(0);
+  setProductionStartTime(Date.now());
+  setWasteSeconds(0);
+  setWasteStartTime(Date.now());
+};
+

@@ -23,6 +23,7 @@ import {
 import ProductionTimer from '../components/ProductionTimer';
 import { PRIORITIES } from '../constants/priorities';
 import { MISSIONS } from '../constants/missions';
+import XPProgressBar from '../components/XPProgressBar';
 
 export default function HomeScreen() {
   const {
@@ -32,8 +33,6 @@ export default function HomeScreen() {
     setPriority,
     tasks,
     setTasks,
-    level,
-    xp,
     dailyXp,
     streak,
     addXp,
@@ -90,7 +89,7 @@ export default function HomeScreen() {
         ListHeaderComponent={
         <View>
           <Text style={styles.title}>Welcome back!</Text>
-          <Text style={styles.sub}>Level {level} - XP {xp}</Text>
+          <XPProgressBar />
           <Text style={styles.sub}>Daily XP {dailyXp} • Streak {streak}</Text>
           <ProductionTimer />
           <TimerDisplay />
@@ -198,3 +197,4 @@ const styles = StyleSheet.create({
   stopButton: { backgroundColor: '#ff5555',padding: 12,borderRadius: 8,alignItems: 'center',marginBottom: 20,},
   section: { fontWeight: 'bold', marginBottom: 6, marginTop: 10 },
 });
+

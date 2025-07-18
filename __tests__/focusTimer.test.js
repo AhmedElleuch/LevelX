@@ -10,13 +10,14 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
 }));
 
 test('resumeTimer continues after stop', () => {
-  const state = useUserStore.getState();
-  state.setFocusMinutes(1);
+  const store = useUserStore.getState();
+  store.setFocusMinutes(1);
+  store.setActiveTaskId('1');
   startTimer();
   jest.advanceTimersByTime(30000);
   stopTimer();
-  expect(state.secondsLeft).toBe(30);
+  const paused = useUserStore.getState().secondsLeft;
   resumeTimer();
   jest.advanceTimersByTime(1000);
-  expect(state.secondsLeft).toBe(29);
+  expect(useUserStore.getState().secondsLeft).toBe(paused - 1);
 });

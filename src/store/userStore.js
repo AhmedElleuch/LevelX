@@ -21,6 +21,15 @@ export const useUserStore = create(
       setWasteStartTime: (time) => set({ wasteStartTime: time }),
       setWasteSeconds: (sec) => set({ wasteSeconds: sec }),
 
+      // Reset timers
+      resetProduction: () =>
+        set({
+          productionSeconds: 0,
+          productionStartTime: Date.now(),
+          wasteSeconds: 0,
+          wasteStartTime: Date.now(),
+        }),
+
       setIsProductionActive: (val) => set({ isProductionActive: val }),
       setProductionStartTime: (time) => set({ productionStartTime: time }),
       setProductionSeconds: (sec) => set({ productionSeconds: sec }),
@@ -52,6 +61,10 @@ export const useUserStore = create(
           updated.unshift(item);
           return { tasks: updated };
         }),
+
+      // Profile
+      name: '',
+      setName: (val) => set({ name: val }),
 
       activeTaskId: null,
       setActiveTaskId: (id) => set({ activeTaskId: id }),
@@ -112,6 +125,10 @@ export const useUserStore = create(
       theme: 'light',
       toggleTheme: () =>
       set((state) => ({ theme: state.theme === 'light' ? 'dark' : 'light' })),
+
+      // Difficulty
+      difficulty: 'normal',
+      setDifficulty: (val) => set({ difficulty: val }),
     }),
     {
       name: 'levelx-store',
@@ -119,3 +136,4 @@ export const useUserStore = create(
     }
   )
 );
+

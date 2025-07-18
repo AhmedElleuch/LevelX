@@ -1,6 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useUserStore } from '../store/userStore';
+import CompletedMissions from '../components/CompletedMissions';
+import XPProgressBar from '../components/XPProgressBar';
+import { resetProduction } from '../services/timer';
 
 const format = (sec) => {
   const h = String(Math.floor(sec / 3600)).padStart(2, '0');
@@ -13,16 +16,11 @@ export default function PerformanceScreen() {
   const {
     productionSeconds,
     wasteSeconds,
-    setProductionSeconds,
-    setProductionStartTime,
     tasks,
-    xp,
-    level,
   } = useUserStore();
 
   const reset = () => {
-    setProductionSeconds(0);
-    setProductionStartTime(Date.now());
+    resetProduction();
   };
 
   const completed = tasks.filter((t) => t.isCompleted);
@@ -31,14 +29,14 @@ export default function PerformanceScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Level {level}</Text>
-      <Text style={styles.sub}>XP {xp}</Text>
+      <XPProgressBar />
       <View style={styles.chart}>
         <View style={[styles.prodBar, { flex: prodRatio }]} />
         <View style={[styles.wasteBar, { flex: 1 - prodRatio }]} />
       </View>      <Text style={styles.text}>Production: {format(productionSeconds)}</Text>
       <Text style={styles.text}>Waste: {format(wasteSeconds)}</Text>
       <Text style={styles.sub}>Completed Missions: {completed.length}</Text>
+      <CompletedMissions />
       <TouchableOpacity style={styles.button} onPress={reset}>
         <Text style={styles.buttonText}>Reset Production</Text>
       </TouchableOpacity>
@@ -58,3 +56,4 @@ const styles = StyleSheet.create({
   button: { backgroundColor: '#ff5555', padding: 12, borderRadius: 8, marginTop: 20 },
   buttonText: { color: '#fff', fontWeight: 'bold' },
 });
+
