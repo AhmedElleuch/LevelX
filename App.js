@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialIcons } from '@expo/vector-icons';
 import PerformanceScreen from './src/screens/PerformanceScreen';
+import HomeScreen from './src/screens/HomeScreen';
 import DropdownMenu from './src/components/DropdownMenu';
 
 const Tab = createBottomTabNavigator();
