@@ -3,6 +3,7 @@ import {
   stopProductionTimer,
   startWasteTimer,
   resumeProductionTimer,
+  resetProduction,
 } from '../src/services/timer';
 
 import { useUserStore } from '../src/store/userStore';
@@ -29,12 +30,14 @@ describe('timers interaction', () => {
   test('starting production stops waste timer', () => {
     startWasteTimer();
     expect(useUserStore.getState().isWasteActive).toBe(true);
+    useUserStore.getState().setActiveTaskId('1');
     startProductionTimer();
     expect(useUserStore.getState().isProductionActive).toBe(true);
     expect(useUserStore.getState().isWasteActive).toBe(false);
   });
 
   test('stopping production starts waste timer', () => {
+    useUserStore.getState().setActiveTaskId('1');
     startProductionTimer();
     stopProductionTimer();
     expect(useUserStore.getState().isProductionActive).toBe(false);
@@ -42,10 +45,27 @@ describe('timers interaction', () => {
   });
 
   test('production timer stops when no task is active', () => {
+    useUserStore.getState().setActiveTaskId('1');
     startProductionTimer();
     useUserStore.getState().setActiveTaskId(null);
     resumeProductionTimer();
     expect(useUserStore.getState().isProductionActive).toBe(false);
     expect(useUserStore.getState().isWasteActive).toBe(true);
   });
+
+  test('production timer does not start without active task', () => {
+    useUserStore.getState().setActiveTaskId(null);
+    startProductionTimer();
+    expect(useUserStore.getState().isProductionActive).toBe(false);
+  });
+
+  test('resetProduction zeros timers', () => {
+    useUserStore.getState().setProductionSeconds(50);
+    useUserStore.getState().setWasteSeconds(40);
+    resetProduction();
+    const state = useUserStore.getState();
+    expect(state.productionSeconds).toBe(0);
+    expect(state.wasteSeconds).toBe(0);
+  });
 });
+
