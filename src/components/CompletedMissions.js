@@ -1,19 +1,21 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 import { useUserStore } from '../store/userStore';
 
 export default function CompletedMissions() {
+  const { colors } = useTheme();
   const { tasks } = useUserStore();
   const completed = tasks.filter((t) => t.isCompleted);
   const totalXp = completed.length * 25;
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Completed Missions: {completed.length}</Text>
+      <Text style={[styles.header, { color: colors.text }]}>Completed Missions: {completed.length}</Text>
       {completed.map((t) => (
-        <Text key={t.id} style={styles.item}>{t.title}</Text>
+        <Text key={t.id} style={[styles.item, { color: colors.text }]}>{t.title}</Text>
       ))}
-      <Text style={styles.total}>Task XP: {totalXp}</Text>
+      <Text style={[styles.total, { color: colors.text }]}>Task XP: {totalXp}</Text>
     </View>
   );
 }
@@ -24,3 +26,4 @@ const styles = StyleSheet.create({
   item: { fontSize: 12 },
   total: { marginTop: 6, fontWeight: 'bold' },
 });
+

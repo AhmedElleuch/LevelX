@@ -1,16 +1,23 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialIcons } from '@expo/vector-icons';
 import PerformanceScreen from './src/screens/PerformanceScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import DropdownMenu from './src/components/DropdownMenu';
+import { useUserStore } from './src/store/userStore';
+import { getThemeColors } from './src/utils/themeColors';
 
 const Tab = createBottomTabNavigator();
 
 export default function App() {
-  return (
-    <NavigationContainer>
+  const mode = useUserStore((s) => s.theme);
+  const colors = getThemeColors(mode);
+  const theme = mode === 'dark'
+    ? { ...DarkTheme, colors: { ...DarkTheme.colors, ...colors } }
+    : { ...DefaultTheme, colors: { ...DefaultTheme.colors, ...colors } };
+      return (
+    <NavigationContainer theme={theme}>
       <Tab.Navigator
         screenOptions={({ route }) => ({
           headerRight: () => <DropdownMenu />,

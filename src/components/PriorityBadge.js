@@ -10,14 +10,19 @@ export default function PriorityBadge({ level }) {
 const styles = StyleSheet.create({
   badge: {
     fontWeight: 'bold',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+    color: '#fff',
+    overflow: 'hidden',
   },
   levelHigh: {
-    color: 'red',
+    backgroundColor: '#ff3333',
   },
   levelMedium: {
-    color: 'orange',
+    backgroundColor: '#ff9900',
   },
   levelLow: {
-    color: 'green',
+    backgroundColor: '#999',
   },
 });

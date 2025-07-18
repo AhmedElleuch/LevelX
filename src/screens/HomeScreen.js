@@ -3,14 +3,15 @@ import {
   View,
   Text,
   TextInput,
-  TouchableOpacity,
+  Pressable,
   FlatList,
   StyleSheet,
   Alert,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
+  ToastAndroid,
 } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 import { useUserStore } from '../store/userStore';
 import TaskCard from '../components/TaskCard';
 import TimerDisplay from '../components/TimerDisplay';
@@ -26,6 +27,7 @@ import { MISSIONS } from '../constants/missions';
 import XPProgressBar from '../components/XPProgressBar';
 
 export default function HomeScreen() {
+  const { colors } = useTheme();
   const {
     taskTitle,
     setTaskTitle,
@@ -46,7 +48,11 @@ export default function HomeScreen() {
   const handleAcceptMission = (mission) => {
     addXp(mission.xp);
     acceptMission(mission.id);
-    Alert.alert('Mission accepted!');
+    if (Platform.OS === 'android') {
+      ToastAndroid.show('Task Accepted!', ToastAndroid.SHORT);
+    } else {
+      Alert.alert('Task Accepted!');
+    }
   };
 
   useEffect(() => {
@@ -88,45 +94,58 @@ export default function HomeScreen() {
         )}
         ListHeaderComponent={
         <View>
-          <Text style={styles.title}>Welcome back!</Text>
+          <Text style={[styles.title, { color: colors.text }]}>Welcome back!</Text>
           <XPProgressBar />
-          <Text style={styles.sub}>Daily XP {dailyXp} • Streak {streak}</Text>
+          <Text style={[styles.sub, { color: colors.text }]}>Daily XP {dailyXp} • Streak {streak}</Text>
           <ProductionTimer />
           <TimerDisplay />
 
           {acceptedMissions.length > 0 && (
             <View>
-              <Text style={styles.section}>Active Missions</Text>
+              <Text style={[styles.section, { color: colors.text }]}>Active Missions</Text>
               {MISSIONS.filter((m) => acceptedMissions.includes(m.id)).map((m) => (
-                <View key={m.id} style={styles.mission}>
-                  <Text style={styles.missionText}>{m.title}</Text>
+                <View
+                  key={m.id}
+                  style={[styles.mission, { backgroundColor: colors.card, borderColor: colors.border }]}
+                >
+                  <Text style={[styles.missionText, { color: colors.text }]}>{m.title}</Text>
                 </View>
               ))}
             </View>
           )}
 
-          <Text style={styles.section}>Available Missions</Text>
+          <Text style={[styles.section, { color: colors.text }]}>Available Missions</Text>
           {MISSIONS.filter((m) => !acceptedMissions.includes(m.id)).map((m) => (
-            <View key={m.id} style={styles.mission}>
-              <Text style={styles.missionText}>{m.title}</Text>
-              <TouchableOpacity
-                style={styles.accept}
+            <View
+              key={m.id}
+              style={[styles.mission, { backgroundColor: colors.card, borderColor: colors.border }]}
+            >
+              <Text style={[styles.missionText, { color: colors.text }]}>{m.title}</Text>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.accept,
+                  pressed && styles.pressedButton,
+                ]}
                 onPress={() => handleAcceptMission(m)}
               >
                 <Text style={styles.acceptText}>Accept</Text>
-              </TouchableOpacity>
+              </Pressable>
             </View>
           ))}
 
-         <TouchableOpacity
-            style={styles.challengeButton}
+         <Pressable
+            style={({ pressed }) => [
+              styles.challengeButton,
+              pressed && styles.pressedButton,
+            ]}
             onPress={() => addXp(5)}
-           >
+          >
             <Text style={styles.challengeText}>Start Challenge</Text>
-          </TouchableOpacity>
+          </Pressable>
           <TextInput
             style={styles.input}
             placeholder="Enter task..."
+            placeholderTextColor={colors.text}
             value={taskTitle}
             onChangeText={setTaskTitle}
           />
@@ -143,12 +162,18 @@ export default function HomeScreen() {
             ))}
           </View>
 
-          <TouchableOpacity style={styles.addButton} onPress={addTask}>
+          <Pressable
+            style={({ pressed }) => [
+              styles.addButton,
+              pressed && styles.pressedButton,
+            ]}
+            onPress={addTask}
+          >
             <Text style={styles.addButtonText}>+ Add Task</Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       }
-      style={styles.container}
+      style={[styles.container, { backgroundColor: colors.background }]}
       contentContainerStyle={styles.taskList}
       />
     </KeyboardAvoidingView>
@@ -196,5 +221,6 @@ const styles = StyleSheet.create({
   taskList: { gap: 10 },
   stopButton: { backgroundColor: '#ff5555',padding: 12,borderRadius: 8,alignItems: 'center',marginBottom: 20,},
   section: { fontWeight: 'bold', marginBottom: 6, marginTop: 10 },
+  pressedButton: { opacity: 0.7 },
 });
 

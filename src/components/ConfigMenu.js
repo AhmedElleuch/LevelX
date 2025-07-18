@@ -7,9 +7,11 @@ import {
   StyleSheet,
   Animated,
 } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 import { useUserStore } from '../store/userStore';
 
 export default function ConfigMenu({ onClose }) {
+  const { colors } = useTheme();
   const { focusMinutes, setFocusMinutes } = useUserStore();
   const [minutes, setMinutes] = useState(String(focusMinutes));
   const opacity = useRef(new Animated.Value(0)).current;
@@ -31,14 +33,15 @@ export default function ConfigMenu({ onClose }) {
   };
 
   return (
-    <Animated.View style={[styles.container, { opacity }]}>
+    <Animated.View style={[styles.container, { opacity, backgroundColor: colors.card, borderColor: colors.border }]}>
       <Text style={styles.label}>Focus minutes</Text>
       <TextInput
         style={styles.input}
-        keyboardType="numeric"
+        keyboardType='numeric'
         value={minutes}
         onChangeText={setMinutes}
-        placeholder="Focus minutes"
+        placeholder='Focus minutes'
+        placeholderTextColor={colors.text}
       />
             <View style={styles.quick}>
         {[5, 15, 25].map((v) => (
@@ -69,3 +72,4 @@ const styles = StyleSheet.create({
   quickButton: { padding: 6, borderWidth: 1, borderColor: '#999', borderRadius: 6 },
   xp: { textAlign: 'center', marginBottom: 10 },
 });
+

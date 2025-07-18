@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 import { Swipeable } from 'react-native-gesture-handler';
 import { useUserStore } from '../store/userStore';
 import { startTimer, startProductionTimer } from '../services/timer';
@@ -7,6 +8,7 @@ import { sortTasks } from '../utils/sortTasks';
 import PriorityBadge from './PriorityBadge';
 
 export default function TaskCard({ task, onLongPress }) {
+  const { colors } = useTheme();
   const { tasks, setTasks, setActiveTaskId, removeTask, completeTask } =
     useUserStore();
 
@@ -34,9 +36,12 @@ export default function TaskCard({ task, onLongPress }) {
 
   return (
     <Swipeable renderRightActions={right} renderLeftActions={left}>
-      <TouchableOpacity style={styles.card} onLongPress={onLongPress}>
+      <TouchableOpacity
+        style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}
+        onLongPress={onLongPress}
+      >
         <View style={styles.header}>
-          <Text style={styles.text}>{task.title}</Text>
+          <Text style={[styles.text, { color: colors.text }]}>{task.title}</Text>
           <PriorityBadge level={task.priority} />
         </View>
 
@@ -55,7 +60,18 @@ export default function TaskCard({ task, onLongPress }) {
 }
 
 const styles = StyleSheet.create({
-  card: { padding: 12, borderWidth: 1, borderColor: '#ccc', borderRadius: 8, marginBottom: 10 },
+  card: {
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
   text: { fontSize: 16 },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   button: {
@@ -68,7 +84,6 @@ const styles = StyleSheet.create({
   deleteText: { color: '#ff5555' },
   swipeButton: { justifyContent: 'center', paddingHorizontal: 20 },
   completeText: { color: 'green' },
-  priorityHigh: { color: 'red', fontWeight: 'bold' },
-  priorityMedium: { color: 'orange' },
-  priorityLow: { color: 'green' },
 });
+
+

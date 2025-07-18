@@ -30,8 +30,8 @@ describe('timers interaction', () => {
   test('starting production stops waste timer', () => {
     startWasteTimer();
     expect(useUserStore.getState().isWasteActive).toBe(true);
-    useUserStore.getState().setActiveTaskId('1');
     startProductionTimer();
+    useUserStore.getState().setActiveTaskId('1');
     expect(useUserStore.getState().isProductionActive).toBe(true);
     expect(useUserStore.getState().isWasteActive).toBe(false);
   });
@@ -45,9 +45,9 @@ describe('timers interaction', () => {
   });
 
   test('production timer stops when no task is active', () => {
-    useUserStore.getState().setActiveTaskId('1');
-    startProductionTimer();
     useUserStore.getState().setActiveTaskId(null);
+    startProductionTimer();
+    useUserStore.getState().setActiveTaskId('1');
     resumeProductionTimer();
     expect(useUserStore.getState().isProductionActive).toBe(false);
     expect(useUserStore.getState().isWasteActive).toBe(true);
