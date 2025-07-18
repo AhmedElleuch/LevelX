@@ -87,10 +87,33 @@ export const startTimer = () => {
 };
 
 export const resumeTimer = () => {
-  const { secondsLeft, intervalId, setIsTimerRunning } =
-    useUserStore.getState();
+  const {
+    secondsLeft,
+    intervalId,
+    setIsTimerRunning,
+    productionSeconds,
+    setProductionStartTime,
+    isProductionActive,
+    setIsProductionActive,
+  } = useUserStore.getState();
 
   if (secondsLeft <= 0 || intervalId) return;
+
+  stopWasteTimer();
+
+  if (!isProductionActive) {
+    setIsProductionActive(true);
+    setProductionStartTime(Date.now() - productionSeconds * 1000);
+    if (!productionInterval) {
+      productionInterval = setInterval(() => {
+        const { productionStartTime, setProductionSeconds } =
+          useUserStore.getState();
+        const elapsed = Math.floor((Date.now() - productionStartTime) / 1000);
+        setProductionSeconds(elapsed);
+      }, 1000);
+    }
+  }
+
   setIsTimerRunning(true);
 
   const id = setInterval(() => {

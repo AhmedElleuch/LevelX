@@ -4,18 +4,18 @@ import {
   Text,
   TextInput,
   Pressable,
-  FlatList,
   StyleSheet,
   Alert,
   KeyboardAvoidingView,
   Platform,
   ToastAndroid,
+  TouchableOpacity,
 } from 'react-native';
+import DraggableFlatList from 'react-native-draggable-flatlist';
 import { useTheme } from '@react-navigation/native';
 import { useUserStore } from '../store/userStore';
 import TaskCard from '../components/TaskCard';
 import TimerDisplay from '../components/TimerDisplay';
-import { sortTasks } from '../utils/sortTasks';
 import {
   resumeProductionTimer,
   resumeWasteTimer,
@@ -40,8 +40,6 @@ export default function HomeScreen() {
     addXp,
     acceptedMissions,
     acceptMission,
-    moveTaskToTop,
-    TouchableOpacity,
   } = useUserStore();
 
   const priorities = PRIORITIES;
@@ -76,8 +74,7 @@ export default function HomeScreen() {
       isCompleted: false,
     };
 
-    const updated = sortTasks([...tasks, newTask]);
-    setTasks(updated);
+    setTasks([...tasks, newTask]);
     setTaskTitle('');
     setPriority('Medium');
   };
@@ -88,13 +85,14 @@ export default function HomeScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={80}
     >
-      <FlatList
+      <DraggableFlatList
         data={tasks}
         keyboardShouldPersistTaps='handled'
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <TaskCard task={item} onLongPress={() => moveTaskToTop(item.id)} />
+        renderItem={({ item, drag, isActive }) => (
+          <TaskCard task={item} drag={drag} isActive={isActive} />
         )}
+        onDragEnd={({ data }) => setTasks(data)}
         ListHeaderComponent={
         <View>
           <Text style={[styles.title, { color: colors.text }]}>Welcome back!</Text>
@@ -117,37 +115,9 @@ export default function HomeScreen() {
             </View>
           )}
 
-          <Text style={[styles.section, { color: colors.text }]}>Available Missions</Text>
-          {MISSIONS.filter((m) => !acceptedMissions.includes(m.id)).map((m) => (
-            <View
-              key={m.id}
-              style={[styles.mission, { backgroundColor: colors.card, borderColor: colors.border }]}
-            >
-              <Text style={[styles.missionText, { color: colors.text }]}>{m.title}</Text>
-              <Pressable
-                style={({ pressed }) => [
-                  styles.accept,
-                  pressed && styles.pressedButton,
-                ]}
-                onPress={() => handleAcceptMission(m)}
-              >
-                <Text style={styles.acceptText}>Accept</Text>
-              </Pressable>
-            </View>
-          ))}
-
-         <Pressable
-            style={({ pressed }) => [
-              styles.challengeButton,
-              pressed && styles.pressedButton,
-            ]}
-            onPress={() => addXp(5)}
-          >
-            <Text style={styles.challengeText}>Start Challenge</Text>
-          </Pressable>
           <TextInput
             style={styles.input}
-            placeholder="Enter task..."
+            placeholder='Enter task...'
             placeholderTextColor={colors.text}
             value={taskTitle}
             onChangeText={setTaskTitle}
@@ -167,6 +137,16 @@ export default function HomeScreen() {
 
           <Pressable
             style={({ pressed }) => [
+              styles.challengeButton,
+              pressed && styles.pressedButton,
+            ]}
+            onPress={() => addXp(5)}
+          >
+            <Text style={styles.challengeText}>Start Challenge</Text>
+          </Pressable>
+
+          <Pressable
+            style={({ pressed }) => [
               styles.addButton,
               pressed && styles.pressedButton,
             ]}
@@ -174,6 +154,25 @@ export default function HomeScreen() {
           >
             <Text style={styles.addButtonText}>+ Add Task</Text>
           </Pressable>
+
+          <Text style={[styles.section, { color: colors.text }]}>Available Missions</Text>
+          {MISSIONS.filter((m) => !acceptedMissions.includes(m.id)).map((m) => (
+            <View
+              key={m.id}
+              style={[styles.mission, { backgroundColor: colors.card, borderColor: colors.border }]}
+            >
+              <Text style={[styles.missionText, { color: colors.text }]}>{m.title}</Text>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.accept,
+                  pressed && styles.pressedButton,
+                ]}
+                onPress={() => handleAcceptMission(m)}
+              >
+                <Text style={styles.acceptText}>Accept</Text>
+              </Pressable>
+            </View>
+          ))}
         </View>
       }
       style={[styles.container, { backgroundColor: colors.background }]}

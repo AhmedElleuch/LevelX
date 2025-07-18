@@ -1,4 +1,4 @@
-import { startTimer, stopTimer, resumeTimer } from '../src/services/timer';
+import { startTimer, stopTimer, resumeTimer, startProductionTimer } from '../src/services/timer';
 import { useUserStore } from '../src/store/userStore';
 
 jest.useFakeTimers();
@@ -20,4 +20,18 @@ test('resumeTimer continues after stop', () => {
   resumeTimer();
   jest.advanceTimersByTime(1000);
   expect(useUserStore.getState().secondsLeft).toBe(paused - 1);
+});
+
+test('resumeTimer stops waste counter', () => {
+  const state = useUserStore.getState();
+  state.setFocusMinutes(1);
+  state.setActiveTaskId('1');
+  startProductionTimer();
+  startTimer();
+  jest.advanceTimersByTime(1000);
+  stopTimer();
+  const wasteBefore = useUserStore.getState().wasteSeconds;
+  resumeTimer();
+  jest.advanceTimersByTime(2000);
+  expect(useUserStore.getState().wasteSeconds).toBe(wasteBefore);
 });

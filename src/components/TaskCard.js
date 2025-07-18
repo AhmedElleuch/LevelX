@@ -7,7 +7,7 @@ import { startTimer, startProductionTimer } from '../services/timer';
 import { sortTasks } from '../utils/sortTasks';
 import PriorityBadge from './PriorityBadge';
 
-export default function TaskCard({ task, onLongPress }) {
+const TaskCard = ({ task, onLongPress, drag, isActive }) => {
   const { colors } = useTheme();
   const { tasks, setTasks, setActiveTaskId, removeTask, completeTask } =
     useUserStore();
@@ -37,8 +37,12 @@ export default function TaskCard({ task, onLongPress }) {
   return (
     <Swipeable renderRightActions={right} renderLeftActions={left}>
       <TouchableOpacity
-        style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}
-        onLongPress={onLongPress}
+        style={[
+          styles.card,
+          { backgroundColor: colors.card, borderColor: colors.border },
+          isActive && styles.dragging,
+        ]}
+        onLongPress={drag || onLongPress}
       >
         <View style={styles.header}>
           <Text style={[styles.text, { color: colors.text }]}>{task.title}</Text>
@@ -84,6 +88,9 @@ const styles = StyleSheet.create({
   deleteText: { color: '#ff5555' },
   swipeButton: { justifyContent: 'center', paddingHorizontal: 20 },
   completeText: { color: 'green' },
+  dragging: { opacity: 0.7 },
 });
+
+export default TaskCard;
 
 
