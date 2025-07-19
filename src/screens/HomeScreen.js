@@ -79,6 +79,89 @@ const HomeScreen = () => {
     setPriority('Medium');
   };
 
+  const renderHeader = () => (
+    <View>
+      <Text style={[styles.title, { color: colors.text }]}>Welcome back!</Text>
+      <XPProgressBar />
+      <Text style={[styles.sub, { color: colors.text }]}>Daily XP {dailyXp} • Streak {streak}</Text>
+      <ProductionTimer />
+      <TimerDisplay />
+
+      {acceptedMissions.length > 0 && (
+        <View>
+          <Text style={[styles.section, { color: colors.text }]}>Active Missions</Text>
+          {MISSIONS.filter((m) => acceptedMissions.includes(m.id)).map((m) => (
+            <View
+              key={m.id}
+              style={[styles.mission, { backgroundColor: colors.card, borderColor: colors.border }]}
+            >
+              <Text style={[styles.missionText, { color: colors.text }]}>{m.title}</Text>
+            </View>
+          ))}
+        </View>
+      )}
+
+      <TextInput
+        style={styles.input}
+        placeholder='Enter task...'
+        placeholderTextColor={colors.text}
+        value={taskTitle}
+        onChangeText={setTaskTitle}
+      />
+
+      <View style={styles.priorityContainer}>
+        {priorities.map((p) => (
+          <TouchableOpacity
+            key={p}
+            onPress={() => setPriority(p)}
+            style={[styles.priorityButton, priority === p && styles.selected]}
+          >
+            <Text>{p}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      <Pressable
+        style={({ pressed }) => [
+          styles.challengeButton,
+          pressed && styles.pressedButton,
+        ]}
+        onPress={() => addXp(5)}
+      >
+        <Text style={styles.challengeText}>Start Challenge</Text>
+      </Pressable>
+
+      <Pressable
+        style={({ pressed }) => [
+          styles.addButton,
+          pressed && styles.pressedButton,
+        ]}
+        onPress={addTask}
+      >
+        <Text style={styles.addButtonText}>+ Add Task</Text>
+      </Pressable>
+
+      <Text style={[styles.section, { color: colors.text }]}>Available Missions</Text>
+      {MISSIONS.filter((m) => !acceptedMissions.includes(m.id)).map((m) => (
+        <View
+          key={m.id}
+          style={[styles.mission, { backgroundColor: colors.card, borderColor: colors.border }]}
+        >
+          <Text style={[styles.missionText, { color: colors.text }]}>{m.title}</Text>
+          <Pressable
+            style={({ pressed }) => [
+              styles.accept,
+              pressed && styles.pressedButton,
+            ]}
+            onPress={() => handleAcceptMission(m)}
+          >
+            <Text style={styles.acceptText}>Accept</Text>
+          </Pressable>
+        </View>
+      ))}
+    </View>
+  );
+
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -93,90 +176,10 @@ const HomeScreen = () => {
           <TaskCard task={item} drag={drag} isActive={isActive} />
         )}
         onDragEnd={({ data }) => setTasks(data)}
-        ListHeaderComponent={
-        <View>
-          <Text style={[styles.title, { color: colors.text }]}>Welcome back!</Text>
-          <XPProgressBar />
-          <Text style={[styles.sub, { color: colors.text }]}>Daily XP {dailyXp} • Streak {streak}</Text>
-          <ProductionTimer />
-          <TimerDisplay />
-
-          {acceptedMissions.length > 0 && (
-            <View>
-              <Text style={[styles.section, { color: colors.text }]}>Active Missions</Text>
-              {MISSIONS.filter((m) => acceptedMissions.includes(m.id)).map((m) => (
-                <View
-                  key={m.id}
-                  style={[styles.mission, { backgroundColor: colors.card, borderColor: colors.border }]}
-                >
-                  <Text style={[styles.missionText, { color: colors.text }]}>{m.title}</Text>
-                </View>
-              ))}
-            </View>
-          )}
-
-          <TextInput
-            style={styles.input}
-            placeholder='Enter task...'
-            placeholderTextColor={colors.text}
-            value={taskTitle}
-            onChangeText={setTaskTitle}
-          />
-
-          <View style={styles.priorityContainer}>
-            {priorities.map((p) => (
-              <TouchableOpacity
-                key={p}
-                onPress={() => setPriority(p)}
-                style={[styles.priorityButton, priority === p && styles.selected]}
-              >
-                <Text>{p}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-
-          <Pressable
-            style={({ pressed }) => [
-              styles.challengeButton,
-              pressed && styles.pressedButton,
-            ]}
-            onPress={() => addXp(5)}
-          >
-            <Text style={styles.challengeText}>Start Challenge</Text>
-          </Pressable>
-
-          <Pressable
-            style={({ pressed }) => [
-              styles.addButton,
-              pressed && styles.pressedButton,
-            ]}
-            onPress={addTask}
-          >
-            <Text style={styles.addButtonText}>+ Add Task</Text>
-          </Pressable>
-
-          <Text style={[styles.section, { color: colors.text }]}>Available Missions</Text>
-          {MISSIONS.filter((m) => !acceptedMissions.includes(m.id)).map((m) => (
-            <View
-              key={m.id}
-              style={[styles.mission, { backgroundColor: colors.card, borderColor: colors.border }]}
-            >
-              <Text style={[styles.missionText, { color: colors.text }]}>{m.title}</Text>
-              <Pressable
-                style={({ pressed }) => [
-                  styles.accept,
-                  pressed && styles.pressedButton,
-                ]}
-                onPress={() => handleAcceptMission(m)}
-              >
-                <Text style={styles.acceptText}>Accept</Text>
-              </Pressable>
-            </View>
-          ))}
-        </View>
-      }
-      style={[styles.container, { backgroundColor: colors.background }]}
-      contentContainerStyle={styles.taskList}
+        ListHeaderComponent={renderHeader}
+        ListEmptyComponent={renderHeader}
+        style={[styles.container, { backgroundColor: colors.background }]}
+        contentContainerStyle={styles.taskList}
       />
     </KeyboardAvoidingView>
 
