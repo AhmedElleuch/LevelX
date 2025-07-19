@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { useUserStore } from '../store/userStore';
 
-export default function CompletedMissions() {
+const CompletedMissions = () => {
   const { colors } = useTheme();
   const { tasks } = useUserStore();
   const completed = tasks.filter((t) => t.isCompleted);
@@ -18,7 +18,9 @@ export default function CompletedMissions() {
       <Text style={[styles.total, { color: colors.text }]}>Task XP: {totalXp}</Text>
     </View>
   );
-}
+};
+
+export default CompletedMissions;
 
 const styles = StyleSheet.create({
   container: { alignItems: 'center', marginTop: 20 },

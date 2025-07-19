@@ -10,7 +10,7 @@ import {
 import { useTheme } from '@react-navigation/native';
 import { useUserStore } from '../store/userStore';
 
-export default function ConfigMenu({ onClose }) {
+const ConfigMenu = ({ onClose }) => {
   const { colors } = useTheme();
   const { focusMinutes, setFocusMinutes } = useUserStore();
   const [minutes, setMinutes] = useState(String(focusMinutes));
@@ -60,7 +60,9 @@ export default function ConfigMenu({ onClose }) {
       </TouchableOpacity>
     </Animated.View>
   );
-}
+};
+
+export default ConfigMenu;
 
 const styles = StyleSheet.create({
   container: { padding: 20, backgroundColor: '#eee', borderRadius: 8, marginBottom: 20 },

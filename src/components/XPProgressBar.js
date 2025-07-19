@@ -4,7 +4,7 @@ import { useUserStore } from '../store/userStore';
 
 const BAR_WIDTH = 200;
 
-export default function XPProgressBar() {
+const XPProgressBar = () => {
   const { xp, level } = useUserStore();
   const anim = useRef(new Animated.Value(0)).current;
 
@@ -26,7 +26,9 @@ export default function XPProgressBar() {
       <Text style={styles.label}>{xp % 100}/100 XP</Text>
     </View>
   );
-}
+};
+
+export default XPProgressBar;
 
 const styles = StyleSheet.create({
   wrap: { alignItems: 'center', marginBottom: 10 },

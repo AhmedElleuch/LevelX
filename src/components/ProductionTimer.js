@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, StyleSheet, View } from 'react-native';
 import { useUserStore } from '../store/userStore';
 
-export default function ProductionTimer() {
+const ProductionTimer = () => {
   const { isProductionActive, productionSeconds } = useUserStore();
 
   if (!isProductionActive) return null;
@@ -16,7 +16,9 @@ export default function ProductionTimer() {
       <Text style={styles.text}>🟢 Production: {hours}:{minutes}:{seconds}</Text>
     </View>
   );
-}
+};
+
+export default ProductionTimer;
 
 const styles = StyleSheet.create({
   container: { marginBottom: 10 },

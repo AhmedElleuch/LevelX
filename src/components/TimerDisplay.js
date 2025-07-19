@@ -3,7 +3,7 @@ import { Text, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { useUserStore } from '../store/userStore';
 import { stopTimer, resumeTimer } from '../services/timer';
 
-export default function TimerDisplay() {
+const TimerDisplay = () => {
   const { isTimerRunning, secondsLeft } = useUserStore();
 
   if (secondsLeft <= 0) return null;
@@ -24,7 +24,9 @@ export default function TimerDisplay() {
       </TouchableOpacity>
     </View>
   );
-}
+};
+
+export default TimerDisplay;
 
 const styles = StyleSheet.create({
   container: { alignItems: 'center', marginBottom: 20 },

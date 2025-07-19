@@ -26,7 +26,7 @@ import { PRIORITIES } from '../constants/priorities';
 import { MISSIONS } from '../constants/missions';
 import XPProgressBar from '../components/XPProgressBar';
 
-export default function HomeScreen() {
+const HomeScreen = () => {
   const { colors } = useTheme();
   const {
     taskTitle,
@@ -182,7 +182,9 @@ export default function HomeScreen() {
 
     
   );
-}
+};
+
+export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, paddingTop: 60, backgroundColor: '#fff' },

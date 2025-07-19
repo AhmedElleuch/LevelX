@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUserStore } from '../store/userStore';
 import ConfigMenu from './ConfigMenu';
 
-export default function DropdownMenu() {
+const DropdownMenu = () => {
   const [visible, setVisible] = useState(false);
   const [showConfig, setShowConfig] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
@@ -82,7 +82,9 @@ export default function DropdownMenu() {
       </Modal>
     </View>
   );
-}
+};
+
+export default DropdownMenu;
 
 const styles = StyleSheet.create({
   icon: { paddingHorizontal: 16 },

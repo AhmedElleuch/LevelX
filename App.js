@@ -10,7 +10,7 @@ import { getThemeColors } from './src/utils/themeColors';
 
 const Tab = createBottomTabNavigator();
 
-export default function App() {
+const App = () => {
   const mode = useUserStore((s) => s.theme);
   const colors = getThemeColors(mode);
   const theme = mode === 'dark'
@@ -32,4 +32,6 @@ export default function App() {
         </Tab.Navigator>
     </NavigationContainer>
   );
-}
+};
+
+export default App;

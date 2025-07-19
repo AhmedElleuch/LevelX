@@ -1,11 +1,13 @@
 import React from 'react';
 import { Text, StyleSheet } from 'react-native';
 
-export default function PriorityBadge({ level }) {
+const PriorityBadge = ({ level }) => {
   if (!level) return null;
 
   return <Text style={[styles.badge, styles[`level${level}`]]}>{level}</Text>;
-}
+};
+
+export default PriorityBadge;
 
 const styles = StyleSheet.create({
   badge: {

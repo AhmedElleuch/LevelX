@@ -13,7 +13,7 @@ const format = (sec) => {
   return `${h}:${m}:${s}`;
 };
 
-export default function PerformanceScreen() {
+const PerformanceScreen = () => {
   const { colors } = useTheme();
   const {
     productionSeconds,
@@ -45,7 +45,9 @@ export default function PerformanceScreen() {
       </TouchableOpacity>
     </View>
   );
-}
+};
+
+export default PerformanceScreen;
 
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
