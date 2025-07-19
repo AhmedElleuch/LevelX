@@ -10,4 +10,4 @@ This repository is a React Native project built with Expo. Follow these rules wh
 
 ## Programmatic Checks
 
-There are currently no test or lint scripts. 
+Do not launch automated test suites.
