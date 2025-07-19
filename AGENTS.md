@@ -10,4 +10,4 @@ This repository is a React Native project built with Expo. Follow these rules wh
 
 ## Programmatic Checks
 
-Do not launch automated test suites.
+launch automated test suites using "npx jest".
