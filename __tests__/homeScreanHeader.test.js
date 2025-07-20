@@ -11,53 +11,35 @@ jest.mock('../src/services/timer', () => ({
   resumeTimer: jest.fn(),
 }));
 
+jest.mock('@react-native-async-storage/async-storage', () => ({
+  setItem: jest.fn(),
+  getItem: jest.fn(),
+  removeItem: jest.fn(),
+}));
+
+jest.mock('@react-navigation/native', () => ({
+  useTheme: () => ({ colors: { text: '#000', background: '#fff', card: '#fff', border: '#000' } }),
+}));
+
 jest.useFakeTimers();
 
 afterEach(() => {
-  jest.runOnlyPendingTimers();
-  jest.clearAllTimers();
+  renderer.act(() => {
+    jest.runOnlyPendingTimers();
+    jest.clearAllTimers();
+  });
 });
 
-jest.mock('@react-native-async-storage/async-storage', () => ({
-  setItem: jest.fn(),
-  getItem: jest.fn(),
-  removeItem: jest.fn(),
-}));
-
-jest.mock('@react-navigation/native', () => ({
-  useTheme: () => ({ colors: { text: '#000', background: '#fff', card: '#fff', border: '#000' } }),
-}));
-
 test('header renders when task list is empty', () => {
-  useUserStore.setState({ tasks: [] });
+  renderer.act(() => {
+    useUserStore.setState({ tasks: [] });
+  });
   let tree;
   renderer.act(() => {
     tree = renderer.create(<HomeScreen />);
   });
   expect(() => tree.root.findByProps({ children: 'Welcome back!' })).not.toThrow();
-});
-jest.mock('@react-native-async-storage/async-storage', () => ({
-  setItem: jest.fn(),
-  getItem: jest.fn(),
-  removeItem: jest.fn(),
-}));
-
-jest.mock('@react-navigation/native', () => ({
-  useTheme: () => ({ colors: { text: '#000', background: '#fff', card: '#fff', border: '#000' } }),
-}));
-
-test('header renders when task list is empty', () => {
-  useUserStore.setState({ tasks: [] });
-  let tree;
   renderer.act(() => {
-    tree = renderer.create(<HomeScreen />);
+    tree.unmount();
   });
-  expect(() => tree.root.findByProps({ children: 'Welcome back!' })).not.toThrow();
-  tree.unmount();
-  jest.runOnlyPendingTimers();
 });
-
-
-
-
-
