@@ -1,7 +1,9 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
+import { Text } from 'react-native';
 import HomeScreen from '../src/screens/HomeScreen';
 import { useUserStore } from '../src/store/userStore';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 jest.mock('react-native-draggable-flatlist');
 jest.mock('react-native-gesture-handler');
@@ -36,9 +38,14 @@ test('header renders when task list is empty', () => {
   });
   let tree;
   renderer.act(() => {
-    tree = renderer.create(<HomeScreen />);
+    tree = renderer.create(
+      <SafeAreaProvider>
+        <HomeScreen />
+      </SafeAreaProvider>
+    );
   });
-  expect(() => tree.root.findByProps({ children: 'Welcome back!' })).not.toThrow();
+  const json = tree.toJSON();
+  expect(JSON.stringify(json)).toContain('Welcome back!');
   renderer.act(() => {
     tree.unmount();
   });

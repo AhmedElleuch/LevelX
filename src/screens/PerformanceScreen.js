@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@react-navigation/native';
 import { useUserStore } from '../store/userStore';
 import CompletedMissions from '../components/CompletedMissions';
@@ -30,7 +31,7 @@ const PerformanceScreen = () => {
   const prodRatio = total ? productionSeconds / total : 0;
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <XPProgressBar />
       <View style={styles.chart}>
         <View style={[styles.prodBar, { flex: prodRatio }]} />
@@ -43,7 +44,7 @@ const PerformanceScreen = () => {
       <TouchableOpacity style={styles.button} onPress={reset}>
         <Text style={styles.buttonText}>Reset Production</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 

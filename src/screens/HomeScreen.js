@@ -11,6 +11,7 @@ import {
   ToastAndroid,
   TouchableOpacity,
 } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import { useTheme } from '@react-navigation/native';
 import { useUserStore } from '../store/userStore';
@@ -28,6 +29,7 @@ import XPProgressBar from '../components/XPProgressBar';
 
 const HomeScreen = () => {
   const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
   const {
     taskTitle,
     setTaskTitle,
@@ -163,34 +165,37 @@ const HomeScreen = () => {
   );
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={80}
-    >
-      <DraggableFlatList
-        data={tasks}
-        keyboardShouldPersistTaps='handled'
-        keyExtractor={(item) => item.id}
-        renderItem={({ item, drag, isActive }) => (
-          <TaskCard task={item} drag={drag} isActive={isActive} />
-        )}
-        onDragEnd={({ data }) => setTasks(data)}
-        ListHeaderComponent={renderHeader}
-        ListEmptyComponent={renderHeader}
-        style={[styles.container, { backgroundColor: colors.background }]}
-        contentContainerStyle={styles.taskList}
-      />
-    </KeyboardAvoidingView>
-
-    
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={80}
+      >
+        <DraggableFlatList
+          data={tasks}
+          keyboardShouldPersistTaps='handled'
+          keyExtractor={(item) => item.id}
+          renderItem={({ item, drag, isActive }) => (
+            <TaskCard task={item} drag={drag} isActive={isActive} />
+          )}
+          onDragEnd={({ data }) => setTasks(data)}
+          ListHeaderComponent={renderHeader}
+          ListEmptyComponent={renderHeader}
+          style={[
+            styles.container,
+            { backgroundColor: colors.background, paddingTop: insets.top + 20 },
+          ]}
+          contentContainerStyle={styles.taskList}
+        />
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
 export default HomeScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, paddingTop: 60, backgroundColor: '#fff' },
+  container: { flex: 1, padding: 20, backgroundColor: '#fff' },
   title: { fontSize: 26, fontWeight: 'bold', marginBottom: 10 },
   sub: { fontSize: 16, marginBottom: 10 },
   mission: {

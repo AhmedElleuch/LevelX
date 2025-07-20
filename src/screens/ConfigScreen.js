@@ -1,12 +1,13 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import ConfigMenu from '../components/ConfigMenu';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ConfigScreen = () => {
   return (
-    <View style={styles.container}>
-      <ConfigMenu />
-    </View>
+    <SafeAreaView style={styles.container}>
+            <ConfigMenu />
+    </SafeAreaView>
   );
 };
 
