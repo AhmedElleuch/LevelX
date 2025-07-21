@@ -181,10 +181,6 @@ const HomeScreen = () => {
           onDragEnd={({ data }) => setTasks(data)}
           ListHeaderComponent={renderHeader}
           ListEmptyComponent={renderHeader}
-          style={[
-            styles.container,
-            { backgroundColor: colors.background, paddingTop: insets.top + 20 },
-          ]}
           contentContainerStyle={styles.taskList}
         />
       </KeyboardAvoidingView>
