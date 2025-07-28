@@ -1,4 +1,4 @@
-import { startTimer, stopTimer, resumeTimer, startProductionTimer } from '../src/services/timer';
+import { startTimer, stopTimer, resumeTimer } from '../src/services/timer';
 import { useUserStore } from '../src/store/userStore';
 
 jest.useFakeTimers();
@@ -9,29 +9,27 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
   removeItem: jest.fn(),
 }));
 
-test('resumeTimer continues after stop', () => {
+test('stopTimer awards partial xp', () => {
   const store = useUserStore.getState();
-  store.setFocusMinutes(1);
+  store.setFocusMinutes(3);
+  store.setXpPerFocus(9);
+  store.setXp(0);
   store.setActiveTaskId('1');
   startTimer();
-  jest.advanceTimersByTime(30000);
+  jest.advanceTimersByTime(120000);
   stopTimer();
-  const paused = useUserStore.getState().secondsLeft;
-  resumeTimer();
-  jest.advanceTimersByTime(1000);
-  expect(useUserStore.getState().secondsLeft).toBe(paused - 1);
+  expect(useUserStore.getState().xp).toBe(6);
 });
 
-test('resumeTimer stops waste counter', () => {
+test('timer cannot resume after stop', () => {
   const state = useUserStore.getState();
   state.setFocusMinutes(1);
   state.setActiveTaskId('1');
-  startProductionTimer();
   startTimer();
-  jest.advanceTimersByTime(1000);
+  jest.advanceTimersByTime(20000);
   stopTimer();
-  const wasteBefore = useUserStore.getState().wasteSeconds;
+  const left = useUserStore.getState().secondsLeft;
   resumeTimer();
-  jest.advanceTimersByTime(2000);
-  expect(useUserStore.getState().wasteSeconds).toBe(wasteBefore);
+  jest.advanceTimersByTime(1000);
+  expect(useUserStore.getState().secondsLeft).toBe(left);
 });

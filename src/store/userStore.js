@@ -114,6 +114,14 @@ export const useUserStore = create(
 
       focusMinutes: 25,
       setFocusMinutes: (m) => set({ focusMinutes: m }),
+      xpPerFocus: 10,
+      setXpPerFocus: (v) => set({ xpPerFocus: v }),
+      breakMinutes: 5,
+      setBreakMinutes: (v) => set({ breakMinutes: v }),
+      inactivityMinutes: 15,
+      setInactivityMinutes: (v) => set({ inactivityMinutes: v }),
+      focusStartTime: null,
+      setFocusStartTime: (t) => set({ focusStartTime: t }),
 
       isTimerRunning: false,
       setIsTimerRunning: (v) => set({ isTimerRunning: v }),

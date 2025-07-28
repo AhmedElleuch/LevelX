@@ -14,7 +14,16 @@ const ConfigMenu = ({ onClose }) => {
   const { colors } = useTheme();
   const focusMinutes = useUserStore((s) => s.focusMinutes);
   const setFocusMinutes = useUserStore((s) => s.setFocusMinutes);
+  const xpPerFocus = useUserStore((s) => s.xpPerFocus);
+  const setXpPerFocus = useUserStore((s) => s.setXpPerFocus);
+  const breakMinutes = useUserStore((s) => s.breakMinutes);
+  const setBreakMinutes = useUserStore((s) => s.setBreakMinutes);
+  const inactivityMinutes = useUserStore((s) => s.inactivityMinutes);
+  const setInactivityMinutes = useUserStore((s) => s.setInactivityMinutes);
   const [minutes, setMinutes] = useState(String(focusMinutes));
+  const [xp, setXp] = useState(String(xpPerFocus));
+  const [breakM, setBreakM] = useState(String(breakMinutes));
+  const [inactiveM, setInactiveM] = useState(String(inactivityMinutes));
   const opacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -31,7 +40,24 @@ const ConfigMenu = ({ onClose }) => {
     if (!isNaN(val) && val > 0) {
       setFocusMinutes(val);
     }
-    console.log('Save focus minutes', { minutes: val });
+    const xpVal = parseInt(xp, 10);
+    if (!isNaN(xpVal) && xpVal > 0) {
+      setXpPerFocus(xpVal);
+    }
+    const breakVal = parseInt(breakM, 10);
+    if (!isNaN(breakVal) && breakVal > 0) {
+      setBreakMinutes(breakVal);
+    }
+    const inaVal = parseInt(inactiveM, 10);
+    if (!isNaN(inaVal) && inaVal > 0) {
+      setInactivityMinutes(inaVal);
+    }
+    console.log('Save settings', {
+      minutes: val,
+      xp: xpVal,
+      break: breakVal,
+      inactivity: inaVal,
+    });
     if (onClose) onClose();
   };
 
@@ -56,6 +82,30 @@ const ConfigMenu = ({ onClose }) => {
           </TouchableOpacity>
         ))}
       </View>
+      <Text style={styles.label}>XP per focus</Text>
+      <TextInput
+        style={styles.input}
+        value={xp}
+        onChangeText={setXp}
+        placeholder='XP per focus'
+        placeholderTextColor={colors.text}
+      />
+      <Text style={styles.label}>Break minutes</Text>
+      <TextInput
+        style={styles.input}
+        value={breakM}
+        onChangeText={setBreakM}
+        placeholder='Break minutes'
+        placeholderTextColor={colors.text}
+      />
+      <Text style={styles.label}>Inactivity minutes</Text>
+      <TextInput
+        style={styles.input}
+        value={inactiveM}
+        onChangeText={setInactiveM}
+        placeholder='Inactivity minutes'
+        placeholderTextColor={colors.text}
+      />
       <Text style={styles.xp}>Estimated XP: {parseInt(minutes, 10) || 0}</Text>
       <TouchableOpacity style={styles.button} onPress={save}>
         <Text style={styles.buttonText}>Save</Text>
