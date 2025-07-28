@@ -14,6 +14,9 @@ const TaskCard = ({ task, onLongPress, drag, isActive }) => {
   const setActiveTaskId = useUserStore((s) => s.setActiveTaskId);
   const removeTask = useUserStore((s) => s.removeTask);
   const completeTask = useUserStore((s) => s.completeTask);
+  const isTimerRunning = useUserStore((s) => s.isTimerRunning);
+  const activeTaskId = useUserStore((s) => s.activeTaskId);
+  const toggleTaskCompletion = useUserStore((s) => s.toggleTaskCompletion);
 
   const startTask = (id) => {
     const updated = tasks.map((t) =>
@@ -21,8 +24,12 @@ const TaskCard = ({ task, onLongPress, drag, isActive }) => {
     );
     setTasks(sortTasks(updated));
     setActiveTaskId(id);
-    startProductionTimer();
-    startTimer();
+    if (!isTimerRunning) {
+      startProductionTimer();
+      startTimer();
+    } else if (!useUserStore.getState().isProductionActive) {
+      startProductionTimer();
+    }
     console.log('Task started', { id });
   };
 
@@ -59,6 +66,11 @@ const TaskCard = ({ task, onLongPress, drag, isActive }) => {
           isActive && styles.dragging,
         ]}
         onLongPress={drag || onLongPress}
+        onPress={() => {
+          if (isTimerRunning) {
+            toggleTaskCompletion(task.id);
+          }
+        }}
       >
         <View style={styles.header}>
           <Text style={[styles.text, { color: colors.text }]}>{task.title}</Text>
@@ -67,13 +79,13 @@ const TaskCard = ({ task, onLongPress, drag, isActive }) => {
 
         {task.isCompleted ? (
           <Text style={styles.completed}>✅ Done</Text>
-        ) : !task.isStarted ? (
+        ) : !task.isStarted && (!isTimerRunning || !activeTaskId) ? (
           <TouchableOpacity style={styles.button} onPress={() => startTask(task.id)}>
             <Text style={styles.buttonText}>▶ Start</Text>
           </TouchableOpacity>
-        ) : (
+        ) : task.isStarted ? (
           <Text style={styles.locked}>🔒 Started</Text>
-        )}
+        ) : null}
       </TouchableOpacity>
     </Swipeable>
   );

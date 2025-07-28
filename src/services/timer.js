@@ -34,25 +34,27 @@ export const startProductionTimer = () => {
     setIsProductionActive,
     setProductionStartTime,
     setProductionSeconds,
+    productionSeconds,
     isWasteActive,
+    checkProductionReset,
   } = useUserStore.getState();
 
   if (isProductionActive) return;
   if (!activeTaskId) return;
 
+  checkProductionReset();
+
   if (isWasteActive) stopWasteTimer();
 
   setIsProductionActive(true);
   setProductionStartTime(Date.now());
-  setProductionSeconds(0);
 
   inactiveSeconds = 0;
   startInactivityCheck();
 
   productionInterval = setInterval(() => {
-    const { productionStartTime } = useUserStore.getState();
-    const elapsed = Math.floor((Date.now() - productionStartTime) / 1000);
-    setProductionSeconds(elapsed);
+    const { productionSeconds: current } = useUserStore.getState();
+    setProductionSeconds(current + 1);
   }, 1000);
 };
 
@@ -65,10 +67,9 @@ export const resumeProductionTimer = () => {
   }
   if (isProductionActive && !productionInterval) {
     productionInterval = setInterval(() => {
-      const { productionStartTime, setProductionSeconds } =
+      const { productionSeconds, setProductionSeconds } =
         useUserStore.getState();
-      const elapsed = Math.floor((Date.now() - productionStartTime) / 1000);
-      setProductionSeconds(elapsed);
+      setProductionSeconds(productionSeconds + 1);
     }, 1000);
   }
   if (isProductionActive && !inactivityInterval) {
@@ -122,10 +123,7 @@ export const resumeTimer = () => {
     secondsLeft,
     intervalId,
     setIsTimerRunning,
-    productionSeconds,
-    setProductionStartTime,
     isProductionActive,
-    setIsProductionActive,
   } = useUserStore.getState();
 
   if (secondsLeft <= 0 || intervalId) return;
@@ -133,16 +131,9 @@ export const resumeTimer = () => {
   stopWasteTimer();
 
   if (!isProductionActive) {
-    setIsProductionActive(true);
-    setProductionStartTime(Date.now() - productionSeconds * 1000);
-    if (!productionInterval) {
-      productionInterval = setInterval(() => {
-        const { productionStartTime, setProductionSeconds } =
-          useUserStore.getState();
-        const elapsed = Math.floor((Date.now() - productionStartTime) / 1000);
-        setProductionSeconds(elapsed);
-      }, 1000);
-    }
+    startProductionTimer();
+  } else {
+    resumeProductionTimer();
   }
 
   setIsTimerRunning(true);
@@ -183,18 +174,19 @@ export const startWasteTimer = () => {
     setIsWasteActive,
     setWasteStartTime,
     setWasteSeconds,
-  } = useUserStore.getState();
+    checkProductionReset,
+    } = useUserStore.getState();
 
   if (isWasteActive) return;
 
+  checkProductionReset();
+
   setIsWasteActive(true);
   setWasteStartTime(Date.now());
-  setWasteSeconds(0);
 
   wasteInterval = setInterval(() => {
-    const { wasteStartTime } = useUserStore.getState();
-    const elapsed = Math.floor((Date.now() - wasteStartTime) / 1000);
-    setWasteSeconds(elapsed);
+    const { wasteSeconds: current, setWasteSeconds } = useUserStore.getState();
+    setWasteSeconds(current + 1);
   }, 1000);
 };
 
@@ -202,9 +194,8 @@ export const resumeWasteTimer = () => {
   const { isWasteActive } = useUserStore.getState();
   if (isWasteActive && !wasteInterval) {
     wasteInterval = setInterval(() => {
-      const { wasteStartTime, setWasteSeconds } = useUserStore.getState();
-      const elapsed = Math.floor((Date.now() - wasteStartTime) / 1000);
-      setWasteSeconds(elapsed);
+      const { wasteSeconds, setWasteSeconds } = useUserStore.getState();
+      setWasteSeconds(wasteSeconds + 1);
     }, 1000);
   }
 };

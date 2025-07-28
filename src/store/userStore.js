@@ -17,9 +17,27 @@ export const useUserStore = create(
       wasteStartTime: null,
       wasteSeconds: 0,
 
+      productionHistory: [],
+      lastProductionReset: new Date().toDateString(),
+
       setIsWasteActive: (val) => set({ isWasteActive: val }),
       setWasteStartTime: (time) => set({ wasteStartTime: time }),
       setWasteSeconds: (sec) => set({ wasteSeconds: sec }),
+
+      checkProductionReset: () =>
+        set((state) => {
+          const today = new Date().toDateString();
+          if (state.lastProductionReset === today) return {};
+          return {
+            productionHistory: [
+              ...state.productionHistory,
+              { date: state.lastProductionReset, seconds: state.productionSeconds },
+            ],
+            productionSeconds: 0,
+            wasteSeconds: 0,
+            lastProductionReset: today,
+          };
+        }),
 
       // Reset timers
       resetProduction: () =>
@@ -61,6 +79,13 @@ export const useUserStore = create(
           updated.unshift(item);
           return { tasks: updated };
         }),
+
+      toggleTaskCompletion: (id) =>
+        set((state) => ({
+          tasks: state.tasks.map((t) =>
+            t.id === id ? { ...t, isCompleted: !t.isCompleted } : t
+          ),
+        })),
 
       // Profile
       name: '',
