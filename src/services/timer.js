@@ -3,6 +3,29 @@ import { useUserStore } from '../store/userStore';
 
 let productionInterval = null;
 let wasteInterval = null;
+let inactivityInterval = null;
+let inactiveSeconds = 0;
+
+const startInactivityCheck = () => {
+  if (inactivityInterval) return;
+  inactivityInterval = setInterval(() => {
+    const { isTimerRunning } = useUserStore.getState();
+    if (isTimerRunning) {
+      inactiveSeconds = 0;
+    } else {
+      inactiveSeconds += 1;
+      if (inactiveSeconds >= 600) {
+        stopProductionTimer();
+      }
+    }
+  }, 1000);
+};
+
+const stopInactivityCheck = () => {
+  clearInterval(inactivityInterval);
+  inactivityInterval = null;
+  inactiveSeconds = 0;
+};
 
 export const startProductionTimer = () => {
   const {
@@ -22,6 +45,9 @@ export const startProductionTimer = () => {
   setIsProductionActive(true);
   setProductionStartTime(Date.now());
   setProductionSeconds(0);
+
+  inactiveSeconds = 0;
+  startInactivityCheck();
 
   productionInterval = setInterval(() => {
     const { productionStartTime } = useUserStore.getState();
@@ -45,6 +71,9 @@ export const resumeProductionTimer = () => {
       setProductionSeconds(elapsed);
     }, 1000);
   }
+  if (isProductionActive && !inactivityInterval) {
+    startInactivityCheck();
+  }
 };
 
 export const stopProductionTimer = () => {
@@ -53,6 +82,7 @@ export const stopProductionTimer = () => {
 
   clearInterval(productionInterval);
   productionInterval = null;
+  stopInactivityCheck();
   setIsProductionActive(false);
   startWasteTimer();
 };
@@ -70,6 +100,7 @@ export const startTimer = () => {
 
   const id = setInterval(() => {
   const { secondsLeft, activeTaskId, completeTask } = useUserStore.getState();
+    inactiveSeconds = 0;
 
     if (secondsLeft <= 1) {
       clearInterval(id);
@@ -119,6 +150,7 @@ export const resumeTimer = () => {
   const id = setInterval(() => {
     const { secondsLeft: current, activeTaskId, completeTask } =
       useUserStore.getState();
+    inactiveSeconds = 0;
 
     if (current <= 1) {
       clearInterval(id);

@@ -67,5 +67,14 @@ describe('timers interaction', () => {
     expect(state.productionSeconds).toBe(0);
     expect(state.wasteSeconds).toBe(0);
   });
+
+  test('production auto stops after 10 min inactive', () => {
+    const state = useUserStore.getState();
+    state.setActiveTaskId('1');
+    state.setIsTimerRunning(false);
+    startProductionTimer();
+    jest.advanceTimersByTime(600000);
+    expect(useUserStore.getState().isProductionActive).toBe(false);
+  });
 });
 
