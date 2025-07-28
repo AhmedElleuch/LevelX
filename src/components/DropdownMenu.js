@@ -17,18 +17,24 @@ const DropdownMenu = () => {
   const [showConfig, setShowConfig] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const toggleTheme = useUserStore((s) => s.toggleTheme);
-  const { name, setName, level, difficulty, setDifficulty } = useUserStore();
+  const name = useUserStore((s) => s.name);
+  const setName = useUserStore((s) => s.setName);
+  const level = useUserStore((s) => s.level);
+  const difficulty = useUserStore((s) => s.difficulty);
+  const setDifficulty = useUserStore((s) => s.setDifficulty);
 
   const close = () => setVisible(false);
 
   const exportData = async () => {
     const data = await AsyncStorage.getItem('levelx-store');
+    console.log('Export data requested');
     Alert.alert('Export', data || 'No data');
     close();
   };
 
   const logout = async () => {
     await AsyncStorage.removeItem('levelx-store');
+    console.log('User logged out');
     Alert.alert('Logged out');
     close();
   };

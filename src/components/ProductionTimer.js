@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Text, StyleSheet, View } from 'react-native';
 import { useUserStore } from '../store/userStore';
 
 const ProductionTimer = () => {
-  const { isProductionActive, productionSeconds } = useUserStore();
+  const isProductionActive = useUserStore((s) => s.isProductionActive);
+  const productionSeconds = useUserStore((s) => s.productionSeconds);
+
+  useEffect(() => {
+    if (isProductionActive) {
+      console.log('Production seconds', { productionSeconds });
+    }
+  }, [productionSeconds, isProductionActive]);
 
   if (!isProductionActive) return null;
 

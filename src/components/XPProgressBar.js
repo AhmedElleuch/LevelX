@@ -5,7 +5,8 @@ import { useUserStore } from '../store/userStore';
 const BAR_WIDTH = 200;
 
 const XPProgressBar = () => {
-  const { xp, level } = useUserStore();
+  const xp = useUserStore((s) => s.xp);
+  const level = useUserStore((s) => s.level);
   const anim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -15,6 +16,7 @@ const XPProgressBar = () => {
       duration: 500,
       useNativeDriver: false,
     }).start();
+    console.log('XP updated', { xp, level });
   }, [xp]);
 
   return (

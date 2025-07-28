@@ -29,19 +29,17 @@ import XPProgressBar from '../components/XPProgressBar';
 const HomeScreen = () => {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
-  const {
-    taskTitle,
-    setTaskTitle,
-    priority,
-    setPriority,
-    tasks,
-    setTasks,
-    dailyXp,
-    streak,
-    addXp,
-    acceptedMissions,
-    acceptMission,
-  } = useUserStore();
+  const taskTitle = useUserStore((s) => s.taskTitle);
+  const setTaskTitle = useUserStore((s) => s.setTaskTitle);
+  const priority = useUserStore((s) => s.priority);
+  const setPriority = useUserStore((s) => s.setPriority);
+  const tasks = useUserStore((s) => s.tasks);
+  const setTasks = useUserStore((s) => s.setTasks);
+  const dailyXp = useUserStore((s) => s.dailyXp);
+  const streak = useUserStore((s) => s.streak);
+  const addXp = useUserStore((s) => s.addXp);
+  const acceptedMissions = useUserStore((s) => s.acceptedMissions);
+  const acceptMission = useUserStore((s) => s.acceptMission);
 
   const priorities = PRIORITIES;
   
@@ -56,6 +54,7 @@ const HomeScreen = () => {
   };
 
   useEffect(() => {
+    console.log('HomeScreen mounted', { tasksCount: tasks.length });
     resumeProductionTimer();
     resumeWasteTimer();
     resumeTimer();
@@ -74,6 +73,8 @@ const HomeScreen = () => {
       isStarted: false,
       isCompleted: false,
     };
+
+    console.log('Add task', newTask);
 
     setTasks([...tasks, newTask]);
     setTaskTitle('');

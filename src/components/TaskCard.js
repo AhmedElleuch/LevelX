@@ -9,8 +9,11 @@ import PriorityBadge from './PriorityBadge';
 
 const TaskCard = ({ task, onLongPress, drag, isActive }) => {
   const { colors } = useTheme();
-  const { tasks, setTasks, setActiveTaskId, removeTask, completeTask } =
-    useUserStore();
+  const tasks = useUserStore((s) => s.tasks);
+  const setTasks = useUserStore((s) => s.setTasks);
+  const setActiveTaskId = useUserStore((s) => s.setActiveTaskId);
+  const removeTask = useUserStore((s) => s.removeTask);
+  const completeTask = useUserStore((s) => s.completeTask);
 
   const startTask = (id) => {
     const updated = tasks.map((t) =>
@@ -20,16 +23,29 @@ const TaskCard = ({ task, onLongPress, drag, isActive }) => {
     setActiveTaskId(id);
     startProductionTimer();
     startTimer();
+    console.log('Task started', { id });
   };
 
-    const right = () => (
-    <TouchableOpacity style={styles.swipeButton} onPress={() => removeTask(task.id)}>
+  const right = () => (
+    <TouchableOpacity
+      style={styles.swipeButton}
+      onPress={() => {
+        console.log('Task removed', { id: task.id });
+        removeTask(task.id);
+      }}
+    >
       <Text style={styles.deleteText}>Delete</Text>
     </TouchableOpacity>
   );
 
   const left = () => (
-    <TouchableOpacity style={styles.swipeButton} onPress={() => completeTask(task.id)}>
+    <TouchableOpacity
+      style={styles.swipeButton}
+      onPress={() => {
+        console.log('Task completed', { id: task.id });
+        completeTask(task.id);
+      }}
+    >
       <Text style={styles.completeText}>Done</Text>
     </TouchableOpacity>
   );

@@ -12,7 +12,8 @@ import { useUserStore } from '../store/userStore';
 
 const ConfigMenu = ({ onClose }) => {
   const { colors } = useTheme();
-  const { focusMinutes, setFocusMinutes } = useUserStore();
+  const focusMinutes = useUserStore((s) => s.focusMinutes);
+  const setFocusMinutes = useUserStore((s) => s.setFocusMinutes);
   const [minutes, setMinutes] = useState(String(focusMinutes));
   const opacity = useRef(new Animated.Value(0)).current;
 
@@ -22,6 +23,7 @@ const ConfigMenu = ({ onClose }) => {
       duration: 300,
       useNativeDriver: true,
     }).start();
+    console.log('ConfigMenu mounted');
   }, []);
 
   const save = () => {
@@ -29,6 +31,7 @@ const ConfigMenu = ({ onClose }) => {
     if (!isNaN(val) && val > 0) {
       setFocusMinutes(val);
     }
+    console.log('Save focus minutes', { minutes: val });
     if (onClose) onClose();
   };
 

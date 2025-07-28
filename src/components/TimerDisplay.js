@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Text, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { useUserStore } from '../store/userStore';
 import { stopTimer, resumeTimer } from '../services/timer';
 
 const TimerDisplay = () => {
-  const { isTimerRunning, secondsLeft } = useUserStore();
+  const isTimerRunning = useUserStore((s) => s.isTimerRunning);
+  const secondsLeft = useUserStore((s) => s.secondsLeft);
+
+  useEffect(() => {
+    console.log('TimerDisplay mounted');
+  }, []);
 
   if (secondsLeft <= 0) return null;
 
