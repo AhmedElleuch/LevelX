@@ -50,3 +50,31 @@ test('header renders when task list is empty', () => {
     tree.unmount();
   });
 });
+
+test('typing does not remount TimerDisplay', () => {
+  const log = jest.spyOn(console, 'log').mockImplementation(() => {});
+  renderer.act(() => {
+    useUserStore.setState({ tasks: [], secondsLeft: 10 });
+  });
+  let tree;
+  renderer.act(() => {
+    tree = renderer.create(
+      <SafeAreaProvider>
+        <HomeScreen />
+      </SafeAreaProvider>
+    );
+  });
+  const input = tree.root.findByProps({ placeholder: 'Enter task...' });
+  renderer.act(() => {
+    input.props.onChangeText('a');
+  });
+  renderer.act(() => {
+    input.props.onChangeText('ab');
+  });
+  const calls = log.mock.calls.filter((c) => c[0] === 'TimerDisplay mounted');
+  expect(calls.length).toBe(1);
+  log.mockRestore();
+  renderer.act(() => {
+    tree.unmount();
+  });
+});

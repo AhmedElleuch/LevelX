@@ -10,7 +10,7 @@ import {
   ToastAndroid,
   TouchableOpacity,
 } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import { useTheme } from '@react-navigation/native';
 import { useUserStore } from '../store/userStore';
@@ -26,9 +26,8 @@ import { PRIORITIES } from '../constants/priorities';
 import { MISSIONS } from '../constants/missions';
 import XPProgressBar from '../components/XPProgressBar';
 
-const HomeScreen = () => {
+const HomeHeader = () => {
   const { colors } = useTheme();
-  const insets = useSafeAreaInsets();
   const taskTitle = useUserStore((s) => s.taskTitle);
   const setTaskTitle = useUserStore((s) => s.setTaskTitle);
   const priority = useUserStore((s) => s.priority);
@@ -42,7 +41,7 @@ const HomeScreen = () => {
   const acceptMission = useUserStore((s) => s.acceptMission);
 
   const priorities = PRIORITIES;
-  
+
   const handleAcceptMission = (mission) => {
     addXp(mission.xp);
     acceptMission(mission.id);
@@ -52,13 +51,6 @@ const HomeScreen = () => {
       Alert.alert('Task Accepted!');
     }
   };
-
-  useEffect(() => {
-    console.log('HomeScreen mounted', { tasksCount: tasks.length });
-    resumeProductionTimer();
-    resumeWasteTimer();
-    resumeTimer();
-  }, []);
 
   const addTask = () => {
     if (taskTitle.trim() === '') {
@@ -81,7 +73,7 @@ const HomeScreen = () => {
     setPriority('Medium');
   };
 
-  const renderHeader = () => (
+  return (
     <View>
       <Text style={[styles.title, { color: colors.text }]}>Welcome back!</Text>
       <XPProgressBar />
@@ -163,6 +155,19 @@ const HomeScreen = () => {
       ))}
     </View>
   );
+};
+
+const HomeScreen = () => {
+  const { colors } = useTheme();
+  const tasks = useUserStore((s) => s.tasks);
+  const setTasks = useUserStore((s) => s.setTasks);
+
+  useEffect(() => {
+    console.log('HomeScreen mounted', { tasksCount: tasks.length });
+    resumeProductionTimer();
+    resumeWasteTimer();
+    resumeTimer();
+  }, []);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
@@ -173,8 +178,8 @@ const HomeScreen = () => {
           <TaskCard task={item} drag={drag} isActive={isActive} />
         )}
         onDragEnd={({ data }) => setTasks(data)}
-        ListHeaderComponent={renderHeader}
-        ListEmptyComponent={renderHeader}
+        ListHeaderComponent={HomeHeader}
+        ListEmptyComponent={HomeHeader}
         contentContainerStyle={styles.taskList}
       />
     </SafeAreaView>
