@@ -8,9 +8,6 @@ const ProductionTimer = () => {
   const productionSeconds = useUserStore((s) => s.productionSeconds);
 
   useEffect(() => {
-    if (isProductionActive) {
-      console.log('Production seconds', { productionSeconds });
-    }
   }, [productionSeconds, isProductionActive]);
 
   if (!isProductionActive) {

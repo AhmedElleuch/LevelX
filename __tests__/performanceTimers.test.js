@@ -4,6 +4,7 @@ import {
   startWasteTimer,
   resumeProductionTimer,
   resetProduction,
+  startBreakTimer,
 } from '../src/services/timer';
 
 import { useUserStore } from '../src/store/userStore';
@@ -76,6 +77,18 @@ describe('timers interaction', () => {
     startProductionTimer();
     jest.advanceTimersByTime(900000);
     expect(useUserStore.getState().isProductionActive).toBe(false);
+  });
+
+  test('startBreakTimer countdown ends then waste starts', () => {
+    const state = useUserStore.getState();
+    state.setBreakMinutes(1);
+    startBreakTimer();
+    expect(useUserStore.getState().isOnBreak).toBe(true);
+    jest.advanceTimersByTime(30000);
+    expect(useUserStore.getState().breakSeconds).toBe(30);
+    jest.advanceTimersByTime(31000);
+    expect(useUserStore.getState().isOnBreak).toBe(false);
+    expect(useUserStore.getState().isWasteActive).toBe(true);
   });
 });
 

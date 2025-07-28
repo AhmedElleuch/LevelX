@@ -16,6 +16,7 @@ import { useTheme } from '@react-navigation/native';
 import { useUserStore } from '../store/userStore';
 import TaskCard from '../components/TaskCard';
 import TimerDisplay from '../components/TimerDisplay';
+import BreakTimer from '../components/BreakTimer';
 import {
   resumeProductionTimer,
   resumeWasteTimer,
@@ -80,6 +81,7 @@ const HomeHeader = () => {
       <Text style={[styles.sub, { color: colors.text }]}>Daily XP {dailyXp} • Streak {streak}</Text>
       <ProductionTimer />
       <TimerDisplay />
+      <BreakTimer />
 
       {acceptedMissions.length > 0 && (
         <View>

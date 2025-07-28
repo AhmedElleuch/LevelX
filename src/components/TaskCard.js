@@ -33,6 +33,15 @@ const TaskCard = ({ task, onLongPress, drag, isActive }) => {
     console.log('Task started', { id });
   };
 
+  const resumeTask = (id) => {
+    setActiveTaskId(id);
+    if (!isTimerRunning) {
+      startProductionTimer();
+      startTimer();
+    }
+    console.log('Task resumed', { id });
+  };
+
   const right = () => (
     <TouchableOpacity
       style={styles.swipeButton}
@@ -79,13 +88,17 @@ const TaskCard = ({ task, onLongPress, drag, isActive }) => {
 
         {task.isCompleted ? (
           <Text style={styles.completed}>✅ Done</Text>
-        ) : !task.isStarted && (!isTimerRunning || !activeTaskId) ? (
+        ) : !task.isStarted ? (
           <TouchableOpacity style={styles.button} onPress={() => startTask(task.id)}>
             <Text style={styles.buttonText}>▶ Start</Text>
           </TouchableOpacity>
-        ) : task.isStarted ? (
+        ) : !activeTaskId && !isTimerRunning ? (
+          <TouchableOpacity style={styles.button} onPress={() => resumeTask(task.id)}>
+            <Text style={styles.buttonText}>▶ Resume</Text>
+          </TouchableOpacity>
+        ) : (
           <Text style={styles.locked}>🔒 Started</Text>
-        ) : null}
+        )}
       </TouchableOpacity>
     </Swipeable>
   );
