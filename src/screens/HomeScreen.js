@@ -6,7 +6,6 @@ import {
   Pressable,
   StyleSheet,
   Alert,
-  KeyboardAvoidingView,
   Platform,
   ToastAndroid,
   TouchableOpacity,
@@ -166,24 +165,17 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={80}
-      >
-        <DraggableFlatList
-          data={tasks}
-          keyboardShouldPersistTaps='handled'
-          keyExtractor={(item) => item.id}
-          renderItem={({ item, drag, isActive }) => (
-            <TaskCard task={item} drag={drag} isActive={isActive} />
-          )}
-          onDragEnd={({ data }) => setTasks(data)}
-          ListHeaderComponent={renderHeader}
-          ListEmptyComponent={renderHeader}
-          contentContainerStyle={styles.taskList}
-        />
-      </KeyboardAvoidingView>
+      <DraggableFlatList
+        data={tasks}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item, drag, isActive }) => (
+          <TaskCard task={item} drag={drag} isActive={isActive} />
+        )}
+        onDragEnd={({ data }) => setTasks(data)}
+        ListHeaderComponent={renderHeader}
+        ListEmptyComponent={renderHeader}
+        contentContainerStyle={styles.taskList}
+      />
     </SafeAreaView>
   );
 };

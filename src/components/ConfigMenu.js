@@ -37,7 +37,6 @@ const ConfigMenu = ({ onClose }) => {
       <Text style={styles.label}>Focus minutes</Text>
       <TextInput
         style={styles.input}
-        keyboardType='numeric'
         value={minutes}
         onChangeText={setMinutes}
         placeholder='Focus minutes'
