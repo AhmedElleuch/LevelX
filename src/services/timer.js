@@ -130,6 +130,7 @@ export const startTimer = () => {
     setIntervalId,
     focusMinutes,
     setFocusStartTime,
+    setIsFocusModalVisible,
     xpPerFocus,
     addXp,
     breakMinutes,
@@ -139,6 +140,7 @@ export const startTimer = () => {
 
   setSecondsLeft(focusMinutes * 60);
   setIsTimerRunning(true);
+  setIsFocusModalVisible(true);
   setFocusStartTime(Date.now());
 
   const id = setInterval(() => {
@@ -152,6 +154,7 @@ export const startTimer = () => {
       completeTask(activeTaskId);
       addXp(xpPerFocus);
       setFocusStartTime(null);
+      setIsFocusModalVisible(false);
       stopWasteTimer();
       startBreakTimer();
       Alert.alert('Focus session complete! ✅');
@@ -170,6 +173,7 @@ export const resumeTimer = () => {
     setIsTimerRunning,
     isProductionActive,
     setFocusStartTime,
+    setIsFocusModalVisible,
     xpPerFocus,
     addXp,
   } = useUserStore.getState();
@@ -187,6 +191,7 @@ export const resumeTimer = () => {
   }
 
   setIsTimerRunning(true);
+  setIsFocusModalVisible(true);
   setFocusStartTime(Date.now());
 
   const id = setInterval(() => {
@@ -199,6 +204,7 @@ export const resumeTimer = () => {
       useUserStore.getState().setIsTimerRunning(false);
       useUserStore.getState().setSecondsLeft(0);
       completeTask(activeTaskId);
+      useUserStore.getState().setIsFocusModalVisible(false);
       addXp(xpPerFocus);
       useUserStore.getState().setFocusStartTime(null);
       stopProductionTimer();
@@ -225,6 +231,7 @@ export const stopTimer = () => {
     focusStartTime,
     setFocusStartTime,
     setActiveTaskId,
+    setIsFocusModalVisible,
   } = useUserStore.getState();
   if (intervalId) {
     clearInterval(intervalId);
@@ -242,6 +249,7 @@ export const stopTimer = () => {
   }
   setSecondsLeft(0);
   setIsTimerRunning(false);
+  setIsFocusModalVisible(false);
   stopProductionTimer();
   setActiveTaskId(null);
   stopBreakTimer();

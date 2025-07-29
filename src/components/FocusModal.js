@@ -9,16 +9,29 @@ import {
 } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { useUserStore } from '../store/userStore';
+import { shallow } from 'zustand/shallow';
 import { stopTimer } from '../services/timer';
 
 const FocusModal = () => {
-  const isTimerRunning = useUserStore((s) => s.isTimerRunning);
-  const secondsLeft = useUserStore((s) => s.secondsLeft);
-  const tasks = useUserStore((s) => s.tasks);
-  const toggleTaskCompletion = useUserStore((s) => s.toggleTaskCompletion);
+  const {
+    isTimerRunning,
+    secondsLeft,
+    tasks,
+    toggleTaskCompletion,
+    isFocusModalVisible,
+  } = useUserStore(
+    (s) => ({
+      isTimerRunning: s.isTimerRunning,
+      secondsLeft: s.secondsLeft,
+      tasks: s.tasks,
+      toggleTaskCompletion: s.toggleTaskCompletion,
+      isFocusModalVisible: s.isFocusModalVisible,
+    }),
+    shallow
+  );
   const { colors } = useTheme();
 
-  if (!isTimerRunning) return null;
+  if (!isFocusModalVisible) return null;
 
   const minutes = String(Math.floor(secondsLeft / 60)).padStart(2, '0');
   const seconds = String(secondsLeft % 60).padStart(2, '0');
