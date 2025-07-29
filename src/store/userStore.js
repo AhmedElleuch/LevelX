@@ -133,9 +133,6 @@ export const useUserStore = create(
       isFocusModalVisible: false,
       setIsFocusModalVisible: (v) => set({ isFocusModalVisible: v }),
 
-      isFocusModalVisible: false,
-      setIsFocusModalVisible: (v) => set({ isFocusModalVisible: v }),
-
       secondsLeft: 0,
       setSecondsLeft: (v) => set({ secondsLeft: v }),
 
