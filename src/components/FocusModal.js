@@ -1,3 +1,4 @@
+// src/components/FocusModal.js
 import React from 'react';
 import {
   Modal,
@@ -13,23 +14,12 @@ import { shallow } from 'zustand/shallow';
 import { stopTimer } from '../services/timer';
 
 const FocusModal = () => {
-  const {
-    isTimerRunning,
-    secondsLeft,
-    tasks,
-    toggleTaskCompletion,
-    isFocusModalVisible,
-  } = useUserStore(
-    (s) => ({
-      isTimerRunning: s.isTimerRunning,
-      secondsLeft: s.secondsLeft,
-      tasks: s.tasks,
-      toggleTaskCompletion: s.toggleTaskCompletion,
-      isFocusModalVisible: s.isFocusModalVisible,
-    }),
-    shallow
-  );
-  const { colors } = useTheme();
+const isTimerRunning = useUserStore((s) => s.isTimerRunning);
+const secondsLeft = useUserStore((s) => s.secondsLeft);
+const tasks = useUserStore((s) => s.tasks);
+const toggleTaskCompletion = useUserStore((s) => s.toggleTaskCompletion);
+const isFocusModalVisible = useUserStore((s) => s.isFocusModalVisible);
+const { colors } = useTheme();
 
   if (!isFocusModalVisible) return null;
 
@@ -41,7 +31,9 @@ const FocusModal = () => {
     <Modal transparent visible={isTimerRunning} animationType='slide'>
       <View style={styles.overlay}>
         <View style={[styles.container, { backgroundColor: colors.background }]}>
-          <Text style={[styles.timer, { color: colors.text }]}>{minutes}:{seconds}</Text>
+          <Text style={[styles.timer, { color: colors.text }]}>
+            {minutes}:{seconds}
+          </Text>
           <FlatList
             data={activeTasks}
             keyExtractor={(item) => item.id}
@@ -51,7 +43,8 @@ const FocusModal = () => {
                 onPress={() => toggleTaskCompletion(item.id)}
               >
                 <Text style={{ color: colors.text }}>
-                  {item.isCompleted ? '✅ ' : ''}{item.title}
+                  {item.isCompleted ? '✅ ' : ''}
+                  {item.title}
                 </Text>
               </TouchableOpacity>
             )}
