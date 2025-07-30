@@ -23,7 +23,7 @@ import ProductionTimer from '../components/ProductionTimer';
 import { PRIORITIES } from '../constants/priorities';
 import { MISSIONS } from '../constants/missions';
 import XPProgressBar from '../components/XPProgressBar';
-import FocusModal from '../components/FocusModal';
+import FocusMode from '../components/FocusMode';
 
 const HomeHeader = () => {
   const { colors } = useTheme();
@@ -182,7 +182,7 @@ const HomeScreen = () => {
         ListEmptyComponent={HomeHeader}
         contentContainerStyle={styles.taskList}
       />
-      {/* <FocusModal /> */}
+      {/* <FocusMode /> */}
     </SafeAreaView>
   );
 };

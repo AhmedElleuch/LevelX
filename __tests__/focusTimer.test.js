@@ -35,35 +35,36 @@ test('timer cannot resume after stop', () => {
 });
 
 
-test('startTimer sets running and shows modal', () => {
+test('startTimer sets running and shows focus mode', () => {
   const state = useUserStore.getState();
   state.setFocusMinutes(1);
   state.setActiveTaskId('1');
   startTimer();
   expect(useUserStore.getState().isTimerRunning).toBe(true);
-  expect(useUserStore.getState().isFocusModalVisible).toBe(true);
+  expect(useUserStore.getState().isFocusModeVisible).toBe(true);
   stopTimer();
 });
 
-test('stopTimer clears running and hides modal', () => {
+test('stopTimer clears running and hides focus mode', () => {
   const state = useUserStore.getState();
   state.setFocusMinutes(1);
   state.setActiveTaskId('1');
   startTimer();
   stopTimer();
   expect(useUserStore.getState().isTimerRunning).toBe(false);
-  expect(useUserStore.getState().isFocusModalVisible).toBe(false);
+  expect(useUserStore.getState().isFocusModeVisible).toBe(false);
 });
 
-test('resumeTimer sets running and shows modal again', () => {
+test('resumeTimer sets running and shows focus mode again', () => {
   const state = useUserStore.getState();
   state.setFocusMinutes(1);
   state.setActiveTaskId('1');
   startTimer();
   jest.advanceTimersByTime(1000);
   stopTimer();
+  useUserStore.getState().setSecondsLeft(50);
   resumeTimer();
   expect(useUserStore.getState().isTimerRunning).toBe(true);
-  expect(useUserStore.getState().isFocusModalVisible).toBe(true);
+  expect(useUserStore.getState().isFocusModeVisible).toBe(true);
   stopTimer();
 });

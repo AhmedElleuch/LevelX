@@ -130,8 +130,8 @@ export const useUserStore = create(
       isTimerRunning: false,
       setIsTimerRunning: (v) => set({ isTimerRunning: v }),
       
-      isFocusModalVisible: false,
-      setIsFocusModalVisible: (v) => set({ isFocusModalVisible: v }),
+      isFocusModeVisible: false,
+      setIsFocusModeVisible: (v) => set({ isFocusModeVisible: v }),
 
       secondsLeft: 0,
       setSecondsLeft: (v) => set({ secondsLeft: v }),

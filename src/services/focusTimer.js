@@ -17,7 +17,7 @@ export const startTimer = () => {
     setIntervalId,
     focusMinutes,
     setFocusStartTime,
-    setIsFocusModalVisible,
+    setIsFocusModeVisible,
     xpPerFocus,
     addXp,
   } = useUserStore.getState();
@@ -26,7 +26,7 @@ export const startTimer = () => {
 
   setSecondsLeft(focusMinutes * 60);
   setIsTimerRunning(true);
-  setIsFocusModalVisible(true);
+  setIsFocusModeVisible(true);
   setFocusStartTime(Date.now());
 
   const id = setInterval(() => {
@@ -40,7 +40,7 @@ export const startTimer = () => {
       completeTask(activeTaskId);
       addXp(xpPerFocus);
       setFocusStartTime(null);
-      setIsFocusModalVisible(false);
+      setIsFocusModeVisible(false);
       stopWasteTimer();
       startBreakTimer();
       Alert.alert('Focus session complete! ✅');
@@ -59,7 +59,7 @@ export const resumeTimer = () => {
     setIsTimerRunning,
     isProductionActive,
     setFocusStartTime,
-    setIsFocusModalVisible,
+    setIsFocusModeVisible,
     xpPerFocus,
     addXp,
   } = useUserStore.getState();
@@ -77,7 +77,7 @@ export const resumeTimer = () => {
   }
 
   setIsTimerRunning(true);
-  setIsFocusModalVisible(true);
+  setIsFocusModeVisible(true);
   setFocusStartTime(Date.now());
 
   const id = setInterval(() => {
@@ -90,7 +90,7 @@ export const resumeTimer = () => {
       useUserStore.getState().setIsTimerRunning(false);
       useUserStore.getState().setSecondsLeft(0);
       completeTask(activeTaskId);
-      useUserStore.getState().setIsFocusModalVisible(false);
+      useUserStore.getState().setIsFocusModeVisible(false);
       addXp(xpPerFocus);
       useUserStore.getState().setFocusStartTime(null);
       stopProductionTimer();
@@ -117,7 +117,7 @@ export const stopTimer = () => {
     focusStartTime,
     setFocusStartTime,
     setActiveTaskId,
-    setIsFocusModalVisible,
+    setIsFocusModeVisible,
   } = useUserStore.getState();
   if (intervalId) {
     clearInterval(intervalId);
@@ -135,7 +135,7 @@ export const stopTimer = () => {
   }
   setSecondsLeft(0);
   setIsTimerRunning(false);
-  setIsFocusModalVisible(false);
+  setIsFocusModeVisible(false);
   stopProductionTimer();
   setActiveTaskId(null);
   stopBreakTimer();

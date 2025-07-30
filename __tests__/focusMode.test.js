@@ -2,7 +2,7 @@ import React from 'react';
 import renderer, { act } from 'react-test-renderer';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { TouchableOpacity } from 'react-native';
-import FocusModal from '../src/components/FocusModal';
+import FocusMode from '../src/components/FocusMode';
 import { useUserStore } from '../src/store/userStore';
 import { stopTimer } from '../src/services/focusTimer';
 
@@ -29,7 +29,7 @@ afterEach(() => {
     tasks: [],
     isTimerRunning: false,
     secondsLeft: 0,
-    isFocusModalVisible: false,
+    isFocusModeVisible: false,
     toggleTaskCompletion: () => {},
   });
 });
@@ -40,7 +40,7 @@ test('renders tasks when timer running', () => {
       tasks: [{ id: '1', title: 'Test', isCompleted: false }],
       isTimerRunning: true,
       secondsLeft: 60,
-      isFocusModalVisible: true,        // << KEY LINE!
+      isFocusModeVisible: true,
       toggleTaskCompletion: () => {},   // << Avoids undefined error if used
     });
   });
@@ -49,7 +49,7 @@ test('renders tasks when timer running', () => {
   act(() => {
     tree = renderer.create(
       <SafeAreaProvider>
-        <FocusModal />
+        <FocusMode />
       </SafeAreaProvider>
     );
   });
@@ -67,7 +67,7 @@ test('stop button triggers stopTimer', () => {
       tasks: [],
       isTimerRunning: true,
       secondsLeft: 60,
-      isFocusModalVisible: true,        // << KEY LINE!
+      isFocusModeVisible: true,
       toggleTaskCompletion: () => {},
     });
   });
@@ -76,7 +76,7 @@ test('stop button triggers stopTimer', () => {
   act(() => {
     tree = renderer.create(
       <SafeAreaProvider>
-        <FocusModal />
+        <FocusMode />
       </SafeAreaProvider>
     );
   });
