@@ -8,7 +8,7 @@ import DropdownMenu from './src/components/DropdownMenu';
 import { useUserStore } from './src/store/userStore';
 import { getThemeColors } from './src/utils/themeColors';
 import { AppState } from 'react-native';
-import { stopProductionTimer } from './src/services/timer';
+import { stopProductionTimer } from './src/services/productionTimer';
 
 const Tab = createBottomTabNavigator();
 

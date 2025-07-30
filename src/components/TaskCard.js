@@ -3,7 +3,8 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { Swipeable } from 'react-native-gesture-handler';
 import { useUserStore } from '../store/userStore';
-import { startTimer, startProductionTimer } from '../services/timer';
+import { startTimer } from '../services/focusTimer';
+import { startProductionTimer } from '../services/productionTimer';
 import { sortTasks } from '../utils/sortTasks';
 import PriorityBadge from './PriorityBadge';
 

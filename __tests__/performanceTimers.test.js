@@ -5,7 +5,7 @@ import {
   resumeProductionTimer,
   resetProduction,
   startBreakTimer,
-} from '../src/services/timer';
+} from '../src/services/productionTimer';
 
 import { useUserStore } from '../src/store/userStore';
 

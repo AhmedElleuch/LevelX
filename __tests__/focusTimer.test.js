@@ -1,4 +1,4 @@
-import { startTimer, stopTimer, resumeTimer } from '../src/services/timer';
+import { startTimer, stopTimer, resumeTimer } from '../src/services/focusTimer';
 import { useUserStore } from '../src/store/userStore';
 
 jest.useFakeTimers();

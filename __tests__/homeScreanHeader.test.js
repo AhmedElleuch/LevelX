@@ -7,9 +7,11 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 jest.mock('react-native-draggable-flatlist');
 jest.mock('react-native-gesture-handler');
-jest.mock('../src/services/timer', () => ({
+jest.mock('../src/services/productionTimer', () => ({
   resumeProductionTimer: jest.fn(),
   resumeWasteTimer: jest.fn(),
+}));
+jest.mock('../src/services/focusTimer', () => ({
   resumeTimer: jest.fn(),
 }));
 

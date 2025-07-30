@@ -5,7 +5,7 @@ import { useTheme } from '@react-navigation/native';
 import { useUserStore } from '../store/userStore';
 import CompletedMissions from '../components/CompletedMissions';
 import XPProgressBar from '../components/XPProgressBar';
-import { resetProduction } from '../services/timer';
+import { resetProduction } from '../services/productionTimer';
 
 const format = (sec) => {
   const h = String(Math.floor(sec / 3600)).padStart(2, '0');

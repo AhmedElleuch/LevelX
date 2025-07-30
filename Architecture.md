@@ -30,7 +30,7 @@ State is persisted with the `persist` middleware using `createJSONStorage` so ta
 
 ## Timers
 
-Timer logic lives in **`src/services/timer.js`**.
+Timer logic is split between **`src/services/focusTimer.js`** and **`src/services/productionTimer.js`**.
 
 - `startProductionTimer` and `stopProductionTimer` manage a long running production timer. They update the store every second with the elapsed time.
 - `startTimer` starts a focus session for a task. It sets `secondsLeft` and counts down until zero, then shows an alert.
@@ -52,7 +52,7 @@ Timer logic lives in **`src/services/timer.js`**.
 
 1. **User interaction** – Pressing buttons or entering text on `HomeScreen` or the dropdown menu.
 2. **Store update** – Components call setters from `useUserStore` or timer functions (`startProductionTimer`, `startTimer`, `stopProductionTimer`).
-3. **Timers** – `setInterval` in `timer.js` updates values such as `productionSeconds` or `secondsLeft` in the store.
+3. **Timers** – `setInterval` in the timer services updates values such as `productionSeconds` or `secondsLeft` in the store.
 4. **UI refresh** – Components that subscribe to the store (`ProductionTimer`, `TimerDisplay`, `TaskCard`, etc.) automatically re-render with the new data.
 
 This cycle keeps the UI in sync with user actions and background timers while remaining simple to reason about.

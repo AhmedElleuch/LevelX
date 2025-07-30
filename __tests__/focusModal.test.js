@@ -4,11 +4,11 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { TouchableOpacity } from 'react-native';
 import FocusModal from '../src/components/FocusModal';
 import { useUserStore } from '../src/store/userStore';
-import { stopTimer } from '../src/services/timer';
+import { stopTimer } from '../src/services/focusTimer';
 
 jest.useFakeTimers();
 
-jest.mock('../src/services/timer', () => ({
+jest.mock('../src/services/focusTimer', () => ({
   stopTimer: jest.fn(),
 }));
 

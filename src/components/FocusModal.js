@@ -11,7 +11,7 @@ import {
 import { useTheme } from '@react-navigation/native';
 import { useUserStore } from '../store/userStore';
 import { shallow } from 'zustand/shallow';
-import { stopTimer } from '../services/timer';
+import { stopTimer } from '../services/focusTimer';
 
 const FocusModal = () => {
 const isTimerRunning = useUserStore((s) => s.isTimerRunning);

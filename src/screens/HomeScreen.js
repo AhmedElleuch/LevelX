@@ -17,11 +17,8 @@ import { useUserStore } from '../store/userStore';
 import TaskCard from '../components/TaskCard';
 import TimerDisplay from '../components/TimerDisplay';
 import BreakTimer from '../components/BreakTimer';
-import {
-  resumeProductionTimer,
-  resumeWasteTimer,
-  resumeTimer,
-} from '../services/timer';
+import { resumeProductionTimer, resumeWasteTimer } from '../services/productionTimer';
+import { resumeTimer } from '../services/focusTimer';
 import ProductionTimer from '../components/ProductionTimer';
 import { PRIORITIES } from '../constants/priorities';
 import { MISSIONS } from '../constants/missions';
