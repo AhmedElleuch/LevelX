@@ -24,14 +24,27 @@ jest.mock('@react-navigation/native', () => ({
 
 afterEach(() => {
   jest.clearAllTimers();
+  // Optionally, reset Zustand state after each test
+  useUserStore.setState({
+    tasks: [],
+    isTimerRunning: false,
+    secondsLeft: 0,
+    isFocusModalVisible: false,
+    toggleTaskCompletion: () => {},
+  });
 });
 
 test('renders tasks when timer running', () => {
-  useUserStore.setState({
-    tasks: [{ id: '1', title: 'Test', isCompleted: false }],
-    isTimerRunning: true,
-    secondsLeft: 60,
+  act(() => {
+    useUserStore.setState({
+      tasks: [{ id: '1', title: 'Test', isCompleted: false }],
+      isTimerRunning: true,
+      secondsLeft: 60,
+      isFocusModalVisible: true,        // << KEY LINE!
+      toggleTaskCompletion: () => {},   // << Avoids undefined error if used
+    });
   });
+
   let tree;
   act(() => {
     tree = renderer.create(
@@ -40,6 +53,7 @@ test('renders tasks when timer running', () => {
       </SafeAreaProvider>
     );
   });
+
   const json = tree.toJSON();
   expect(JSON.stringify(json)).toContain('Test');
   act(() => {
@@ -48,11 +62,16 @@ test('renders tasks when timer running', () => {
 });
 
 test('stop button triggers stopTimer', () => {
-  useUserStore.setState({
-    tasks: [],
-    isTimerRunning: true,
-    secondsLeft: 60,
+  act(() => {
+    useUserStore.setState({
+      tasks: [],
+      isTimerRunning: true,
+      secondsLeft: 60,
+      isFocusModalVisible: true,        // << KEY LINE!
+      toggleTaskCompletion: () => {},
+    });
   });
+
   let tree;
   act(() => {
     tree = renderer.create(
@@ -61,10 +80,21 @@ test('stop button triggers stopTimer', () => {
       </SafeAreaProvider>
     );
   });
+
+  // You may have multiple TouchableOpacity (e.g. one for each task), so find the one with "Stop" label
+  const stopButton = tree.root.findAllByType(TouchableOpacity).find(
+    btn =>
+      btn.props.children &&
+      btn.props.children.props &&
+      btn.props.children.props.children === 'Stop'
+  );
+  expect(stopButton).toBeTruthy();
+
   act(() => {
-    tree.root.findByType(TouchableOpacity).props.onPress();
+    stopButton.props.onPress();
   });
   expect(stopTimer).toHaveBeenCalled();
+
   act(() => {
     tree.unmount();
   });

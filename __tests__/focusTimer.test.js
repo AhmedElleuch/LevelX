@@ -33,3 +33,37 @@ test('timer cannot resume after stop', () => {
   jest.advanceTimersByTime(1000);
   expect(useUserStore.getState().secondsLeft).toBe(left);
 });
+
+
+test('startTimer sets running and shows modal', () => {
+  const state = useUserStore.getState();
+  state.setFocusMinutes(1);
+  state.setActiveTaskId('1');
+  startTimer();
+  expect(useUserStore.getState().isTimerRunning).toBe(true);
+  expect(useUserStore.getState().isFocusModalVisible).toBe(true);
+  stopTimer();
+});
+
+test('stopTimer clears running and hides modal', () => {
+  const state = useUserStore.getState();
+  state.setFocusMinutes(1);
+  state.setActiveTaskId('1');
+  startTimer();
+  stopTimer();
+  expect(useUserStore.getState().isTimerRunning).toBe(false);
+  expect(useUserStore.getState().isFocusModalVisible).toBe(false);
+});
+
+test('resumeTimer sets running and shows modal again', () => {
+  const state = useUserStore.getState();
+  state.setFocusMinutes(1);
+  state.setActiveTaskId('1');
+  startTimer();
+  jest.advanceTimersByTime(1000);
+  stopTimer();
+  resumeTimer();
+  expect(useUserStore.getState().isTimerRunning).toBe(true);
+  expect(useUserStore.getState().isFocusModalVisible).toBe(true);
+  stopTimer();
+});

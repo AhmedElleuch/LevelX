@@ -7,8 +7,8 @@ This repository is a React Native project built with Expo. Follow these rules wh
 3. Prefer **arrow functions** for component definitions.
 4. Ensure every file ends with a newline.
 5. write a test to every new feature
-6. Don't commit the changes 
+6. Don't commit the changes
 
 ## Programmatic Checks
 
-Don't launch automated test suites.
+launch automated test suites using "npx jest".
