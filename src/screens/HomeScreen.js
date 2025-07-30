@@ -23,7 +23,7 @@ import ProductionTimer from '../components/ProductionTimer';
 import { PRIORITIES } from '../constants/priorities';
 import { MISSIONS } from '../constants/missions';
 import XPProgressBar from '../components/XPProgressBar';
-import FocusMode from '../components/FocusMode';
+import FocusMode from '../components/focusMode';
 
 const HomeHeader = () => {
   const { colors } = useTheme();
