@@ -179,7 +179,6 @@ const HomeScreen = () => {
         )}
         onDragEnd={({ data }) => setTasks(data)}
         ListHeaderComponent={HomeHeader}
-        ListEmptyComponent={HomeHeader}
         contentContainerStyle={styles.taskList}
       />
       {/* <FocusMode /> */}

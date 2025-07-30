@@ -1,4 +1,5 @@
 import { Alert } from 'react-native';
+import * as Notifications from 'expo-notifications';
 import { useUserStore } from '../store/userStore';
 import {
   startProductionTimer,
@@ -9,6 +10,17 @@ import {
   stopWasteTimer,
   resetInactiveSeconds,
 } from './productionTimer';
+
+export const notifyFocusEnd = async () => {
+  try {
+    await Notifications.scheduleNotificationAsync({
+      content: { title: 'Focus session complete!', sound: true },
+      trigger: null,
+    });
+  } catch (e) {
+    console.log('notification error', e);
+  }
+};
 
 export const startTimer = () => {
   const {
@@ -43,6 +55,7 @@ export const startTimer = () => {
       setIsFocusModeVisible(false);
       stopWasteTimer();
       startBreakTimer();
+      notifyFocusEnd();
       Alert.alert('Focus session complete! ✅');
     } else {
       setSecondsLeft(secondsLeft - 1);
@@ -95,6 +108,7 @@ export const resumeTimer = () => {
       useUserStore.getState().setFocusStartTime(null);
       stopProductionTimer();
       startBreakTimer();
+      notifyFocusEnd();
       Alert.alert('Focus session complete! ✅');
     } else {
       useUserStore.getState().setSecondsLeft(current - 1);

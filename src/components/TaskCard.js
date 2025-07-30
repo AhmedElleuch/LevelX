@@ -21,7 +21,7 @@ const TaskCard = ({ task, onLongPress, drag, isActive }) => {
 
   const startTask = (id) => {
     const updated = tasks.map((t) =>
-      t.id === id ? { ...t, isStarted: true } : t
+      t.id === id ? { ...t, isStarted: true } : { ...t, isStarted: false }
     );
     setTasks(sortTasks(updated));
     setActiveTaskId(id);

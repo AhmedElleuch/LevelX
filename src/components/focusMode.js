@@ -43,7 +43,7 @@ const FocusMode = () => {
 
   const minutes = String(Math.floor(secondsLeft / 60)).padStart(2, '0');
   const seconds = String(secondsLeft % 60).padStart(2, '0');
-  const activeTasks = tasks.filter((t) => !t.isCompleted);
+  const allTasks = tasks;
 
   if (!shouldRender) return null;
 
@@ -66,7 +66,7 @@ const FocusMode = () => {
           {minutes}:{seconds}
         </Text>
         <FlatList
-          data={activeTasks}
+          data={allTasks}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <TouchableOpacity

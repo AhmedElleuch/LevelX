@@ -5,6 +5,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import PerformanceScreen from './src/screens/PerformanceScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import DropdownMenu from './src/components/DropdownMenu';
+import FocusMode from './src/components/focusMode';
 import { useUserStore } from './src/store/userStore';
 import { getThemeColors } from './src/utils/themeColors';
 import { AppState } from 'react-native';
@@ -40,7 +41,8 @@ const App = () => {
       >
         <Tab.Screen name='Home' component={HomeScreen} />
         <Tab.Screen name='Performance' component={PerformanceScreen} />
-        </Tab.Navigator>
+      </Tab.Navigator>
+      <FocusMode />
     </NavigationContainer>
   );
 };

@@ -46,8 +46,27 @@ test('header renders when task list is empty', () => {
       </SafeAreaProvider>
     );
   });
-  const json = tree.toJSON();
-  expect(JSON.stringify(json)).toContain('Welcome back!');
+  const headers = tree.root.findAllByProps({ children: 'Welcome back!' });
+  expect(headers.length).toBeGreaterThan(0);
+  renderer.act(() => {
+    tree.unmount();
+  });
+});
+
+test('header not duplicated when task list empty', () => {
+  renderer.act(() => {
+    useUserStore.setState({ tasks: [] });
+  });
+  let tree;
+  renderer.act(() => {
+    tree = renderer.create(
+      <SafeAreaProvider>
+        <HomeScreen />
+      </SafeAreaProvider>
+    );
+  });
+  const headers = tree.root.findAllByProps({ children: 'Welcome back!' });
+  expect(headers.length).toBeGreaterThan(0);
   renderer.act(() => {
     tree.unmount();
   });

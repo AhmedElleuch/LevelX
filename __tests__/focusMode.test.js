@@ -2,7 +2,7 @@ import React from 'react';
 import renderer, { act } from 'react-test-renderer';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { TouchableOpacity } from 'react-native';
-import FocusMode from '../src/components/FocusMode';
+import FocusMode from '../src/components/focusMode';
 import { useUserStore } from '../src/store/userStore';
 import { stopTimer } from '../src/services/focusTimer';
 
@@ -56,6 +56,33 @@ test('renders tasks when timer running', () => {
 
   const json = tree.toJSON();
   expect(JSON.stringify(json)).toContain('Test');
+  act(() => {
+    tree.unmount();
+  });
+});
+
+test('shows completed tasks for toggling', () => {
+  act(() => {
+    useUserStore.setState({
+      tasks: [{ id: '1', title: 'Done', isCompleted: true }],
+      isTimerRunning: true,
+      secondsLeft: 60,
+      isFocusModeVisible: true,
+      toggleTaskCompletion: () => {},
+    });
+  });
+
+  let tree;
+  act(() => {
+    tree = renderer.create(
+      <SafeAreaProvider>
+        <FocusMode />
+      </SafeAreaProvider>
+    );
+  });
+
+  const json = tree.toJSON();
+  expect(JSON.stringify(json)).toContain('Done');
   act(() => {
     tree.unmount();
   });

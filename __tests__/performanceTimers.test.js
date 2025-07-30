@@ -90,5 +90,15 @@ describe('timers interaction', () => {
     expect(useUserStore.getState().isOnBreak).toBe(false);
     expect(useUserStore.getState().isWasteActive).toBe(true);
   });
+
+  test('break end stops production when no task', () => {
+    const state = useUserStore.getState();
+    state.setBreakMinutes(1);
+    state.setIsProductionActive(true);
+    state.setActiveTaskId(null);
+    startBreakTimer();
+    jest.advanceTimersByTime(61000);
+    expect(useUserStore.getState().isProductionActive).toBe(false);
+  });
 });
 

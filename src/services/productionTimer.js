@@ -48,6 +48,10 @@ export const startBreakTimer = () => {
       breakInterval = null;
       update(0);
       setBreak(false);
+      const { activeTaskId, isProductionActive } = useUserStore.getState();
+      if (!activeTaskId && isProductionActive) {
+        stopProductionTimer();
+      }
       startWasteTimer();
     } else {
       update(breakSeconds - 1);

@@ -9,6 +9,10 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
   removeItem: jest.fn(),
 }));
 
+jest.mock('expo-notifications', () => ({
+  scheduleNotificationAsync: jest.fn(),
+}));
+
 test('stopTimer awards partial xp', () => {
   const store = useUserStore.getState();
   store.setFocusMinutes(3);
@@ -67,4 +71,14 @@ test('resumeTimer sets running and shows focus mode again', () => {
   expect(useUserStore.getState().isTimerRunning).toBe(true);
   expect(useUserStore.getState().isFocusModeVisible).toBe(true);
   stopTimer();
+});
+
+test('notification fires when timer completes', () => {
+  const state = useUserStore.getState();
+  state.setFocusMinutes(1);
+  state.setActiveTaskId('1');
+  startTimer();
+  jest.advanceTimersByTime(60000);
+  const notifications = require('expo-notifications');
+  expect(notifications.scheduleNotificationAsync).toHaveBeenCalled();
 });
