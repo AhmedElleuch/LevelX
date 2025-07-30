@@ -182,7 +182,7 @@ const HomeScreen = () => {
         ListEmptyComponent={HomeHeader}
         contentContainerStyle={styles.taskList}
       />
-      <FocusModal />
+      {/* <FocusModal /> */}
     </SafeAreaView>
   );
 };
