@@ -21,7 +21,7 @@ import { resumeProductionTimer, resumeWasteTimer } from '../services/productionT
 import { resumeTimer } from '../services/focusTimer';
 import ProductionTimer from '../components/ProductionTimer';
 import { PRIORITIES } from '../constants/priorities';
-import { MISSIONS } from '../constants/missions';
+
 import XPProgressBar from '../components/XPProgressBar';
 import FocusMode from '../components/focusMode';
 
@@ -36,20 +36,8 @@ const HomeHeader = () => {
   const dailyXp = useUserStore((s) => s.dailyXp);
   const streak = useUserStore((s) => s.streak);
   const addXp = useUserStore((s) => s.addXp);
-  const acceptedMissions = useUserStore((s) => s.acceptedMissions);
-  const acceptMission = useUserStore((s) => s.acceptMission);
 
   const priorities = PRIORITIES;
-
-  const handleAcceptMission = (mission) => {
-    addXp(mission.xp);
-    acceptMission(mission.id);
-    if (Platform.OS === 'android') {
-      ToastAndroid.show('Task Accepted!', ToastAndroid.SHORT);
-    } else {
-      Alert.alert('Task Accepted!');
-    }
-  };
 
   const addTask = () => {
     if (taskTitle.trim() === '') {
@@ -74,26 +62,13 @@ const HomeHeader = () => {
 
   return (
     <View>
-      <Text style={[styles.title, { color: colors.text }]}>Welcome back!</Text>
       <XPProgressBar />
       <Text style={[styles.sub, { color: colors.text }]}>Daily XP {dailyXp} • Streak {streak}</Text>
       <ProductionTimer />
       <TimerDisplay />
       <BreakTimer />
 
-      {acceptedMissions.length > 0 && (
-        <View>
-          <Text style={[styles.section, { color: colors.text }]}>Active Missions</Text>
-          {MISSIONS.filter((m) => acceptedMissions.includes(m.id)).map((m) => (
-            <View
-              key={m.id}
-              style={[styles.mission, { backgroundColor: colors.card, borderColor: colors.border }]}
-            >
-              <Text style={[styles.missionText, { color: colors.text }]}>{m.title}</Text>
-            </View>
-          ))}
-        </View>
-      )}
+
 
       <TextInput
         style={styles.input}
@@ -114,17 +89,6 @@ const HomeHeader = () => {
           </TouchableOpacity>
         ))}
       </View>
-
-      <Pressable
-        style={({ pressed }) => [
-          styles.challengeButton,
-          pressed && styles.pressedButton,
-        ]}
-        onPress={() => addXp(5)}
-      >
-        <Text style={styles.challengeText}>Start Challenge</Text>
-      </Pressable>
-
       <Pressable
         style={({ pressed }) => [
           styles.addButton,
@@ -135,24 +99,7 @@ const HomeHeader = () => {
         <Text style={styles.addButtonText}>+ Add Task</Text>
       </Pressable>
 
-      <Text style={[styles.section, { color: colors.text }]}>Available Missions</Text>
-      {MISSIONS.filter((m) => !acceptedMissions.includes(m.id)).map((m) => (
-        <View
-          key={m.id}
-          style={[styles.mission, { backgroundColor: colors.card, borderColor: colors.border }]}
-        >
-          <Text style={[styles.missionText, { color: colors.text }]}>{m.title}</Text>
-          <Pressable
-            style={({ pressed }) => [
-              styles.accept,
-              pressed && styles.pressedButton,
-            ]}
-            onPress={() => handleAcceptMission(m)}
-          >
-            <Text style={styles.acceptText}>Accept</Text>
-          </Pressable>
-        </View>
-      ))}
+
     </View>
   );
 };
@@ -192,32 +139,6 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: '#fff' },
   title: { fontSize: 26, fontWeight: 'bold', marginBottom: 10 },
   sub: { fontSize: 16, marginBottom: 10 },
-  mission: {
-    padding: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    marginBottom: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  missionText: { flex: 1, marginRight: 10 },
-  accept: {
-    backgroundColor: '#00cc66',
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 6,
-  },
-  acceptText: { color: '#fff', fontWeight: 'bold' },
-  challengeButton: {
-    backgroundColor: '#0066cc',
-    padding: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  challengeText: { color: '#fff', fontWeight: 'bold' },
   input: { borderWidth: 1, borderColor: '#ccc', padding: 10, borderRadius: 8, marginBottom: 10 },
   priorityContainer: { flexDirection: 'row', marginBottom: 10, justifyContent: 'space-between' },
   priorityButton: { padding: 8, borderWidth: 1, borderColor: '#999', borderRadius: 6 },

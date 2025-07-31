@@ -64,11 +64,6 @@ export const useUserStore = create(
       removeTask: (id) =>
       set((state) => ({ tasks: state.tasks.filter((t) => t.id !== id) })),
 
-      acceptedMissions: [],
-      acceptMission: (id) =>
-        set((state) => ({
-          acceptedMissions: [...state.acceptedMissions, id],
-        })),
 
       moveTaskToTop: (id) =>
         set((state) => {

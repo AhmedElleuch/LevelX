@@ -47,7 +47,7 @@ test('header renders when task list is empty', () => {
     );
   });
   const headers = tree.root.findAllByProps({ children: 'Welcome back!' });
-  expect(headers.length).toBeGreaterThan(0);
+  expect(headers.length).toBe(0);
   renderer.act(() => {
     tree.unmount();
   });
@@ -66,7 +66,7 @@ test('header not duplicated when task list empty', () => {
     );
   });
   const headers = tree.root.findAllByProps({ children: 'Welcome back!' });
-  expect(headers.length).toBeGreaterThan(0);
+  expect(headers.length).toBe(0);
   renderer.act(() => {
     tree.unmount();
   });
