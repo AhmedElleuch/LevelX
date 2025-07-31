@@ -40,9 +40,16 @@ const TaskBrowser = ({
     const newTask = {
       id: Date.now().toString(),
       title,
-      priority: 'Medium',
+      priority: 'Low',
       isStarted: false,
       isCompleted: false,
+      dateCreated: new Date().toISOString(),
+      dateStarted: null,
+      dateFinished: null,
+      description: '',
+      dod: '',
+      userNotes: [],
+      blockingTasks: [],
       children: [],
     };
     if (parent) {
@@ -108,3 +115,4 @@ const styles = StyleSheet.create({
   addBtn: { marginLeft: 6, backgroundColor: '#00aaff', paddingHorizontal: 8, paddingVertical: 6, borderRadius: 4 },
   addText: { color: '#fff', fontWeight: 'bold' },
 });
+

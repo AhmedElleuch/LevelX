@@ -18,9 +18,16 @@ const TaskItem = ({ task, level }) => {
     const newTask = {
       id: Date.now().toString(),
       title,
-      priority: 'Medium',
+      priority: 'Low',
       isStarted: false,
       isCompleted: false,
+      dateCreated: new Date().toISOString(),
+      dateStarted: null,
+      dateFinished: null,
+      description: '',
+      dod: '',
+      userNotes: [],
+      blockingTasks: [],
       children: [],
     };
     addSubtask(task.id, newTask);

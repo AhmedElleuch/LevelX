@@ -9,7 +9,49 @@ import {
   updateTaskById,
   getTaskDepth,
   reorderTasksByParentId,
+  flattenTasks,
 } from '../utils/taskTree';
+
+const ensureTaskFields = (task) => ({
+  id: task.id,
+  title: task.title,
+  priority: task.priority || 'Low',
+  isStarted: task.isStarted || false,
+  isCompleted: task.isCompleted || false,
+  dateCreated: task.dateCreated || new Date().toISOString(),
+  dateStarted: 'dateStarted' in task ? task.dateStarted : null,
+  dateFinished: 'dateFinished' in task ? task.dateFinished : null,
+  description: task.description || '',
+  dod: task.dod || '',
+  userNotes: task.userNotes || [],
+  blockingTasks: task.blockingTasks || [],
+  children: task.children ? task.children.map(ensureTaskFields) : [],
+});
+
+const applyBlocking = (tasks) =>
+  tasks.map((t, i) => ({
+    ...t,
+    blockingTasks: i === 0 ? [] : [tasks[i - 1].id],
+    children: t.children ? applyBlocking(t.children) : [],
+  }));
+
+const applyLockStatus = (tasks, allMap = null) => {
+  if (!allMap) {
+    const flat = flattenTasks(tasks);
+    const map = {};
+    flat.forEach((t) => {
+      map[t.id] = t;
+    });
+    return applyLockStatus(tasks, map);
+  }
+  return tasks.map((t) => ({
+    ...t,
+    isLocked: t.blockingTasks.some((id) => !allMap[id] || !allMap[id].isCompleted),
+    children: t.children ? applyLockStatus(t.children, allMap) : [],
+  }));
+};
+
+const updateTasksState = (tasks) => applyLockStatus(applyBlocking(tasks.map(ensureTaskFields)));
 
 export const useUserStore = create(
   persist(
@@ -67,21 +109,23 @@ export const useUserStore = create(
       setPriority: (p) => set({ priority: p }),
 
       tasks: [],
-      setTasks: (tasks) => set({ tasks }),
+      setTasks: (tasks) => set({ tasks: updateTasksState(tasks) }),
       addTask: (task) =>
-        set((state) => ({ tasks: [...state.tasks, task] })),
+        set((state) => ({ tasks: updateTasksState([...state.tasks, task]) })),
       addSubtask: (parentId, task) =>
         set((state) => {
           const depth = getTaskDepth(state.tasks, parentId);
           if (depth >= 5) return {};
-          return { tasks: addChildTask(state.tasks, parentId, task) };
+          return { tasks: updateTasksState(addChildTask(state.tasks, parentId, task)) };
         }),
       editTask: (id, updates) =>
         set((state) => ({
-          tasks: updateTaskById(state.tasks, id, (t) => ({ ...t, ...updates })),
+          tasks: updateTasksState(
+            updateTaskById(state.tasks, id, (t) => ({ ...t, ...updates }))
+          ),
         })),
       removeTask: (id) =>
-        set((state) => ({ tasks: deleteTaskById(state.tasks, id) })),
+        set((state) => ({ tasks: updateTasksState(deleteTaskById(state.tasks, id)) })),
 
 
       moveTaskToTop: (id) =>
@@ -91,20 +135,25 @@ export const useUserStore = create(
           const updated = [...state.tasks];
           const [item] = updated.splice(index, 1);
           updated.unshift(item);
-          return { tasks: updated };
+          return { tasks: updateTasksState(updated) };
         }),
 
       reorderTasks: (parentId, newOrder) =>
         set((state) => ({
-          tasks: reorderTasksByParentId(state.tasks, parentId, newOrder),
+          tasks: updateTasksState(
+            reorderTasksByParentId(state.tasks, parentId, newOrder)
+          ),
         })),
 
       toggleTaskCompletion: (id) =>
         set((state) => ({
-          tasks: updateTaskById(state.tasks, id, (t) => ({
-            ...t,
-            isCompleted: !t.isCompleted,
-          })),
+          tasks: updateTasksState(
+            updateTaskById(state.tasks, id, (t) => ({
+              ...t,
+              isCompleted: !t.isCompleted,
+              dateFinished: t.isCompleted ? null : new Date().toISOString(),
+            }))
+          ),
         })),
 
       habits: [
@@ -175,11 +224,14 @@ export const useUserStore = create(
 
       completeTask: (id) => {
         set((state) => ({
-          tasks: updateTaskById(state.tasks, id, (t) => ({
-            ...t,
-            isCompleted: true,
-            isStarted: false,
-          })),
+          tasks: updateTasksState(
+            updateTaskById(state.tasks, id, (t) => ({
+              ...t,
+              isCompleted: true,
+              isStarted: false,
+              dateFinished: new Date().toISOString(),
+            }))
+          ),
           activeTaskId: state.activeTaskId === id ? null : state.activeTaskId,
         }));
         const { addXp, checkLevel, updateStreak } = get();

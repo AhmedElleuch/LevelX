@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { Swipeable } from 'react-native-gesture-handler';
@@ -7,9 +7,11 @@ import { startTimer } from '../services/focusTimer';
 import { startProductionTimer } from '../services/productionTimer';
 import { mapTasks } from '../utils/taskTree';
 import PriorityBadge from './PriorityBadge';
+import TaskDetails from './TaskDetails';
 
 const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, testID }) => {
   const { colors } = useTheme();
+  const [showDetails, setShowDetails] = useState(false);
   const tasks = useUserStore((s) => s.tasks);
   const setTasks = useUserStore((s) => s.setTasks);
   const setActiveTaskId = useUserStore((s) => s.setActiveTaskId);
@@ -21,7 +23,9 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
 
   const startTask = (id) => {
     const updated = mapTasks(tasks, (t) =>
-      t.id === id ? { ...t, isStarted: true } : { ...t, isStarted: false }
+      t.id === id
+        ? { ...t, isStarted: true, dateStarted: new Date().toISOString() }
+        : { ...t, isStarted: false }
     );
     setTasks(updated);
     setActiveTaskId(id);
@@ -88,6 +92,9 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
         <View style={styles.header}>
           <Text style={[styles.text, { color: colors.text }]}>{task.title}</Text>
           <PriorityBadge level={task.priority} />
+          <TouchableOpacity onPress={() => setShowDetails(true)} style={styles.menu}>
+            <Text style={styles.dragText}>⋮</Text>
+          </TouchableOpacity>
           {drag && (
             <TouchableOpacity
               onLongPress={drag}
@@ -122,6 +129,7 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
           <Text style={styles.locked}>🔒 Started</Text>
         )}
       </TouchableOpacity>
+      <TaskDetails visible={showDetails} task={task} onClose={() => setShowDetails(false)} />
     </Swipeable>
   );
 }
@@ -154,6 +162,7 @@ const styles = StyleSheet.create({
   dragging: { opacity: 0.7 },
   dragHandle: { marginLeft: 6, padding: 4 },
   dragText: { color: '#999' },
+  menu: { marginLeft: 6, padding: 4 },
   subtaskBtn: { marginTop: 10, alignSelf: 'flex-start' },
   subtaskText: { color: '#00aaff', fontWeight: 'bold' },
 });
