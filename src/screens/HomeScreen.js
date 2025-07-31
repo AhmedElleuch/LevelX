@@ -108,6 +108,9 @@ const HomeHeader = () => {
 const HomeScreen = () => {
   const { colors } = useTheme();
   const tasks = useUserStore((s) => s.tasks);
+  const habits = useUserStore((s) => s.habits);
+  const addHabit = useUserStore((s) => s.addHabit);
+  const addHabitSubtask = useUserStore((s) => s.addHabitSubtask);
 
   useEffect(() => {
     console.log('HomeScreen mounted', { tasksCount: tasks.length });
@@ -129,6 +132,15 @@ const HomeScreen = () => {
         >
           <HomeHeader />
           <TaskBrowser />
+          <View style={{ marginTop: 20 }}>
+            <TaskBrowser
+              tasks={habits}
+              addTaskRoot={addHabit}
+              addSubtask={addHabitSubtask}
+              rootTitle='Habits'
+              testIDPrefix='habit-'
+            />
+          </View>
         </ScrollView>
       </SafeAreaView>
     </KeyboardAvoidingView>

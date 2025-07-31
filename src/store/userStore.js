@@ -101,6 +101,65 @@ export const useUserStore = create(
           })),
         })),
 
+      habits: [
+        {
+          id: 'habit-daily',
+          title: 'Daily',
+          priority: 'Medium',
+          isStarted: false,
+          isCompleted: false,
+          children: [
+            {
+              id: 'habit-sleep',
+              title: 'Sleep',
+              priority: 'Medium',
+              isStarted: false,
+              isCompleted: false,
+            },
+            {
+              id: 'habit-wake',
+              title: 'Wake Up',
+              priority: 'Medium',
+              isStarted: false,
+              isCompleted: false,
+            },
+          ],
+        },
+      ],
+      setHabits: (habits) => set({ habits }),
+      addHabit: (habit) =>
+        set((state) => ({ habits: [...state.habits, habit] })),
+      addHabitSubtask: (parentId, habit) =>
+        set((state) => {
+          const depth = getTaskDepth(state.habits, parentId);
+          if (depth >= 5) return {};
+          return { habits: addChildTask(state.habits, parentId, habit) };
+        }),
+      toggleHabitCompletion: (id) =>
+        set((state) => ({
+          habits: updateTaskById(state.habits, id, (t) => ({
+            ...t,
+            isCompleted: !t.isCompleted,
+          })),
+        })),
+      completeHabit: (id) => {
+        set((state) => ({
+          habits: updateTaskById(state.habits, id, (t) => ({
+            ...t,
+            isCompleted: true,
+          })),
+        }));
+        const { addXp, checkLevel, updateStreak } = get();
+        addXp(25);
+        checkLevel();
+        updateStreak();
+        if (Platform.OS === 'android') {
+          ToastAndroid.show('+25 XP!', ToastAndroid.SHORT);
+        } else {
+          Alert.alert('+25 XP!');
+        }
+      },
+
       // Profile
       name: '',
       setName: (val) => set({ name: val }),

@@ -5,11 +5,14 @@ import { useUserStore } from '../store/userStore';
 import TaskCard from './TaskCard';
 import { findTaskById, getTaskDepth } from '../utils/taskTree';
 
-const TaskBrowser = () => {
+const TaskBrowser = ({
+  tasks = useUserStore((s) => s.tasks),
+  addSubtask = useUserStore((s) => s.addSubtask),
+  addTaskRoot = useUserStore((s) => s.addTask),
+  rootTitle = 'Projects',
+  testIDPrefix = 'task-',
+}) => {
   const { colors } = useTheme();
-  const tasks = useUserStore((s) => s.tasks);
-  const addSubtask = useUserStore((s) => s.addSubtask);
-  const addTaskRoot = useUserStore((s) => s.addTask);
   const [path, setPath] = useState([]);
   const [title, setTitle] = useState('');
 
@@ -43,14 +46,14 @@ const TaskBrowser = () => {
             <Text style={[styles.back, { color: colors.primary }]}>◀ Back</Text>
           </TouchableOpacity>
         )}
-        <Text style={[styles.title, { color: colors.text }]}>{parent ? parent.title : 'Projects'}</Text>
+        <Text style={[styles.title, { color: colors.text }]}>{parent ? parent.title : rootTitle}</Text>
       </View>
       {currentTasks.map((t) => (
         <TaskCard
           key={t.id}
           task={t}
           onPress={() => setPath([...path, t.id])}
-          testID={`task-${t.id}`}
+          testID={`${testIDPrefix}${t.id}`}
         />
       ))}
       {depth < 5 && (
