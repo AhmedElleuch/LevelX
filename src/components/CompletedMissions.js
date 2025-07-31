@@ -2,11 +2,12 @@ import React, { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { useUserStore } from '../store/userStore';
+import { flattenTasks } from '../utils/taskTree';
 
 const CompletedMissions = () => {
   const { colors } = useTheme();
   const tasks = useUserStore((s) => s.tasks);
-  const completed = tasks.filter((t) => t.isCompleted);
+  const completed = flattenTasks(tasks).filter((t) => t.isCompleted);
   const totalXp = completed.length * 25;
   useEffect(() => {
     console.log('Completed missions', { count: completed.length });

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@react-navigation/native';
 import { useUserStore } from '../store/userStore';
+import { flattenTasks } from '../utils/taskTree';
 import CompletedMissions from '../components/CompletedMissions';
 import XPProgressBar from '../components/XPProgressBar';
 import { resetProduction } from '../services/productionTimer';
@@ -26,7 +27,7 @@ const PerformanceScreen = () => {
     resetProduction();
   };
 
-  const completed = tasks.filter((t) => t.isCompleted);
+  const completed = flattenTasks(tasks).filter((t) => t.isCompleted);
   const total = productionSeconds + wasteSeconds;
   const prodRatio = total ? productionSeconds / total : 0;
 

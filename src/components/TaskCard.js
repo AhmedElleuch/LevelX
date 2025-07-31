@@ -5,7 +5,7 @@ import { Swipeable } from 'react-native-gesture-handler';
 import { useUserStore } from '../store/userStore';
 import { startTimer } from '../services/focusTimer';
 import { startProductionTimer } from '../services/productionTimer';
-import { sortTasks } from '../utils/sortTasks';
+import { mapTasks } from '../utils/taskTree';
 import PriorityBadge from './PriorityBadge';
 
 const TaskCard = ({ task, onLongPress, drag, isActive }) => {
@@ -20,10 +20,10 @@ const TaskCard = ({ task, onLongPress, drag, isActive }) => {
   const toggleTaskCompletion = useUserStore((s) => s.toggleTaskCompletion);
 
   const startTask = (id) => {
-    const updated = tasks.map((t) =>
+    const updated = mapTasks(tasks, (t) =>
       t.id === id ? { ...t, isStarted: true } : { ...t, isStarted: false }
     );
-    setTasks(sortTasks(updated));
+    setTasks(updated);
     setActiveTaskId(id);
     if (!isTimerRunning) {
       startProductionTimer();

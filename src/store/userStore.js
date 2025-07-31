@@ -3,6 +3,12 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert, Platform, ToastAndroid } from 'react-native';
 import { sortTasks } from '../utils/sortTasks';
+import {
+  addChildTask,
+  deleteTaskById,
+  updateTaskById,
+  getTaskDepth,
+} from '../utils/taskTree';
 
 export const useUserStore = create(
   persist(
@@ -61,8 +67,20 @@ export const useUserStore = create(
 
       tasks: [],
       setTasks: (tasks) => set({ tasks }),
+      addTask: (task) =>
+        set((state) => ({ tasks: [...state.tasks, task] })),
+      addSubtask: (parentId, task) =>
+        set((state) => {
+          const depth = getTaskDepth(state.tasks, parentId);
+          if (depth >= 5) return {};
+          return { tasks: addChildTask(state.tasks, parentId, task) };
+        }),
+      editTask: (id, updates) =>
+        set((state) => ({
+          tasks: updateTaskById(state.tasks, id, (t) => ({ ...t, ...updates })),
+        })),
       removeTask: (id) =>
-      set((state) => ({ tasks: state.tasks.filter((t) => t.id !== id) })),
+        set((state) => ({ tasks: deleteTaskById(state.tasks, id) })),
 
 
       moveTaskToTop: (id) =>
@@ -77,9 +95,10 @@ export const useUserStore = create(
 
       toggleTaskCompletion: (id) =>
         set((state) => ({
-          tasks: state.tasks.map((t) =>
-            t.id === id ? { ...t, isCompleted: !t.isCompleted } : t
-          ),
+          tasks: updateTaskById(state.tasks, id, (t) => ({
+            ...t,
+            isCompleted: !t.isCompleted,
+          })),
         })),
 
       // Profile
@@ -91,9 +110,11 @@ export const useUserStore = create(
 
       completeTask: (id) => {
         set((state) => ({
-          tasks: state.tasks.map((t) =>
-            t.id === id ? { ...t, isCompleted: true, isStarted: false } : t
-          ),
+          tasks: updateTaskById(state.tasks, id, (t) => ({
+            ...t,
+            isCompleted: true,
+            isStarted: false,
+          })),
           activeTaskId: state.activeTaskId === id ? null : state.activeTaskId,
         }));
         const { addXp, checkLevel, updateStreak } = get();

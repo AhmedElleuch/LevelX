@@ -3,6 +3,7 @@ import { View, TouchableOpacity, Text, StyleSheet, Dimensions, Animated, FlatLis
 import { useTheme } from '@react-navigation/native';
 import { useUserStore } from '../store/userStore';
 import { stopTimer } from '../services/focusTimer';
+import { flattenTasks } from '../utils/taskTree';
 
 const { height } = Dimensions.get('window');
 
@@ -43,7 +44,7 @@ const FocusMode = () => {
 
   const minutes = String(Math.floor(secondsLeft / 60)).padStart(2, '0');
   const seconds = String(secondsLeft % 60).padStart(2, '0');
-  const allTasks = tasks;
+  const allTasks = flattenTasks(tasks);
 
   if (!shouldRender) return null;
 

@@ -11,10 +11,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import DraggableFlatList from 'react-native-draggable-flatlist';
+import NestedTaskList from '../components/NestedTaskList';
 import { useTheme } from '@react-navigation/native';
 import { useUserStore } from '../store/userStore';
-import TaskCard from '../components/TaskCard';
 import TimerDisplay from '../components/TimerDisplay';
 import BreakTimer from '../components/BreakTimer';
 import { resumeProductionTimer, resumeWasteTimer } from '../services/productionTimer';
@@ -32,7 +31,7 @@ const HomeHeader = () => {
   const priority = useUserStore((s) => s.priority);
   const setPriority = useUserStore((s) => s.setPriority);
   const tasks = useUserStore((s) => s.tasks);
-  const setTasks = useUserStore((s) => s.setTasks);
+  const addTaskRoot = useUserStore((s) => s.addTask);
   const dailyXp = useUserStore((s) => s.dailyXp);
   const streak = useUserStore((s) => s.streak);
   const addXp = useUserStore((s) => s.addXp);
@@ -55,7 +54,7 @@ const HomeHeader = () => {
 
     console.log('Add task', newTask);
 
-    setTasks([...tasks, newTask]);
+    addTaskRoot(newTask);
     setTaskTitle('');
     setPriority('Medium');
   };
@@ -107,7 +106,6 @@ const HomeHeader = () => {
 const HomeScreen = () => {
   const { colors } = useTheme();
   const tasks = useUserStore((s) => s.tasks);
-  const setTasks = useUserStore((s) => s.setTasks);
 
   useEffect(() => {
     console.log('HomeScreen mounted', { tasksCount: tasks.length });
@@ -118,17 +116,8 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
-      <DraggableFlatList
-        data={tasks}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item, drag, isActive }) => (
-          <TaskCard task={item} drag={drag} isActive={isActive} />
-        )}
-        onDragEnd={({ data }) => setTasks(data)}
-        ListHeaderComponent={HomeHeader}
-        contentContainerStyle={styles.taskList}
-      />
-      {/* <FocusMode /> */}
+      <HomeHeader />
+      <NestedTaskList tasks={tasks} />
     </SafeAreaView>
   );
 };
