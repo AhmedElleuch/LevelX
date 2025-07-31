@@ -56,6 +56,20 @@ const TaskBrowser = ({
         )}
         <Text style={[styles.title, { color: colors.text }]}>{parent ? parent.title : rootTitle}</Text>
       </View>
+      {depth < 5 && (
+        <View style={styles.addRow}>
+          <TextInput
+            style={[styles.input, { borderColor: colors.border, color: colors.text }]}
+            placeholder='Add task...'
+            placeholderTextColor={colors.text}
+            value={title}
+            onChangeText={setTitle}
+          />
+          <TouchableOpacity style={styles.addBtn} onPress={addTask}>
+            <Text style={styles.addText}>Add</Text>
+          </TouchableOpacity>
+        </View>
+      )}
       <DraggableFlatList
         data={currentTasks}
         keyExtractor={(item) => item.id}
@@ -72,20 +86,6 @@ const TaskBrowser = ({
           />
         )}
       />
-      {depth < 5 && (
-        <View style={styles.addRow}>
-          <TextInput
-            style={[styles.input, { borderColor: colors.border, color: colors.text }]}
-            placeholder='Add task...'
-            placeholderTextColor={colors.text}
-            value={title}
-            onChangeText={setTitle}
-          />
-          <TouchableOpacity style={styles.addBtn} onPress={addTask}>
-            <Text style={styles.addText}>Add</Text>
-          </TouchableOpacity>
-        </View>
-      )}
     </View>
   );
 };

@@ -85,7 +85,7 @@ test('typing does not remount TimerDisplay', () => {
       </SafeAreaProvider>
     );
   });
-  const input = tree.root.findByProps({ placeholder: 'Enter task...' });
+  const input = tree.root.findAllByProps({ placeholder: 'Add task...' })[0];
   renderer.act(() => {
     input.props.onChangeText('a');
   });
