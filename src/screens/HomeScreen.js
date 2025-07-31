@@ -9,6 +9,7 @@ import {
   Platform,
   ToastAndroid,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import NestedTaskList from '../components/NestedTaskList';
@@ -116,8 +117,13 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
-      <HomeHeader />
-      <NestedTaskList tasks={tasks} />
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ padding: 20 }}
+      >
+        <HomeHeader />
+        <NestedTaskList tasks={tasks} />
+      </ScrollView>
     </SafeAreaView>
   );
 };
