@@ -10,7 +10,7 @@ import {
   KeyboardAvoidingView,
   ToastAndroid,
   TouchableOpacity,
-  ScrollView,
+  FlatList,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import TaskBrowser from '../components/TaskBrowser';
@@ -125,23 +125,29 @@ const HomeScreen = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
-        <ScrollView
+        <FlatList
+          data={[]}
+          keyExtractor={() => 'dummy'}
+          renderItem={null}
+          ListHeaderComponent={() => (
+            <View>
+              <HomeHeader />
+              <TaskBrowser />
+              <View style={{ marginTop: 20 }}>
+                <TaskBrowser
+                  tasks={habits}
+                  addTaskRoot={addHabit}
+                  addSubtask={addHabitSubtask}
+                  rootTitle='Habits'
+                  testIDPrefix='habit-'
+                />
+              </View>
+            </View>
+          )}
           style={{ flex: 1 }}
           contentContainerStyle={{ padding: 20 }}
           keyboardShouldPersistTaps='handled'
-        >
-          <HomeHeader />
-          <TaskBrowser />
-          <View style={{ marginTop: 20 }}>
-            <TaskBrowser
-              tasks={habits}
-              addTaskRoot={addHabit}
-              addSubtask={addHabitSubtask}
-              rootTitle='Habits'
-              testIDPrefix='habit-'
-            />
-          </View>
-        </ScrollView>
+        />
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
