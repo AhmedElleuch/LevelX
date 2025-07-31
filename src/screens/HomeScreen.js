@@ -12,7 +12,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import NestedTaskList from '../components/NestedTaskList';
+import TaskBrowser from '../components/TaskBrowser';
 import { useTheme } from '@react-navigation/native';
 import { useUserStore } from '../store/userStore';
 import TimerDisplay from '../components/TimerDisplay';
@@ -122,7 +122,7 @@ const HomeScreen = () => {
         contentContainerStyle={{ padding: 20 }}
       >
         <HomeHeader />
-        <NestedTaskList tasks={tasks} />
+        <TaskBrowser />
       </ScrollView>
     </SafeAreaView>
   );

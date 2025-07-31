@@ -8,7 +8,7 @@ import { startProductionTimer } from '../services/productionTimer';
 import { mapTasks } from '../utils/taskTree';
 import PriorityBadge from './PriorityBadge';
 
-const TaskCard = ({ task, onLongPress, drag, isActive }) => {
+const TaskCard = ({ task, onLongPress, drag, isActive, onPress, testID }) => {
   const { colors } = useTheme();
   const tasks = useUserStore((s) => s.tasks);
   const setTasks = useUserStore((s) => s.setTasks);
@@ -77,10 +77,13 @@ const TaskCard = ({ task, onLongPress, drag, isActive }) => {
         ]}
         onLongPress={drag || onLongPress}
         onPress={() => {
-          if (isTimerRunning) {
+          if (onPress) {
+            onPress();
+          } else if (isTimerRunning) {
             toggleTaskCompletion(task.id);
           }
         }}
+        testID={testID}
       >
         <View style={styles.header}>
           <Text style={[styles.text, { color: colors.text }]}>{task.title}</Text>
