@@ -82,3 +82,14 @@ export const reorderTasksByParentId = (tasks, parentId, newOrder) => {
     return t;
   });
 };
+
+export const findTaskPath = (tasks, id, path = []) => {
+  for (const t of tasks) {
+    if (t.id === id) return [...path, t.id];
+    if (t.children) {
+      const found = findTaskPath(t.children, id, [...path, t.id]);
+      if (found) return found;
+    }
+  }
+  return null;
+};

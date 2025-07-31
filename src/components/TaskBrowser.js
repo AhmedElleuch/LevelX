@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,7 +10,7 @@ import DraggableFlatList from 'react-native-draggable-flatlist';
 import { useTheme } from '@react-navigation/native';
 import { useUserStore } from '../store/userStore';
 import TaskCard from './TaskCard';
-import { findTaskById, getTaskDepth } from '../utils/taskTree';
+import { findTaskById, getTaskDepth, findTaskPath } from '../utils/taskTree';
 
 const TaskBrowser = ({
   tasks = useUserStore((s) => s.tasks),
@@ -18,11 +18,18 @@ const TaskBrowser = ({
   addTaskRoot = useUserStore((s) => s.addTask),
   rootTitle = 'Projects',
   testIDPrefix = 'task-',
+  focusedTaskId,
 }) => {
   const { colors } = useTheme();
   const [path, setPath] = useState([]);
   const [title, setTitle] = useState('');
   const reorderTasks = useUserStore((s) => s.reorderTasks);
+
+  useEffect(() => {
+    if (!focusedTaskId) return;
+    const found = findTaskPath(tasks, focusedTaskId);
+    if (found) setPath(found.slice(0, -1));
+  }, [focusedTaskId, tasks]);
 
   const parent = path.length ? findTaskById(tasks, path[path.length - 1]) : null;
   const currentTasks = parent ? parent.children || [] : tasks;

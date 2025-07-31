@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   KeyboardAvoidingView,
   ToastAndroid,
   FlatList,
+  TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import TaskBrowser from '../components/TaskBrowser';
@@ -19,6 +20,7 @@ import { resumeTimer } from '../services/focusTimer';
 import ProductionTimer from '../components/ProductionTimer';
 import XPProgressBar from '../components/XPProgressBar';
 import FocusMode from '../components/focusMode';
+import { flattenTasks } from '../utils/taskTree';
 
 const HomeHeader = () => {
   const { colors } = useTheme();
@@ -27,11 +29,43 @@ const HomeHeader = () => {
 
   return (
     <View>
-      <XPProgressBar />
-      <Text style={[styles.sub, { color: colors.text }]}>Daily XP {dailyXp} • Streak {streak}</Text>
       <ProductionTimer />
       <TimerDisplay />
       <BreakTimer />
+    </View>
+  );
+};
+
+const WelcomeSection = ({ onSelect }) => {
+  const { colors } = useTheme();
+  const tasks = useUserStore((s) => s.tasks);
+  const editTask = useUserStore((s) => s.editTask);
+  const suggestions = useMemo(() => {
+    const undone = flattenTasks(tasks).filter((t) => !t.isCompleted);
+    const shuffled = [...undone].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 5);
+  }, [tasks]);
+
+  const start = (id) => {
+    editTask(id, { isStarted: true, dateStarted: Date.now() });
+    onSelect(id);
+  };
+
+  return (
+    <View style={{ marginBottom: 20 }}>
+      <Text style={[styles.title, { color: colors.text }]}>Welcome back!</Text>
+      {suggestions.map((t) => (
+        <View key={t.id} style={styles.ticket} testID={`suggest-ticket-${t.id}`}> 
+          <Text style={[styles.ticketText, { color: colors.text }]}>{t.title}</Text>
+          <TouchableOpacity
+            style={styles.startBtn}
+            onPress={() => start(t.id)}
+            testID={`suggest-start-${t.id}`}
+          >
+            <Text style={styles.startText}>Start</Text>
+          </TouchableOpacity>
+        </View>
+      ))}
     </View>
   );
 };
@@ -42,6 +76,7 @@ const HomeScreen = () => {
   const habits = useUserStore((s) => s.habits);
   const addHabit = useUserStore((s) => s.addHabit);
   const addHabitSubtask = useUserStore((s) => s.addHabitSubtask);
+  const [focusedTaskId, setFocusedTaskId] = useState(null);
 
   useEffect(() => {
     console.log('HomeScreen mounted', { tasksCount: tasks.length });
@@ -63,7 +98,8 @@ const HomeScreen = () => {
           ListHeaderComponent={() => (
             <View>
               <HomeHeader />
-              <TaskBrowser />
+              <WelcomeSection onSelect={setFocusedTaskId} />
+              <TaskBrowser focusedTaskId={focusedTaskId} />
               <View style={{ marginTop: 20 }}>
                 <TaskBrowser
                   tasks={habits}
@@ -71,6 +107,7 @@ const HomeScreen = () => {
                   addSubtask={addHabitSubtask}
                   rootTitle='Habits'
                   testIDPrefix='habit-'
+                  focusedTaskId={focusedTaskId}
                 />
               </View>
             </View>
@@ -93,5 +130,9 @@ const styles = StyleSheet.create({
   taskList: { gap: 10 },
   stopButton: { backgroundColor: '#ff5555',padding: 12,borderRadius: 8,alignItems: 'center',marginBottom: 20,},
   section: { fontWeight: 'bold', marginBottom: 6, marginTop: 10 },
+  ticket: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 8, borderWidth: 1, borderColor: '#ccc', borderRadius: 6, marginBottom: 6 },
+  ticketText: { fontSize: 14, flex: 1, marginRight: 6 },
+  startBtn: { backgroundColor: '#00cc66', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4 },
+  startText: { color: '#fff', fontWeight: 'bold' },
 });
 
