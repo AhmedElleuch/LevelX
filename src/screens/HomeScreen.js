@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Alert,
   Platform,
+  KeyboardAvoidingView,
   ToastAndroid,
   TouchableOpacity,
   ScrollView,
@@ -116,15 +117,21 @@ const HomeScreen = () => {
   }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ padding: 20 }}
-      >
-        <HomeHeader />
-        <TaskBrowser />
-      </ScrollView>
-    </SafeAreaView>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={{ padding: 20 }}
+          keyboardShouldPersistTaps='handled'
+        >
+          <HomeHeader />
+          <TaskBrowser />
+        </ScrollView>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 
