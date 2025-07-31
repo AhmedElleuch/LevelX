@@ -66,3 +66,19 @@ export const getTaskDepth = (tasks, id, level = 1) => {
   }
   return 0;
 };
+
+export const reorderTasksByParentId = (tasks, parentId, newOrder) => {
+  if (!parentId) return newOrder;
+  return tasks.map((t) => {
+    if (t.id === parentId) {
+      return { ...t, children: newOrder };
+    }
+    if (t.children) {
+      return {
+        ...t,
+        children: reorderTasksByParentId(t.children, parentId, newOrder),
+      };
+    }
+    return t;
+  });
+};

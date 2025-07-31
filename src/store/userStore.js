@@ -8,6 +8,7 @@ import {
   deleteTaskById,
   updateTaskById,
   getTaskDepth,
+  reorderTasksByParentId,
 } from '../utils/taskTree';
 
 export const useUserStore = create(
@@ -92,6 +93,11 @@ export const useUserStore = create(
           updated.unshift(item);
           return { tasks: updated };
         }),
+
+      reorderTasks: (parentId, newOrder) =>
+        set((state) => ({
+          tasks: reorderTasksByParentId(state.tasks, parentId, newOrder),
+        })),
 
       toggleTaskCompletion: (id) =>
         set((state) => ({

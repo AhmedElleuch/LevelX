@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  StyleSheet,
+} from 'react-native';
+import DraggableFlatList from 'react-native-draggable-flatlist';
 import { useTheme } from '@react-navigation/native';
 import { useUserStore } from '../store/userStore';
 import TaskCard from './TaskCard';
@@ -15,6 +22,7 @@ const TaskBrowser = ({
   const { colors } = useTheme();
   const [path, setPath] = useState([]);
   const [title, setTitle] = useState('');
+  const reorderTasks = useUserStore((s) => s.reorderTasks);
 
   const parent = path.length ? findTaskById(tasks, path[path.length - 1]) : null;
   const currentTasks = parent ? parent.children || [] : tasks;
@@ -48,14 +56,22 @@ const TaskBrowser = ({
         )}
         <Text style={[styles.title, { color: colors.text }]}>{parent ? parent.title : rootTitle}</Text>
       </View>
-      {currentTasks.map((t) => (
-        <TaskCard
-          key={t.id}
-          task={t}
-          onPress={() => setPath([...path, t.id])}
-          testID={`${testIDPrefix}${t.id}`}
-        />
-      ))}
+      <DraggableFlatList
+        data={currentTasks}
+        keyExtractor={(item) => item.id}
+        onDragEnd={({ data }) =>
+          reorderTasks(parent ? parent.id : null, data)
+        }
+        renderItem={({ item, drag, isActive }) => (
+          <TaskCard
+            task={item}
+            drag={drag}
+            isActive={isActive}
+            onPress={() => setPath([...path, item.id])}
+            testID={`${testIDPrefix}${item.id}`}
+          />
+        )}
+      />
       {depth < 5 && (
         <View style={styles.addRow}>
           <TextInput
