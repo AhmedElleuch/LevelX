@@ -8,7 +8,7 @@ import { startProductionTimer } from '../services/productionTimer';
 import { mapTasks } from '../utils/taskTree';
 import PriorityBadge from './PriorityBadge';
 
-const TaskCard = ({ task, onLongPress, drag, isActive, onPress, testID }) => {
+const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, testID }) => {
   const { colors } = useTheme();
   const tasks = useUserStore((s) => s.tasks);
   const setTasks = useUserStore((s) => s.setTasks);
@@ -75,7 +75,7 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, testID }) => {
           { backgroundColor: colors.card, borderColor: colors.border },
           isActive && styles.dragging,
         ]}
-        onLongPress={drag || onLongPress}
+        onLongPress={onLongPress}
         onPress={() => {
           if (onPress) {
             onPress();
@@ -88,7 +88,25 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, testID }) => {
         <View style={styles.header}>
           <Text style={[styles.text, { color: colors.text }]}>{task.title}</Text>
           <PriorityBadge level={task.priority} />
+          {drag && (
+            <TouchableOpacity
+              onLongPress={drag}
+              style={styles.dragHandle}
+              testID='drag-handle'
+            >
+              <Text style={styles.dragText}>≡</Text>
+            </TouchableOpacity>
+          )}
         </View>
+        {onOpenSubtasks && (
+          <TouchableOpacity
+            onPress={onOpenSubtasks}
+            style={styles.subtaskBtn}
+            testID='open-subtasks'
+          >
+            <Text style={styles.subtaskText}>Subtasks</Text>
+          </TouchableOpacity>
+        )}
 
         {task.isCompleted ? (
           <Text style={styles.completed}>✅ Done</Text>
@@ -134,6 +152,10 @@ const styles = StyleSheet.create({
   swipeButton: { justifyContent: 'center', paddingHorizontal: 20 },
   completeText: { color: 'green' },
   dragging: { opacity: 0.7 },
+  dragHandle: { marginLeft: 6, padding: 4 },
+  dragText: { color: '#999' },
+  subtaskBtn: { marginTop: 10, alignSelf: 'flex-start' },
+  subtaskText: { color: '#00aaff', fontWeight: 'bold' },
 });
 
 export default TaskCard;

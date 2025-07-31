@@ -67,7 +67,7 @@ const TaskBrowser = ({
             task={item}
             drag={drag}
             isActive={isActive}
-            onPress={() => setPath([...path, item.id])}
+            onOpenSubtasks={() => setPath([...path, item.id])}
             testID={`${testIDPrefix}${item.id}`}
           />
         )}
