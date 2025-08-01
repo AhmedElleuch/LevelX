@@ -24,6 +24,7 @@ const TaskBrowser = ({
   const [path, setPath] = useState([]);
   const [title, setTitle] = useState('');
   const reorderTasks = useUserStore((s) => s.reorderTasks);
+  const type = rootTitle.toLowerCase().replace(/s$/, '');
 
   useEffect(() => {
     if (!focusedTaskId) return;
@@ -95,6 +96,7 @@ const TaskBrowser = ({
             task={item}
             drag={drag}
             isActive={isActive}
+            type={type}
             onOpenSubtasks={() => setPath([...path, item.id])}
             testID={`${testIDPrefix}${item.id}`}
           />

@@ -7,9 +7,9 @@ import { startTimer } from '../services/focusTimer';
 import { startProductionTimer } from '../services/productionTimer';
 import { mapTasks } from '../utils/taskTree';
 import PriorityBadge from './PriorityBadge';
-import TaskDetails from './TaskDetails';
+import TaskScreen from './TaskScreen';
 
-const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, testID }) => {
+const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, testID, type }) => {
   const { colors } = useTheme();
   const [showDetails, setShowDetails] = useState(false);
   const tasks = useUserStore((s) => s.tasks);
@@ -134,7 +134,12 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
           )}
         </View>
       </TouchableOpacity>
-      <TaskDetails visible={showDetails} task={task} onClose={() => setShowDetails(false)} />
+      <TaskScreen
+        visible={showDetails}
+        task={task}
+        type={type}
+        onClose={() => setShowDetails(false)}
+      />
     </Swipeable>
   );
 }
