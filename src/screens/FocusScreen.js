@@ -59,7 +59,10 @@ const FocusScreen = () => {
         accessibilityRole='button'
         accessibilityLabel='Stop focus mode'
         style={styles.stop}
-        onPress={stopTimer}
+        onPress={() => {
+          stopTimer();
+          setIsFocusModeVisible(false);
+        }}
       >
         <Text style={styles.stopText}>Stop</Text>
       </TouchableOpacity>
@@ -75,6 +78,6 @@ const styles = StyleSheet.create({
   task: { padding: 12, borderBottomWidth: 1, borderColor: '#ccc' },
   stop: { backgroundColor: '#ff5555', paddingVertical: 12, borderRadius: 8, alignItems: 'center' },
   stopText: { color: '#fff', fontWeight: 'bold' },
-  close: { position: 'absolute', top: 10, right: 10, padding: 6 },
+  close: { position: 'absolute', top: 40, right: 10, padding: 6 },
   closeText: { fontSize: 18 },
 });
