@@ -5,7 +5,6 @@ import {
   StyleSheet,
   Platform,
   KeyboardAvoidingView,
-  ToastAndroid,
   FlatList,
   TouchableOpacity,
 } from 'react-native';
@@ -18,13 +17,9 @@ import BreakTimer from '../components/BreakTimer';
 import { resumeProductionTimer, resumeWasteTimer } from '../services/productionTimer';
 import { resumeTimer } from '../services/focusTimer';
 import ProductionTimer from '../components/ProductionTimer';
-import XPProgressBar from '../components/XPProgressBar';
 import { flattenTasks } from '../utils/taskTree';
 
 const HomeHeader = () => {
-  const { colors } = useTheme();
-  const dailyXp = useUserStore((s) => s.dailyXp);
-  const streak = useUserStore((s) => s.streak);
 
   return (
     <View>

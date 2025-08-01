@@ -2,7 +2,6 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert, Platform, ToastAndroid } from 'react-native';
-import { sortTasks } from '../utils/sortTasks';
 import {
   addChildTask,
   deleteTaskById,
