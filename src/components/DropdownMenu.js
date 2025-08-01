@@ -27,14 +27,12 @@ const DropdownMenu = () => {
 
   const exportData = async () => {
     const data = await AsyncStorage.getItem('levelx-store');
-    console.log('Export data requested');
     Alert.alert('Export', data || 'No data');
     close();
   };
 
   const logout = async () => {
     await AsyncStorage.removeItem('levelx-store');
-    console.log('User logged out');
     Alert.alert('Logged out');
     close();
   };

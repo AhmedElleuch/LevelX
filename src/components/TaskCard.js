@@ -60,7 +60,6 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
     } else if (!useUserStore.getState().isProductionActive) {
       startProductionTimer();
     }
-    console.log('Task started', { id });
   };
 
   const resumeTask = (id) => {
@@ -69,14 +68,12 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
       startProductionTimer();
       startTimer();
     }
-    console.log('Task resumed', { id });
   };
 
   const right = () => (
     <TouchableOpacity
       style={styles.swipeButton}
       onPress={() => {
-        console.log('Task removed', { id: task.id });
         removeTask(task.id);
       }}
     >
@@ -88,7 +85,6 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
     <TouchableOpacity
       style={styles.swipeButton}
       onPress={() => {
-        console.log('Task completed', { id: task.id });
         completeTask(task.id);
       }}
     >

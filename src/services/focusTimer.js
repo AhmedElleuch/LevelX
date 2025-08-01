@@ -19,7 +19,7 @@ export const notifyFocusEnd = async () => {
       trigger: null,
     });
   } catch (e) {
-    console.log('notification error', e);
+    // ignore notification errors
   }
 };
 

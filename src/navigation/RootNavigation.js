@@ -1,4 +1,9 @@
-import { createNavigationContainerRef } from '@react-navigation/native';
+let createNavigationContainerRef;
+try {
+  ({ createNavigationContainerRef } = require('@react-navigation/native'));
+} catch (e) {
+  createNavigationContainerRef = undefined;
+}
 
 export const navigationRef =
   typeof createNavigationContainerRef === 'function'

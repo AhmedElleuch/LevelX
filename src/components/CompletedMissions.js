@@ -9,9 +9,6 @@ const CompletedMissions = () => {
   const tasks = useUserStore((s) => s.tasks);
   const completed = flattenTasks(tasks).filter((t) => t.isCompleted);
   const totalXp = completed.length * 25;
-  useEffect(() => {
-    console.log('Completed missions', { count: completed.length });
-  }, [completed.length]);
 
   return (
     <View style={styles.container}>

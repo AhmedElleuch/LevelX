@@ -32,7 +32,6 @@ const ConfigMenu = ({ onClose }) => {
       duration: 300,
       useNativeDriver: true,
     }).start();
-    console.log('ConfigMenu mounted');
   }, []);
 
   const save = () => {
@@ -52,12 +51,7 @@ const ConfigMenu = ({ onClose }) => {
     if (!isNaN(inaVal) && inaVal > 0) {
       setInactivityMinutes(inaVal);
     }
-    console.log('Save settings', {
-      minutes: val,
-      xp: xpVal,
-      break: breakVal,
-      inactivity: inaVal,
-    });
+    // Save settings to store
     if (onClose) onClose();
   };
 

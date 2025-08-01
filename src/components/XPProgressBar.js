@@ -16,7 +16,6 @@ const XPProgressBar = () => {
       duration: 500,
       useNativeDriver: false,
     }).start();
-    console.log('XP updated', { xp, level });
   }, [xp]);
 
   return (

@@ -81,7 +81,6 @@ const HomeScreen = () => {
   const [focusedTaskId, setFocusedTaskId] = useState(null);
 
   useEffect(() => {
-    console.log('HomeScreen mounted', { tasksCount: tasks.length });
     resumeProductionTimer();
     resumeWasteTimer();
     resumeTimer();
