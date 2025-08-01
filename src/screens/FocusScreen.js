@@ -4,17 +4,18 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@react-navigation/native';
 import { useUserStore } from '../store/userStore';
 import { stopTimer } from '../services/focusTimer';
-import { flattenTasks } from '../utils/taskTree';
+import { tasksAtSameLevelWithChildren } from '../utils/taskTree';
 
 const FocusScreen = () => {
   const { colors } = useTheme();
   const secondsLeft = useUserStore((s) => s.secondsLeft);
   const tasks = useUserStore((s) => s.tasks);
+  const activeTaskId = useUserStore((s) => s.activeTaskId);
   const toggleTaskCompletion = useUserStore((s) => s.toggleTaskCompletion);
 
   const minutes = String(Math.floor(secondsLeft / 60)).padStart(2, '0');
   const seconds = String(secondsLeft % 60).padStart(2, '0');
-  const allTasks = flattenTasks(tasks);
+  const allTasks = tasksAtSameLevelWithChildren(tasks, activeTaskId);
 
   return (
     <SafeAreaView
