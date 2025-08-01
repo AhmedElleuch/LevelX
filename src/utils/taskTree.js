@@ -95,8 +95,9 @@ export const findTaskPath = (tasks, id, path = []) => {
 };
 
 export const tasksAtSameLevelWithChildren = (tasks, id) => {
+  if (!id) return flattenTasks(tasks);
   const path = findTaskPath(tasks, id);
-  if (!path) return [];
+  if (!path) return flattenTasks(tasks);
   const parentId = path.length > 1 ? path[path.length - 2] : null;
   const siblings = parentId ? findTaskById(tasks, parentId).children : tasks;
   return flattenTasks(siblings);

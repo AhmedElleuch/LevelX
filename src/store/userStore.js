@@ -51,7 +51,13 @@ const applyLockStatus = (tasks, allMap = null) => {
   }));
 };
 
-const updateTasksState = (tasks) => applyLockStatus(applyBlocking(tasks.map(ensureTaskFields)));
+const updateTasksState = (tasks) =>
+  applyLockStatus(applyBlocking(tasks.map(ensureTaskFields)));
+
+const syncTasks = (tasks) => {
+  const updated = updateTasksState(tasks);
+  return { tasks: updated, projects: updated };
+};
 
 const createCategoryActions = (key, initial = []) => (set, get) => {
   const singular = key.replace(/s$/, '');
@@ -179,7 +185,60 @@ export const useUserStore = create(
       priority: 'Medium',
       setPriority: (p) => set({ priority: p }),
 
-      ...createCategoryActions('projects')(set, get),
+      tasks: [],
+      setTasks: (tasks) => set(syncTasks(tasks)),
+      addTask: (task) =>
+        set((state) => syncTasks([...state.tasks, task])),
+      addSubtask: (parentId, task) =>
+        set((state) => {
+          const depth = getTaskDepth(state.tasks, parentId);
+          if (depth >= 5) return {};
+          return syncTasks(addChildTask(state.tasks, parentId, task));
+        }),
+      editTask: (id, updates) =>
+        set((state) =>
+          syncTasks(
+            updateTaskById(state.tasks, id, (t) => ({ ...t, ...updates }))
+          )
+        ),
+      removeTask: (id) =>
+        set((state) => syncTasks(deleteTaskById(state.tasks, id))),
+      moveTaskToTop: (id) =>
+        set((state) => {
+          const index = state.tasks.findIndex((t) => t.id === id);
+          if (index === -1) return {};
+          const updated = [...state.tasks];
+          const [item] = updated.splice(index, 1);
+          updated.unshift(item);
+          return syncTasks(updated);
+        }),
+      reorderTasks: (parentId, order) =>
+        set((state) =>
+          syncTasks(reorderTasksByParentId(state.tasks, parentId, order))
+        ),
+      toggleTaskCompletion: (id) =>
+        set((state) =>
+          syncTasks(
+            updateTaskById(state.tasks, id, (t) => ({
+              ...t,
+              isCompleted: !t.isCompleted,
+              dateFinished: t.isCompleted ? null : new Date().toISOString(),
+            }))
+          )
+        ),
+
+      // project aliases
+      projects: [],
+      setProjects: (items) => get().setTasks(items),
+      addProject: (item) => get().addTask(item),
+      addProjectSubtask: (pid, item) => get().addSubtask(pid, item),
+      editProject: (id, upd) => get().editTask(id, upd),
+      removeProject: (id) => get().removeTask(id),
+      moveProjectToTop: (id) => get().moveTaskToTop(id),
+      reorderProjects: (pid, order) => get().reorderTasks(pid, order),
+      toggleProjectCompletion: (id) => get().toggleTaskCompletion(id),
+      completeProject: (id) => get().completeTask(id),
+
       ...createCategoryActions('habits')(set, get),
       ...createCategoryActions('skills')(set, get),
 
@@ -277,4 +336,12 @@ export const useUserStore = create(
     }
   )
 );
+
+Object.defineProperty(global, 'projects', {
+  get: () => useUserStore.getState().projects,
+  configurable: true,
+});
+global.addproject = (item) => useUserStore.getState().addProject(item);
+global.addprojectSubtask = (id, item) =>
+  useUserStore.getState().addProjectSubtask(id, item);
 
