@@ -1,7 +1,14 @@
 import { createNavigationContainerRef } from '@react-navigation/native';
 
-export const navigationRef = createNavigationContainerRef();
-
+export const navigationRef =
+  typeof createNavigationContainerRef === 'function'
+    ? createNavigationContainerRef()
+    : {
+        isReady: () => false,
+        navigate: () => {},
+        canGoBack: () => false,
+        goBack: () => {},
+      };
 export const navigate = (name, params) => {
   if (navigationRef.isReady()) {
     navigationRef.navigate(name, params);

@@ -29,9 +29,8 @@ const ensureTaskFields = (task) => ({
 });
 
 const applyBlocking = (tasks) =>
-  tasks.map((t, i) => ({
+  tasks.map((t) => ({
     ...t,
-    blockingTasks: i === 0 ? [] : [tasks[i - 1].id],
     children: t.children ? applyBlocking(t.children) : [],
   }));
 

@@ -11,8 +11,7 @@ import {
 import { useTheme, useNavigation, useRoute } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useUserStore } from '../store/userStore';
-import { findTaskById, findTaskPath } from '../utils/taskTree';
-
+import { findTaskById, findTaskPath, tasksAtSameLevelWithChildren } from '../utils/taskTree';
 const TaskScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -42,6 +41,9 @@ const TaskScreen = () => {
   const parentId = path.length > 1 ? path[path.length - 2] : null;
   const parentTask = parentId ? findTaskById(allMap, parentId) : null;
   const openTask = (t) => navigation.push('Task', { id: t.id, type });
+  const rootTitles = { project: 'Projects', habit: 'Habits', skill: 'Skills' };
+  const rootTitle = rootTitles[type];
+
   const addNote = () => {
     if (!note.trim()) return;
     edit(current.id, { userNotes: [...current.userNotes, note] });
@@ -54,6 +56,19 @@ const TaskScreen = () => {
   const blocking = current.blockingTasks
     .map((tid) => findTaskById(allMap, tid))
     .filter(Boolean);
+
+    const available = tasksAtSameLevelWithChildren(allMap, current.id).filter(
+    (t) => t.id !== current.id
+  );
+
+  const toggleBlocking = (id) => {
+    const exists = current.blockingTasks.includes(id);
+    const updated = exists
+      ? current.blockingTasks.filter((b) => b !== id)
+      : [...current.blockingTasks, id];
+    edit(current.id, { blockingTasks: updated });
+    setCurrent({ ...current, blockingTasks: updated });
+  };
 
   return (
     <SafeAreaView style={[styles.flex, { backgroundColor: colors.background }]}>
@@ -105,8 +120,7 @@ const TaskScreen = () => {
               <Text style={{ color: colors.primary }}>{parentTask.title}</Text>
             </TouchableOpacity>
           ) : (
-            <Text style={{ color: colors.text }}>None</Text>
-          )}
+            <Text style={{ color: colors.text }}>{rootTitle}</Text>          )}
         </View>
         <Text style={[styles.subHeader, { color: colors.text }]}>Subtasks</Text>
         {current.children && current.children.length ? (
@@ -130,6 +144,14 @@ const TaskScreen = () => {
         ) : (
           <Text style={{ color: colors.text }}>None</Text>
         )}
+            <Text style={[styles.subHeader, { color: colors.text }]}>Manage Blocking</Text>
+            {available.map((t) => (
+              <TouchableOpacity key={t.id} onPress={() => toggleBlocking(t.id)} style={styles.relationRow}>
+                <Text style={{ color: colors.primary, flex: 1 }}>
+                  {current.blockingTasks.includes(t.id) ? 'Remove' : 'Add'} {t.title}
+                </Text>
+              </TouchableOpacity>
+            ))}
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.closeBtn}>
           <Text style={styles.closeText}>Close</Text>
         </TouchableOpacity>

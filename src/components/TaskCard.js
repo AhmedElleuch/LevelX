@@ -14,12 +14,38 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
   const tasks = useUserStore((s) => s.tasks);
   const setTasks = useUserStore((s) => s.setTasks);
   const setActiveTaskId = useUserStore((s) => s.setActiveTaskId);
-  const removeTask = useUserStore((s) => s.removeTask);
-  const completeTask = useUserStore((s) => s.completeTask);
+  const removeProject = useUserStore((s) => s.removeProject);
+  const removeHabit = useUserStore((s) => s.removeHabit);
+  const removeSkill = useUserStore((s) => s.removeSkill);
+  const completeProject = useUserStore((s) => s.completeProject);
+  const completeHabit = useUserStore((s) => s.completeHabit);
+  const completeSkill = useUserStore((s) => s.completeSkill);
+  const toggleProjectCompletion = useUserStore((s) => s.toggleProjectCompletion);
+  const toggleHabitCompletion = useUserStore((s) => s.toggleHabitCompletion);
+  const toggleSkillCompletion = useUserStore((s) => s.toggleSkillCompletion);
   const isTimerRunning = useUserStore((s) => s.isTimerRunning);
   const activeTaskId = useUserStore((s) => s.activeTaskId);
-  const toggleTaskCompletion = useUserStore((s) => s.toggleTaskCompletion);
 
+  const removeTask =
+    {
+      project: removeProject,
+      habit: removeHabit,
+      skill: removeSkill,
+    }[type] || removeProject;
+
+  const completeTask =
+    {
+      project: completeProject,
+      habit: completeHabit,
+      skill: completeSkill,
+    }[type] || completeProject;
+
+  const toggleTaskCompletion =
+    {
+      project: toggleProjectCompletion,
+      habit: toggleHabitCompletion,
+      skill: toggleSkillCompletion,
+    }[type] || toggleProjectCompletion;
   const startTask = (id) => {
     const updated = mapTasks(tasks, (t) =>
       t.id === id
@@ -94,7 +120,7 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
             <Text style={[styles.text, { color: colors.text }]}>{task.title}</Text>
           </View>
           <TouchableOpacity onPress={() => navigate('Task', { id: task.id, type })} style={styles.menu}>
-            <Text style={styles.dragText}>⋮</Text>
+            <Text style={styles.menuText}>⋮</Text>
           </TouchableOpacity>
         </View>
         {onOpenSubtasks && (
@@ -164,8 +190,9 @@ const styles = StyleSheet.create({
   completeText: { color: 'green' },
   dragging: { opacity: 0.7 },
   dragHandle: { marginLeft: 6, padding: 8 },
-  dragText: { color: '#999', fontSize: 20 },
+  dragText: { color: '#999', fontSize: 24 },
   menu: { marginLeft: 6, padding: 8 },
+  menuText: { color: '#999', fontSize: 24 },
   subtaskBtn: { marginTop: 10, alignSelf: 'flex-start' },
   subtaskText: { color: '#00aaff', fontWeight: 'bold' },
   titleRow: { flexDirection: 'row', alignItems: 'center' },
