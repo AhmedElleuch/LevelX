@@ -75,6 +75,9 @@ const HomeScreen = () => {
   const habits = useUserStore((s) => s.habits);
   const addHabit = useUserStore((s) => s.addHabit);
   const addHabitSubtask = useUserStore((s) => s.addHabitSubtask);
+  const skills = useUserStore((s) => s.skills);
+  const addSkill = useUserStore((s) => s.addSkill);
+  const addSkillSubtask = useUserStore((s) => s.addSkillSubtask);
   const [focusedTaskId, setFocusedTaskId] = useState(null);
 
   useEffect(() => {
@@ -98,7 +101,16 @@ const HomeScreen = () => {
             <View>
               <HomeHeader />
               <WelcomeSection onSelect={setFocusedTaskId} />
-              <TaskBrowser focusedTaskId={focusedTaskId} />
+              <View>
+                <TaskBrowser style={{ marginTop: 20 }}
+                  tasks={projects}
+                    addTaskRoot={addproject}
+                    addSubtask={addprojectSubtask}
+                    rootTitle='Projects'
+                    testIDPrefix='project-'
+                    focusedTaskId={focusedTaskId}
+                />
+              </View>
               <View style={{ marginTop: 20 }}>
                 <TaskBrowser
                   tasks={habits}
@@ -106,6 +118,16 @@ const HomeScreen = () => {
                   addSubtask={addHabitSubtask}
                   rootTitle='Habits'
                   testIDPrefix='habit-'
+                  focusedTaskId={focusedTaskId}
+                />
+              </View>
+              <View style={{ marginTop: 20 }}>
+                <TaskBrowser
+                  tasks={skills}
+                  addTaskRoot={addSkill}
+                  addSubtask={addSkillSubtask}
+                  rootTitle='Skills'
+                  testIDPrefix='skill-'
                   focusedTaskId={focusedTaskId}
                 />
               </View>

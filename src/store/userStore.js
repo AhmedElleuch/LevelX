@@ -53,6 +53,77 @@ const applyLockStatus = (tasks, allMap = null) => {
 
 const updateTasksState = (tasks) => applyLockStatus(applyBlocking(tasks.map(ensureTaskFields)));
 
+const createCategoryActions = (key, initial = []) => (set, get) => {
+  const singular = key.replace(/s$/, '');
+  const capPlural = key.charAt(0).toUpperCase() + key.slice(1);
+  const capSingular = singular.charAt(0).toUpperCase() + singular.slice(1);
+  return {
+    [key]: initial,
+    [`set${capPlural}`]: (items) => set({ [key]: updateTasksState(items) }),
+    [`add${capSingular}`]: (item) =>
+      set((state) => ({ [key]: updateTasksState([...state[key], item]) })),
+    [`add${capSingular}Subtask`]: (parentId, item) =>
+      set((state) => {
+        const depth = getTaskDepth(state[key], parentId);
+        if (depth >= 5) return {};
+        return {
+          [key]: updateTasksState(addChildTask(state[key], parentId, item)),
+        };
+      }),
+    [`edit${capSingular}`]: (id, updates) =>
+      set((state) => ({
+        [key]: updateTasksState(
+          updateTaskById(state[key], id, (t) => ({ ...t, ...updates }))
+        ),
+      })),
+    [`remove${capSingular}`]: (id) =>
+      set((state) => ({ [key]: updateTasksState(deleteTaskById(state[key], id)) })),
+    [`move${capSingular}ToTop`]: (id) =>
+      set((state) => {
+        const index = state[key].findIndex((t) => t.id === id);
+        if (index === -1) return {};
+        const updated = [...state[key]];
+        const [item] = updated.splice(index, 1);
+        updated.unshift(item);
+        return { [key]: updateTasksState(updated) };
+      }),
+    [`reorder${capPlural}`]: (parentId, order) =>
+      set((state) => ({
+        [key]: updateTasksState(
+          reorderTasksByParentId(state[key], parentId, order)
+        ),
+      })),
+    [`toggle${capSingular}Completion`]: (id) =>
+      set((state) => ({
+        [key]: updateTasksState(
+          updateTaskById(state[key], id, (t) => ({
+            ...t,
+            isCompleted: !t.isCompleted,
+          }))
+        ),
+      })),
+    [`complete${capSingular}`]: (id) => {
+      set((state) => ({
+        [key]: updateTasksState(
+          updateTaskById(state[key], id, (t) => ({
+            ...t,
+            isCompleted: true,
+          }))
+        ),
+      }));
+      const { addXp, checkLevel, updateStreak } = get();
+      addXp(25);
+      checkLevel();
+      updateStreak();
+      if (Platform.OS === 'android') {
+        ToastAndroid.show('+25 XP!', ToastAndroid.SHORT);
+      } else {
+        Alert.alert('+25 XP!');
+      }
+    },
+  };
+};
+
 export const useUserStore = create(
   persist(
     (set, get) => ({
@@ -108,112 +179,9 @@ export const useUserStore = create(
       priority: 'Medium',
       setPriority: (p) => set({ priority: p }),
 
-      tasks: [],
-      setTasks: (tasks) => set({ tasks: updateTasksState(tasks) }),
-      addTask: (task) =>
-        set((state) => ({ tasks: updateTasksState([...state.tasks, task]) })),
-      addSubtask: (parentId, task) =>
-        set((state) => {
-          const depth = getTaskDepth(state.tasks, parentId);
-          if (depth >= 5) return {};
-          return { tasks: updateTasksState(addChildTask(state.tasks, parentId, task)) };
-        }),
-      editTask: (id, updates) =>
-        set((state) => ({
-          tasks: updateTasksState(
-            updateTaskById(state.tasks, id, (t) => ({ ...t, ...updates }))
-          ),
-        })),
-      removeTask: (id) =>
-        set((state) => ({ tasks: updateTasksState(deleteTaskById(state.tasks, id)) })),
-
-
-      moveTaskToTop: (id) =>
-        set((state) => {
-          const index = state.tasks.findIndex((t) => t.id === id);
-          if (index === -1) return {};
-          const updated = [...state.tasks];
-          const [item] = updated.splice(index, 1);
-          updated.unshift(item);
-          return { tasks: updateTasksState(updated) };
-        }),
-
-      reorderTasks: (parentId, newOrder) =>
-        set((state) => ({
-          tasks: updateTasksState(
-            reorderTasksByParentId(state.tasks, parentId, newOrder)
-          ),
-        })),
-
-      toggleTaskCompletion: (id) =>
-        set((state) => ({
-          tasks: updateTasksState(
-            updateTaskById(state.tasks, id, (t) => ({
-              ...t,
-              isCompleted: !t.isCompleted,
-              dateFinished: t.isCompleted ? null : new Date().toISOString(),
-            }))
-          ),
-        })),
-
-      habits: [
-        {
-          id: 'habit-daily',
-          title: 'Daily',
-          priority: 'Medium',
-          isStarted: false,
-          isCompleted: false,
-          children: [
-            {
-              id: 'habit-sleep',
-              title: 'Sleep',
-              priority: 'Medium',
-              isStarted: false,
-              isCompleted: false,
-            },
-            {
-              id: 'habit-wake',
-              title: 'Wake Up',
-              priority: 'Medium',
-              isStarted: false,
-              isCompleted: false,
-            },
-          ],
-        },
-      ],
-      setHabits: (habits) => set({ habits }),
-      addHabit: (habit) =>
-        set((state) => ({ habits: [...state.habits, habit] })),
-      addHabitSubtask: (parentId, habit) =>
-        set((state) => {
-          const depth = getTaskDepth(state.habits, parentId);
-          if (depth >= 5) return {};
-          return { habits: addChildTask(state.habits, parentId, habit) };
-        }),
-      toggleHabitCompletion: (id) =>
-        set((state) => ({
-          habits: updateTaskById(state.habits, id, (t) => ({
-            ...t,
-            isCompleted: !t.isCompleted,
-          })),
-        })),
-      completeHabit: (id) => {
-        set((state) => ({
-          habits: updateTaskById(state.habits, id, (t) => ({
-            ...t,
-            isCompleted: true,
-          })),
-        }));
-        const { addXp, checkLevel, updateStreak } = get();
-        addXp(25);
-        checkLevel();
-        updateStreak();
-        if (Platform.OS === 'android') {
-          ToastAndroid.show('+25 XP!', ToastAndroid.SHORT);
-        } else {
-          Alert.alert('+25 XP!');
-        }
-      },
+      ...createCategoryActions('projects')(set, get),
+      ...createCategoryActions('habits')(set, get),
+      ...createCategoryActions('skills')(set, get),
 
       // Profile
       name: '',
