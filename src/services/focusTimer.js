@@ -1,6 +1,7 @@
 import { Alert } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import { useUserStore } from '../store/userStore';
+import { navigate } from '../navigation/RootNavigation';
 import {
   startProductionTimer,
   resumeProductionTimer,
@@ -39,6 +40,7 @@ export const startTimer = () => {
   setSecondsLeft(focusMinutes * 60);
   setIsTimerRunning(true);
   setIsFocusModeVisible(true);
+  navigate('Focus');
   setFocusStartTime(Date.now());
 
   const id = setInterval(() => {
@@ -91,6 +93,7 @@ export const resumeTimer = () => {
 
   setIsTimerRunning(true);
   setIsFocusModeVisible(true);
+  navigate('Focus');
   setFocusStartTime(Date.now());
 
   const id = setInterval(() => {
