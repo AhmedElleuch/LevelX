@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@react-navigation/native';
 import { useUserStore } from '../store/userStore';
 import { stopTimer } from '../services/focusTimer';
+import { navigate } from '../navigation/RootNavigation';
 import { tasksAtSameLevelWithChildren } from '../utils/taskTree';
 
 const FocusScreen = () => {
@@ -28,7 +29,10 @@ const FocusScreen = () => {
         accessibilityRole='button'
         accessibilityLabel='Close focus mode'
         style={styles.close}
-        onPress={() => setIsFocusModeVisible(false)}
+        onPress={() => {
+          setIsFocusModeVisible(false);
+          navigate('Main', { screen: 'Home' });
+        }}
       >
         <Text style={[styles.closeText, { color: colors.text }]}>✕</Text>
       </TouchableOpacity>
@@ -61,7 +65,7 @@ const FocusScreen = () => {
         style={styles.stop}
         onPress={() => {
           stopTimer();
-          setIsFocusModeVisible(false);
+          navigate('Main', { screen: 'Home' });
         }}
       >
         <Text style={styles.stopText}>Stop</Text>
