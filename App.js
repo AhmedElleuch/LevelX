@@ -7,6 +7,7 @@ import PerformanceScreen from './src/screens/PerformanceScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import DropdownMenu from './src/components/DropdownMenu';
 import FocusScreen from './src/screens/FocusScreen';
+import TaskScreen from './src/screens/TaskScreen';
 import { useUserStore } from './src/store/userStore';
 import { getThemeColors } from './src/utils/themeColors';
 import { AppState } from 'react-native';
@@ -64,6 +65,7 @@ const App = () => {
     <NavigationContainer ref={navigationRef} theme={theme}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name='Main' component={MainTabs} />
+        <Stack.Screen name='Task' component={TaskScreen} />
         <Stack.Screen name='Focus' component={FocusScreen} />
       </Stack.Navigator>
     </NavigationContainer>

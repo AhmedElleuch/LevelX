@@ -41,7 +41,7 @@ Timer logic is split between **`src/services/focusTimer.js`** and **`src/service
 - **`ProductionTimer.js`** – Displays the active production timer.
 - **`TimerDisplay.js`** – Shows the countdown for a focus session.
 - **`TaskCard.js`** – Represents a single task and starts a timer when the user taps *Start*.
-- **`TaskScreen.js`** – Modal for viewing and editing any task's details. Opens from the three-dot menu on each card and supports projects, habits and skills.
+- **`TaskScreen.js`** – Screen for viewing and editing any task's details. Opens from the three-dot menu on each card and supports projects, habits and skills.
 - **`ConfigMenu.js`** – Allows editing the focus minutes used for new timers.
 
 ## Screens

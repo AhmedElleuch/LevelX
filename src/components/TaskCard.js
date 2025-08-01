@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { Swipeable } from 'react-native-gesture-handler';
@@ -7,11 +7,10 @@ import { startTimer } from '../services/focusTimer';
 import { startProductionTimer } from '../services/productionTimer';
 import { mapTasks } from '../utils/taskTree';
 import PriorityBadge from './PriorityBadge';
-import TaskScreen from './TaskScreen';
+import { navigate } from '../navigation/RootNavigation';
 
 const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, testID, type }) => {
   const { colors } = useTheme();
-  const [showDetails, setShowDetails] = useState(false);
   const tasks = useUserStore((s) => s.tasks);
   const setTasks = useUserStore((s) => s.setTasks);
   const setActiveTaskId = useUserStore((s) => s.setActiveTaskId);
@@ -94,7 +93,7 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
             <PriorityBadge level={task.priority} />
             <Text style={[styles.text, { color: colors.text }]}>{task.title}</Text>
           </View>
-          <TouchableOpacity onPress={() => setShowDetails(true)} style={styles.menu}>
+          <TouchableOpacity onPress={() => navigate('Task', { id: task.id, type })} style={styles.menu}>
             <Text style={styles.dragText}>⋮</Text>
           </TouchableOpacity>
         </View>
@@ -134,12 +133,6 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
           )}
         </View>
       </TouchableOpacity>
-      <TaskScreen
-        visible={showDetails}
-        task={task}
-        type={type}
-        onClose={() => setShowDetails(false)}
-      />
     </Swipeable>
   );
 }
