@@ -19,7 +19,6 @@ import { resumeProductionTimer, resumeWasteTimer } from '../services/productionT
 import { resumeTimer } from '../services/focusTimer';
 import ProductionTimer from '../components/ProductionTimer';
 import XPProgressBar from '../components/XPProgressBar';
-import FocusMode from '../components/focusMode';
 import { flattenTasks } from '../utils/taskTree';
 
 const HomeHeader = () => {

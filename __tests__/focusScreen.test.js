@@ -2,7 +2,7 @@ import React from 'react';
 import renderer, { act } from 'react-test-renderer';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { TouchableOpacity } from 'react-native';
-import FocusMode from '../src/components/focusMode';
+import FocusScreen from '../src/screens/FocusScreen';
 import { useUserStore } from '../src/store/userStore';
 import { stopTimer } from '../src/services/focusTimer';
 
@@ -49,7 +49,7 @@ test('renders tasks when timer running', () => {
   act(() => {
     tree = renderer.create(
       <SafeAreaProvider>
-        <FocusMode />
+        <FocusScreen />
       </SafeAreaProvider>
     );
   });
@@ -76,7 +76,7 @@ test('shows completed tasks for toggling', () => {
   act(() => {
     tree = renderer.create(
       <SafeAreaProvider>
-        <FocusMode />
+        <FocusScreen />
       </SafeAreaProvider>
     );
   });
@@ -103,7 +103,7 @@ test('stop button triggers stopTimer', () => {
   act(() => {
     tree = renderer.create(
       <SafeAreaProvider>
-        <FocusMode />
+        <FocusScreen />
       </SafeAreaProvider>
     );
   });
@@ -121,6 +121,36 @@ test('stop button triggers stopTimer', () => {
     stopButton.props.onPress();
   });
   expect(stopTimer).toHaveBeenCalled();
+
+  act(() => {
+    tree.unmount();
+  });
+});
+
+test('stop button has accessibility role', () => {
+  act(() => {
+    useUserStore.setState({
+      tasks: [],
+      isTimerRunning: true,
+      secondsLeft: 60,
+      isFocusModeVisible: true,
+      toggleTaskCompletion: () => {},
+    });
+  });
+
+  let tree;
+  act(() => {
+    tree = renderer.create(
+      <SafeAreaProvider>
+        <FocusScreen />
+      </SafeAreaProvider>
+    );
+  });
+
+  const stopButton = tree.root.findAllByType(TouchableOpacity).find(
+    btn => btn.props.accessibilityLabel === 'Stop focus mode'
+  );
+  expect(stopButton.props.accessibilityRole).toBe('button');
 
   act(() => {
     tree.unmount();

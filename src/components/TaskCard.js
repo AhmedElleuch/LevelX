@@ -90,20 +90,13 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
         testID={testID}
       >
         <View style={styles.header}>
-          <Text style={[styles.text, { color: colors.text }]}>{task.title}</Text>
-          <PriorityBadge level={task.priority} />
+          <View style={styles.titleRow}>
+            <PriorityBadge level={task.priority} />
+            <Text style={[styles.text, { color: colors.text }]}>{task.title}</Text>
+          </View>
           <TouchableOpacity onPress={() => setShowDetails(true)} style={styles.menu}>
             <Text style={styles.dragText}>⋮</Text>
           </TouchableOpacity>
-          {drag && (
-            <TouchableOpacity
-              onLongPress={drag}
-              style={styles.dragHandle}
-              testID='drag-handle'
-            >
-              <Text style={styles.dragText}>≡</Text>
-            </TouchableOpacity>
-          )}
         </View>
         {onOpenSubtasks && (
           <TouchableOpacity
@@ -114,20 +107,32 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
             <Text style={styles.subtaskText}>Subtasks</Text>
           </TouchableOpacity>
         )}
-
-        {task.isCompleted ? (
-          <Text style={styles.completed}>✅ Done</Text>
-        ) : !task.isStarted ? (
-          <TouchableOpacity style={styles.button} onPress={() => startTask(task.id)}>
-            <Text style={styles.buttonText}>▶ Start</Text>
-          </TouchableOpacity>
-        ) : !activeTaskId && !isTimerRunning ? (
-          <TouchableOpacity style={styles.button} onPress={() => resumeTask(task.id)}>
-            <Text style={styles.buttonText}>▶ Resume</Text>
-          </TouchableOpacity>
-        ) : (
-          <Text style={styles.locked}>🔒 Started</Text>
-        )}
+        <View style={styles.footer}>
+          {task.isCompleted ? (
+            <Text style={styles.completed}>✅ Done</Text>
+          ) : task.isLocked ? (
+            <Text style={styles.locked}>🔒 Locked</Text>
+          ) : !task.isStarted ? (
+            <TouchableOpacity style={styles.button} onPress={() => startTask(task.id)}>
+              <Text style={styles.buttonText}>▶ Start</Text>
+            </TouchableOpacity>
+          ) : !activeTaskId && !isTimerRunning ? (
+            <TouchableOpacity style={styles.button} onPress={() => resumeTask(task.id)}>
+              <Text style={styles.buttonText}>▶ Resume</Text>
+            </TouchableOpacity>
+          ) : (
+            <Text style={styles.locked}>🔒 Started</Text>
+          )}
+          {drag && (
+            <TouchableOpacity
+              onLongPress={drag}
+              style={styles.dragHandle}
+              testID='drag-handle'
+            >
+              <Text style={styles.dragText}>≡</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </TouchableOpacity>
       <TaskDetails visible={showDetails} task={task} onClose={() => setShowDetails(false)} />
     </Swipeable>
@@ -165,6 +170,8 @@ const styles = StyleSheet.create({
   menu: { marginLeft: 6, padding: 4 },
   subtaskBtn: { marginTop: 10, alignSelf: 'flex-start' },
   subtaskText: { color: '#00aaff', fontWeight: 'bold' },
+  titleRow: { flexDirection: 'row', alignItems: 'center' },
+  footer: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 },
 });
 
 export default TaskCard;
