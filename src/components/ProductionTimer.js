@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Text, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { useUserStore } from '../store/userStore';
 import { startProductionTimer, stopProductionTimer } from '../services/productionTimer';
@@ -6,9 +6,6 @@ import { startProductionTimer, stopProductionTimer } from '../services/productio
 const ProductionTimer = () => {
   const isProductionActive = useUserStore((s) => s.isProductionActive);
   const productionSeconds = useUserStore((s) => s.productionSeconds);
-
-  useEffect(() => {
-  }, [productionSeconds, isProductionActive]);
 
   if (!isProductionActive) {
     return (

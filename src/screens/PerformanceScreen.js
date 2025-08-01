@@ -67,7 +67,6 @@ const styles = StyleSheet.create({
   },
   prodBar: { backgroundColor: '#00cc66' },
   wasteBar: { backgroundColor: '#ff5555' },
-  text: { fontSize: 18, marginBottom: 10 },
   button: { backgroundColor: '#ff5555', padding: 12, borderRadius: 8, marginTop: 20 },
   buttonText: { color: '#fff', fontWeight: 'bold' },
 });
