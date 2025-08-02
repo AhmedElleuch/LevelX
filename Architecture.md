@@ -1,59 +1,142 @@
-# Architecture Overview
+# LevelX Architecture & Design
 
-This document explains the main structure of the LevelX React Native app. It references key modules and describes how navigation, state, and timers work together.
+## Overview
+LevelX is a React Native app built with Expo that helps users track tasks, habits, skills and focused work sessions. The project combines local state, timed sessions and progress tracking to encourage productivity.
 
-## Navigation Setup
+## Tech Stack
+- **React Native & Expo** for cross-platform mobile development.
+- **React Navigation** (bottom tabs + native stack) for screen flow.
+- **Zustand** with slice composition and **AsyncStorage** for persistent global state.
+- **Expo Notifications** and **react-native-gesture-handler** for user interaction and alerts.
 
-- **`App.js`** sets up a bottom tab navigator using `@react-navigation/native` and `@react-navigation/bottom-tabs`.
-- Two screens are registered: `Home` (`HomeScreen`) and `Performance` (`PerformanceScreen`). The menu button in the header opens a dropdown with settings and other options.
-- **`index.js`** registers `App` as the root component so Expo can bootstrap the app.
+## Folder Organization
+```
+/ (root)
+├── App.js                # navigation setup
+├── index.js              # Expo entry point
+├── src/
+│   ├── components/       # reusable UI pieces
+│   ├── navigation/       # navigation helpers
+│   ├── screens/          # app screens
+│   ├── services/         # timer logic
+│   ├── store/            # Zustand slices
+│   └── utils/            # helpers and constants
+```
 
+## Navigation & Screen Flow
+`App.js` configures a bottom tab navigator with **Home** and **Performance** tabs. A stack navigator wraps the tabs and provides additional screens:
 ```
 NavigationContainer
-  └─ Tab.Navigator
-      ├─ Home → HomeScreen
-      └─ Performance → PerformanceScreen
+  └─ Stack.Navigator
+      ├─ Main → Tab.Navigator
+      │   ├─ Home → HomeScreen
+      │   └─ Performance → PerformanceScreen
+      ├─ Task → TaskScreen
+      └─ Focus → FocusScreen
 ```
+The home header shows timers (`ProductionTimer`, `TimerDisplay`, `BreakTimer`). A dropdown menu in the header offers settings and other actions.
 
-## State Management with Zustand
-
-Global state lives in **`src/store/userStore.js`** using the `zustand` library. The store keeps:
-
-- Production timer flags (`isProductionActive`, `productionStartTime`, `productionSeconds`)
-- Task details (`taskTitle`, `priority`, `tasks`)
-- Focus timer values (`focusMinutes`, `isTimerRunning`, `secondsLeft`, `intervalId`)
-- Setter functions for each field
-
-Screens and components call these setters to update state and subscribe to changes with `useUserStore()`.
-
-State is persisted with the `persist` middleware using `createJSONStorage` so tasks and timer values survive app restarts via AsyncStorage.
-
-## Timers
-
-Timer logic is split between **`src/services/focusTimer.js`** and **`src/services/productionTimer.js`**.
-
-- `startProductionTimer` and `stopProductionTimer` manage a long running production timer. They update the store every second with the elapsed time.
-- `startTimer` starts a focus session for a task. It sets `secondsLeft` and counts down until zero, then shows an alert.
-- `ProductionTimer` and `TimerDisplay` components read timer values from the store and render the UI.
+## Component Hierarchy
+- **HomeScreen**: renders timers, suggestions and three `TaskBrowser` lists (projects, habits, skills).
+- **TaskBrowser**: lists hierarchical tasks using `TaskCard` and handles adding subtasks.
+- **TaskScreen**: detailed view for a task with notes, blocking relationships and navigation to subtasks.
+- **PerformanceScreen**: displays XP progress, production vs. waste chart and completed missions.
 
 ## Key Components
+- **ProductionTimer.js** – Displays the active production timer.
+- **TimerDisplay.js** – Shows the countdown for a focus session.
+- **TaskCard.js** – Represents a single task and starts a timer when the user taps *Start*.
+- **TaskScreen.js** – Screen for viewing and editing any task's details. Opens from the three-dot menu on each card and supports projects, habits and skills.
+- **ConfigMenu.js** – Allows editing the focus minutes used for new timers.
 
-- **`ProductionTimer.js`** – Displays the active production timer.
-- **`TimerDisplay.js`** – Shows the countdown for a focus session.
-- **`TaskCard.js`** – Represents a single task and starts a timer when the user taps *Start*.
-- **`TaskScreen.js`** – Screen for viewing and editing any task's details. Opens from the three-dot menu on each card and supports projects, habits and skills.
-- **`ConfigMenu.js`** – Allows editing the focus minutes used for new timers.
+## State Management
+Global state is created via `useUserStore` which composes slices:
+- `timerSlice` – production/waste/break timers and focus session data.
+- `tasksSlice`, `habitsSlice`, `skillsSlice` – task trees for each category.
+- `profileSlice` – user XP, level, streak and theme settings.
+State persists with `persist` and `AsyncStorage`, letting timers and tasks resume after app restarts.
 
-## Screens
-
-- **`HomeScreen.js`** – Main interface where tasks are added and timers are started. It renders `TimerDisplay`, `ProductionTimer`, and the list of `TaskCard` components.
-- **`PerformanceScreen.js`** – Shows timers and progress charts.
+## Services & Timers
+Two service modules encapsulate timing logic:
+- `productionTimer.js` manages production, waste, inactivity and break timers.
+- `focusTimer.js` runs focused work sessions, awards XP and transitions to breaks.
+Both services update the store every second and use `expo-notifications` to alert when sessions end.
 
 ## Data Flow
-
 1. **User interaction** – Pressing buttons or entering text on `HomeScreen` or the dropdown menu.
 2. **Store update** – Components call setters from `useUserStore` or timer functions (`startProductionTimer`, `startTimer`, `stopProductionTimer`).
 3. **Timers** – `setInterval` in the timer services updates values such as `productionSeconds` or `secondsLeft` in the store.
 4. **UI refresh** – Components that subscribe to the store (`ProductionTimer`, `TimerDisplay`, `TaskCard`, etc.) automatically re-render with the new data.
 
-This cycle keeps the UI in sync with user actions and background timers while remaining simple to reason about.
+## Data Models
+### Task
+```
+{
+  id: string,
+  title: string,
+  priority: 'Low' | 'Medium' | 'High',
+  isStarted: boolean,
+  isCompleted: boolean,
+  isManuallyLocked: boolean,
+  dateCreated: ISOString,
+  dateStarted: ISOString | null,
+  dateFinished: ISOString | null,
+  description: string,
+  dod: string,
+  userNotes: string[],
+  blockingTasks: string[],
+  children: Task[]
+}
+```
+Tasks, habits and skills share this structure and are stored as nested trees.
+
+### Profile
+```
+{
+  name: string,
+  activeTaskId: string | null,
+  xp: number,
+  dailyXp: number,
+  level: number,
+  streak: number,
+  theme: 'light' | 'dark',
+  difficulty: string
+}
+```
+
+### Timer State
+```
+{
+  isProductionActive: boolean,
+  productionSeconds: number,
+  isWasteActive: boolean,
+  wasteSeconds: number,
+  focusMinutes: number,
+  breakMinutes: number,
+  breakSeconds: number,
+  isOnBreak: boolean,
+  secondsLeft: number
+}
+```
+
+## Planned API Integration
+Future releases will sync tasks, profiles and timer history with a backend service. Planned endpoints include:
+- `POST /tasks` – create/update task trees
+- `POST /sessions` – upload production and focus session metrics
+- `GET /profile` – retrieve user XP, level and theme across devices
+API integration will rely on fetch-based services and merge server data into the store.
+
+## Key Design Decisions
+- **Slice-based store** keeps logic modular and testable.
+- **Service modules** isolate timing side effects from UI components.
+- **Flat task trees** are manipulated through utility helpers to enforce lock and blocking rules.
+- **Theming** uses a color helper that extends React Navigation themes.
+- **Navigation ref** enables timer services to open the Focus screen programmatically.
+
+## Roadmap
+- Add authentication and remote sync of tasks and progress.
+- Replace in-memory timers with a background-friendly solution.
+- Expand analytics with charts and history.
+- Introduce accessibility improvements and localization.
+- Convert codebase to TypeScript for stronger type safety.
+

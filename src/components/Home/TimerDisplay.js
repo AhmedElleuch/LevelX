@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Text, StyleSheet, View, TouchableOpacity } from 'react-native';
-import { useUserStore } from '../store/userStore';
-import { stopTimer, resumeTimer } from '../services/focusTimer';
+import { useUserStore } from '../../store/userStore';
+import { stopTimer, resumeTimer } from '../../services/focusTimer';
 
 const TimerDisplay = () => {
   const isTimerRunning = useUserStore((s) => s.isTimerRunning);

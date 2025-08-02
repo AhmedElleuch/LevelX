@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, StyleSheet, View, TouchableOpacity } from 'react-native';
-import { useUserStore } from '../store/userStore';
-import { startProductionTimer, stopProductionTimer } from '../services/productionTimer';
+import { useUserStore } from '../../store/userStore';
+import { startProductionTimer, stopProductionTimer } from '../../services/productionTimer';
 
 const ProductionTimer = () => {
   const isProductionActive = useUserStore((s) => s.isProductionActive);

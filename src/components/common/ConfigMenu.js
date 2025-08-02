@@ -8,7 +8,7 @@ import {
   Animated,
 } from 'react-native';
 import { useTheme } from '@react-navigation/native';
-import { useUserStore } from '../store/userStore';
+import { useUserStore } from '../../store/userStore';
 
 const ConfigMenu = ({ onClose }) => {
   const { colors } = useTheme();

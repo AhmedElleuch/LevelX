@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { useUserStore } from '../store/userStore';
+import { useUserStore } from '../../store/userStore';
 
 const BreakTimer = () => {
   const breakSeconds = useUserStore((s) => s.breakSeconds);

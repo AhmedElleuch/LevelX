@@ -2,12 +2,12 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { Swipeable } from 'react-native-gesture-handler';
-import { useUserStore } from '../store/userStore';
-import { startTimer } from '../services/focusTimer';
-import { startProductionTimer } from '../services/productionTimer';
-import { mapTasks } from '../utils/taskTree';
+import { useUserStore } from '../../store/userStore';
+import { startTimer } from '../../services/focusTimer';
+import { startProductionTimer } from '../../services/productionTimer';
+import { mapTasks } from '../../utils/taskTree';
 import PriorityBadge from './PriorityBadge';
-import { navigate } from '../navigation/RootNavigation';
+import { navigate } from '../../navigation/RootNavigation';
 
 const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, testID, type }) => {
   const { colors } = useTheme();

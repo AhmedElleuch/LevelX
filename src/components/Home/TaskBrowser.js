@@ -8,9 +8,9 @@ import {
 } from 'react-native';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import { useTheme } from '@react-navigation/native';
-import { useUserStore } from '../store/userStore';
+import { useUserStore } from '../../store/userStore';
 import TaskCard from './TaskCard';
-import { findTaskById, getTaskDepth, findTaskPath } from '../utils/taskTree';
+import { findTaskById, getTaskDepth, findTaskPath } from '../../utils/taskTree';
 
 const TaskBrowser = ({
   tasks = useUserStore((s) => s.tasks),

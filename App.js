@@ -3,9 +3,9 @@ import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { MaterialIcons } from '@expo/vector-icons';
-import PerformanceScreen from './src/screens/PerformanceScreen';
-import HomeScreen from './src/screens/HomeScreen';
-import DropdownMenu from './src/components/DropdownMenu';
+import PerformanceScreen from './src/screens/Performance';
+import HomeScreen from './src/screens/Home';
+import DropdownMenu from './src/components/common/DropdownMenu';
 import FocusScreen from './src/screens/FocusScreen';
 import TaskScreen from './src/screens/TaskScreen';
 import { useUserStore } from './src/store/userStore';

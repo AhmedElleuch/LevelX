@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useTheme } from '@react-navigation/native';
-import { useUserStore } from '../store/userStore';
-import { flattenTasks } from '../utils/taskTree';
+import { useUserStore } from '../../store/userStore';
+import { flattenTasks } from '../../utils/taskTree';
 
 const CompletedMissions = () => {
   const { colors } = useTheme();

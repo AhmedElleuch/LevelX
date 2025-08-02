@@ -9,7 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useUserStore } from '../store/userStore';
+import { useUserStore } from '../../store/userStore';
 import ConfigMenu from './ConfigMenu';
 
 const DropdownMenu = () => {

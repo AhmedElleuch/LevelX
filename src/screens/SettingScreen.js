@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import ConfigMenu from '../components/ConfigMenu';
+import ConfigMenu from '../components/common/ConfigMenu';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ConfigScreen = () => {

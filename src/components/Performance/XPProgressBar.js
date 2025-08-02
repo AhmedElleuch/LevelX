@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { View, Animated, StyleSheet, Text } from 'react-native';
-import { useUserStore } from '../store/userStore';
+import { useUserStore } from '../../store/userStore';
 
 const BAR_WIDTH = 200;
 
