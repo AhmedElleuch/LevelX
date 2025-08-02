@@ -3,7 +3,7 @@ import { Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@react-navigation/native';
 import { useUserStore } from '../store/userStore';
-import { stopTimer } from '../services/FocusTimer';
+import { stopTimer } from '../services/focusTimer';
 import { navigate } from '../navigation/RootNavigation';
 import { tasksAtSameLevelWithChildren } from '../utils/taskTree';
 

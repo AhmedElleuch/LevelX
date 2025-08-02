@@ -17,6 +17,7 @@ const ensureTaskFields = (task) => ({
   priority: task.priority || 'Low',
   isStarted: task.isStarted || false,
   isCompleted: task.isCompleted || false,
+  isManuallyLocked: task.isManuallyLocked || false,
   dateCreated: task.dateCreated || new Date().toISOString(),
   dateStarted: 'dateStarted' in task ? task.dateStarted : null,
   dateFinished: 'dateFinished' in task ? task.dateFinished : null,
@@ -44,7 +45,9 @@ const applyLockStatus = (tasks, allMap = null) => {
   }
   return tasks.map((t) => ({
     ...t,
-    isLocked: t.blockingTasks.some((id) => !allMap[id] || !allMap[id].isCompleted),
+    isLocked:
+      t.isManuallyLocked ||
+      t.blockingTasks.some((id) => !allMap[id] || !allMap[id].isCompleted),
     children: t.children ? applyLockStatus(t.children, allMap) : [],
   }));
 };
@@ -103,6 +106,15 @@ const createCategoryActions = (key, initial = []) => (set, get) => {
           updateTaskById(state[key], id, (t) => ({
             ...t,
             isCompleted: !t.isCompleted,
+          }))
+        ),
+      })),
+    [`toggle${capSingular}Lock`]: (id) =>
+      set((state) => ({
+        [key]: updateTasksState(
+          updateTaskById(state[key], id, (t) => ({
+            ...t,
+            isManuallyLocked: !t.isManuallyLocked,
           }))
         ),
       })),
@@ -224,6 +236,15 @@ export const useUserStore = create(
             }))
           )
         ),
+      toggleTaskLock: (id) =>
+        set((state) =>
+          syncTasks(
+            updateTaskById(state.tasks, id, (t) => ({
+              ...t,
+              isManuallyLocked: !t.isManuallyLocked,
+            }))
+          )
+        ),
 
       // project aliases
       projects: [],
@@ -235,6 +256,7 @@ export const useUserStore = create(
       moveProjectToTop: (id) => get().moveTaskToTop(id),
       reorderProjects: (pid, order) => get().reorderTasks(pid, order),
       toggleProjectCompletion: (id) => get().toggleTaskCompletion(id),
+      toggleProjectLock: (id) => get().toggleTaskLock(id),
       completeProject: (id) => get().completeTask(id),
 
       ...createCategoryActions('habits')(set, get),

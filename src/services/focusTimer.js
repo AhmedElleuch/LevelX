@@ -10,7 +10,7 @@ import {
   stopBreakTimer,
   stopWasteTimer,
   resetInactiveSeconds,
-} from './ProductionTimer';
+} from './productionTimer';
 
 export const notifyFocusEnd = async () => {
   try {

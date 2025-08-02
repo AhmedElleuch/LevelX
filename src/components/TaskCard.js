@@ -3,8 +3,8 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { Swipeable } from 'react-native-gesture-handler';
 import { useUserStore } from '../store/userStore';
-import { startTimer } from '../services/FocusTimer';
-import { startProductionTimer } from '../services/ProductionTimer';
+import { startTimer } from '../services/focusTimer';
+import { startProductionTimer } from '../services/productionTimer';
 import { mapTasks } from '../utils/taskTree';
 import PriorityBadge from './PriorityBadge';
 import { navigate } from '../navigation/RootNavigation';
@@ -14,24 +14,18 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
   const tasks = useUserStore((s) => s.tasks);
   const setTasks = useUserStore((s) => s.setTasks);
   const setActiveTaskId = useUserStore((s) => s.setActiveTaskId);
-  const removeProject = useUserStore((s) => s.removeProject);
-  const removeHabit = useUserStore((s) => s.removeHabit);
-  const removeSkill = useUserStore((s) => s.removeSkill);
   const completeProject = useUserStore((s) => s.completeProject);
   const completeHabit = useUserStore((s) => s.completeHabit);
   const completeSkill = useUserStore((s) => s.completeSkill);
   const toggleProjectCompletion = useUserStore((s) => s.toggleProjectCompletion);
   const toggleHabitCompletion = useUserStore((s) => s.toggleHabitCompletion);
   const toggleSkillCompletion = useUserStore((s) => s.toggleSkillCompletion);
+  const toggleProjectLock = useUserStore((s) => s.toggleProjectLock);
+  const toggleHabitLock = useUserStore((s) => s.toggleHabitLock);
+  const toggleSkillLock = useUserStore((s) => s.toggleSkillLock);
   const isTimerRunning = useUserStore((s) => s.isTimerRunning);
   const activeTaskId = useUserStore((s) => s.activeTaskId);
 
-  const removeTask =
-    {
-      project: removeProject,
-      habit: removeHabit,
-      skill: removeSkill,
-    }[type] || removeProject;
 
   const completeTask =
     {
@@ -46,6 +40,14 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
       habit: toggleHabitCompletion,
       skill: toggleSkillCompletion,
     }[type] || toggleProjectCompletion;
+
+    const toggleTaskLock =
+    {
+      project: toggleProjectLock,
+      habit: toggleHabitLock,
+      skill: toggleSkillLock,
+    }[type] || toggleProjectLock;
+
   const startTask = (id) => {
     const updated = mapTasks(tasks, (t) =>
       t.id === id
@@ -74,10 +76,10 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
     <TouchableOpacity
       style={styles.swipeButton}
       onPress={() => {
-        removeTask(task.id);
+        toggleTaskLock(task.id);
       }}
     >
-      <Text style={styles.deleteText}>Delete</Text>
+      <Text style={styles.lockText}>{task.isLocked ? 'Unlock' : 'Lock'}</Text>
     </TouchableOpacity>
   );
 
@@ -85,10 +87,12 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
     <TouchableOpacity
       style={styles.swipeButton}
       onPress={() => {
-        completeTask(task.id);
+        task.isCompleted
+          ? toggleTaskCompletion(task.id)
+          : completeTask(task.id);
       }}
     >
-      <Text style={styles.completeText}>Done</Text>
+      <Text style={styles.completeText}>{task.isCompleted ? 'Undone' : 'Done'}</Text>
     </TouchableOpacity>
   );
 
@@ -180,10 +184,9 @@ const styles = StyleSheet.create({
   buttonText: { color: '#fff', fontWeight: 'bold' },
   locked: { marginTop: 10, color: 'gray', fontStyle: 'italic' },
   completed: { marginTop: 10, color: 'green', fontStyle: 'italic' },
-  deleteButton: { marginTop: 8, alignSelf: 'flex-start' },
-  deleteText: { color: '#ff5555' },
   swipeButton: { justifyContent: 'center', paddingHorizontal: 20 },
   completeText: { color: 'green' },
+  lockText: { color: '#ff9900' },
   dragging: { opacity: 0.7 },
   dragHandle: { marginLeft: 6, padding: 8 },
   dragText: { color: '#999', fontSize: 24 },
