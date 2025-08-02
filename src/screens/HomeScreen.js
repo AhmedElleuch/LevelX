@@ -67,6 +67,8 @@ const WelcomeSection = ({ onSelect }) => {
 const HomeScreen = () => {
   const { colors } = useTheme();
   const tasks = useUserStore((s) => s.tasks);
+  const addTask = useUserStore((s) => s.addTask);
+  const addTaskSubtask = useUserStore((s) => s.addTaskSubtask);
   const habits = useUserStore((s) => s.habits);
   const addHabit = useUserStore((s) => s.addHabit);
   const addHabitSubtask = useUserStore((s) => s.addHabitSubtask);
@@ -96,13 +98,14 @@ const HomeScreen = () => {
               <HomeHeader />
               <WelcomeSection onSelect={setFocusedTaskId} />
               <View>
-                <TaskBrowser style={{ marginTop: 20 }}
-                  tasks={projects}
-                    addTaskRoot={addproject}
-                    addSubtask={addprojectSubtask}
-                    rootTitle='Projects'
-                    testIDPrefix='project-'
-                    focusedTaskId={focusedTaskId}
+                <TaskBrowser
+                  style={{ marginTop: 20 }}
+                  tasks={tasks}
+                  addTaskRoot={addTask}
+                  addSubtask={addTaskSubtask}
+                  rootTitle='Projects'
+                  testIDPrefix='project-'
+                  focusedTaskId={focusedTaskId}
                 />
               </View>
               <View style={{ marginTop: 20 }}>

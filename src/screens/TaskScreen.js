@@ -17,26 +17,26 @@ const TaskScreen = () => {
   const route = useRoute();
   const { id, type } = route.params;
   const { colors } = useTheme();
-  const projects = useUserStore((s) => s.projects);
+  const tasks = useUserStore((s) => s.tasks);
   const habits = useUserStore((s) => s.habits);
   const skills = useUserStore((s) => s.skills);
-  const editProject = useUserStore((s) => s.editProject);
+  const editTask = useUserStore((s) => s.editTask);
   const editHabit = useUserStore((s) => s.editHabit);
   const editSkill = useUserStore((s) => s.editSkill);
   const [current, setCurrent] = useState(null);
   const [note, setNote] = useState('');
 
   useEffect(() => {
-    const all = { project: projects, habit: habits, skill: skills }[type];
+    const all = { project: tasks, habit: habits, skill: skills }[type];
     const t = findTaskById(all, id);
     setCurrent(t);
     setNote('');
-  }, [id, type, projects, habits, skills]);
+  }, [id, type, tasks, habits, skills]);
 
   if (!current) return null;
 
-  const allMap = { project: projects, habit: habits, skill: skills }[type];
-  const edit = { project: editProject, habit: editHabit, skill: editSkill }[type];
+  const allMap = { project: tasks, habit: habits, skill: skills }[type];
+  const edit = { project: editTask, habit: editHabit, skill: editSkill }[type];
   const path = findTaskPath(allMap, current.id) || [];
   const parentId = path.length > 1 ? path[path.length - 2] : null;
   const parentTask = parentId ? findTaskById(allMap, parentId) : null;
