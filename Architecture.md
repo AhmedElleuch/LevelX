@@ -15,9 +15,14 @@ LevelX is a React Native app built with Expo that helps users track tasks, habit
 ├── App.js                # navigation setup
 ├── index.js              # Expo entry point
 ├── src/
-│   ├── components/       # reusable UI pieces
+│   ├── components/
+│   │   ├── Home/         # components used on Home screen
+│   │   ├── Performance/  # components for Performance screen
+│   │   └── common/       # shared UI pieces
 │   ├── navigation/       # navigation helpers
-│   ├── screens/          # app screens
+│   ├── screens/
+│   │   ├── Home/         # Home screen files
+│   │   └── Performance/  # Performance screen files
 │   ├── services/         # timer logic
 │   ├── store/            # Zustand slices
 │   └── utils/            # helpers and constants
