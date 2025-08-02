@@ -14,39 +14,49 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
   const tasks = useUserStore((s) => s.tasks);
   const setTasks = useUserStore((s) => s.setTasks);
   const setActiveTaskId = useUserStore((s) => s.setActiveTaskId);
-  const completeProject = useUserStore((s) => s.completeProject);
+  const completeTaskAction = useUserStore((s) => s.completeTask);
   const completeHabit = useUserStore((s) => s.completeHabit);
   const completeSkill = useUserStore((s) => s.completeSkill);
-  const toggleProjectCompletion = useUserStore((s) => s.toggleProjectCompletion);
-  const toggleHabitCompletion = useUserStore((s) => s.toggleHabitCompletion);
-  const toggleSkillCompletion = useUserStore((s) => s.toggleSkillCompletion);
-  const toggleProjectLock = useUserStore((s) => s.toggleProjectLock);
+  const toggleTaskLockAction = useUserStore((s) => s.toggleTaskLock);
   const toggleHabitLock = useUserStore((s) => s.toggleHabitLock);
   const toggleSkillLock = useUserStore((s) => s.toggleSkillLock);
+  const undoTaskAction = useUserStore((s) => s.undoTask);
+  const undoHabit = useUserStore((s) => s.undoHabit);
+  const undoSkill = useUserStore((s) => s.undoSkill);
+  const unlockTaskAction = useUserStore((s) => s.unlockTask);
+  const unlockHabit = useUserStore((s) => s.unlockHabit);
+  const unlockSkill = useUserStore((s) => s.unlockSkill);
   const isTimerRunning = useUserStore((s) => s.isTimerRunning);
   const activeTaskId = useUserStore((s) => s.activeTaskId);
 
 
   const completeTask =
     {
-      project: completeProject,
+      project: completeTaskAction,
       habit: completeHabit,
       skill: completeSkill,
-    }[type] || completeProject;
+    }[type] || completeTaskAction;
 
-  const toggleTaskCompletion =
+  const toggleTaskLock =
     {
-      project: toggleProjectCompletion,
-      habit: toggleHabitCompletion,
-      skill: toggleSkillCompletion,
-    }[type] || toggleProjectCompletion;
-
-    const toggleTaskLock =
-    {
-      project: toggleProjectLock,
+      project: toggleTaskLockAction,
       habit: toggleHabitLock,
       skill: toggleSkillLock,
-    }[type] || toggleProjectLock;
+    }[type] || toggleTaskLockAction;
+
+  const undoTask =
+    {
+      project: undoTaskAction,
+      habit: undoHabit,
+      skill: undoSkill,
+    }[type] || undoTaskAction;
+
+  const unlockTask =
+    {
+      project: unlockTaskAction,
+      habit: unlockHabit,
+      skill: unlockSkill,
+    }[type] || unlockTaskAction;
 
   const startTask = (id) => {
     const updated = mapTasks(tasks, (t) =>
@@ -87,9 +97,7 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
     <TouchableOpacity
       style={styles.swipeButton}
       onPress={() => {
-        task.isCompleted
-          ? toggleTaskCompletion(task.id)
-          : completeTask(task.id);
+        task.isCompleted ? undoTask(task.id) : completeTask(task.id);
       }}
     >
       <Text style={styles.completeText}>{task.isCompleted ? 'Undone' : 'Done'}</Text>
@@ -109,7 +117,7 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
           if (onPress) {
             onPress();
           } else if (isTimerRunning) {
-            toggleTaskCompletion(task.id);
+            task.isCompleted ? undoTask(task.id) : completeTask(task.id);
           }
         }}
         testID={testID}
@@ -134,9 +142,23 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
         )}
         <View style={styles.footer}>
           {task.isCompleted ? (
-            <Text style={styles.completed}>✅ Done</Text>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => undoTask(task.id)}
+            >
+              <Text style={styles.buttonText}>↩ Undo</Text>
+            </TouchableOpacity>
           ) : task.isLocked ? (
-            <Text style={styles.locked}>🔒 Locked</Text>
+            task.isManuallyLocked ? (
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => unlockTask(task.id)}
+              >
+                <Text style={styles.buttonText}>🔓 Unlock</Text>
+              </TouchableOpacity>
+            ) : (
+              <Text style={styles.locked}>🔒 Locked</Text>
+            )
           ) : !task.isStarted ? (
             <TouchableOpacity style={styles.button} onPress={() => startTask(task.id)}>
               <Text style={styles.buttonText}>▶ Start</Text>

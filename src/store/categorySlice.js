@@ -111,6 +111,25 @@ const createCategorySlice = (key) => (set, get) => {
           }))
         ),
       })),
+    [`undo${capSingular}`]: (id) =>
+      set((state) => ({
+        [key]: updateTasksState(
+          updateTaskById(state[key], id, (t) => ({
+            ...t,
+            isCompleted: false,
+            dateFinished: null,
+          }))
+        ),
+      })),
+    [`unlock${capSingular}`]: (id) =>
+      set((state) => ({
+        [key]: updateTasksState(
+          updateTaskById(state[key], id, (t) => ({
+            ...t,
+            isManuallyLocked: false,
+          }))
+        ),
+      })),
     [`complete${capSingular}`]: (id) => {
       set((state) => ({
         [key]: updateTasksState(
