@@ -48,6 +48,8 @@ const WelcomeSection = ({ onSelect }) => {
   return (
     <View style={{ marginBottom: 20 }}>
       <Text style={[styles.title, { color: colors.text }]}>Welcome back!</Text>
+      <Text style={[styles.section, { color: colors.text }]}>Suggestions</Text>
+
       {suggestions.map((t) => (
         <View key={t.id} style={styles.ticket} testID={`suggest-ticket-${t.id}`}> 
           <Text style={[styles.ticketText, { color: colors.text }]}>{t.title}</Text>

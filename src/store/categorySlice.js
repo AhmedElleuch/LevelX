@@ -59,7 +59,7 @@ const createCategorySlice = (key) => (set, get) => {
     [key]: [],
     [`set${capPlural}`]: (items) => set({ [key]: updateTasksState(items) }),
     [`add${capSingular}`]: (item) =>
-      set((state) => ({ [key]: updateTasksState([...state[key], item]) })),
+      set((state) => ({ [key]: updateTasksState([item, ...state[key]]) })),
     [`add${capSingular}Subtask`]: (parentId, item) =>
       set((state) => {
         const depth = getTaskDepth(state[key], parentId);

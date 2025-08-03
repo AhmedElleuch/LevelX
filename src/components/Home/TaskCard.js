@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { Swipeable } from 'react-native-gesture-handler';
+import { MaterialIcons } from '@expo/vector-icons';
 import { useUserStore } from '../../store/userStore';
 import { startTimer } from '../../services/focusTimer';
 import { startProductionTimer } from '../../services/productionTimer';
@@ -94,17 +95,16 @@ const handleMenuPress = () => navigate('Task', { id: task.id, type });
           <View style={styles.titleRow}>
             <PriorityBadge level={task.priority} />
             <Text style={[styles.text, { color: colors.text }]}>{task.title}</Text>
+            {onOpenSubtasks && (
+              <TouchableOpacity onPress={onOpenSubtasks} style={styles.subtaskIcon} testID='open-subtasks'>
+                <MaterialIcons name='subdirectory-arrow-right' size={20} color='#00aaff' />
+              </TouchableOpacity>
+            )}
           </View>
           <TouchableOpacity onPress={handleMenuPress} style={styles.menu}>
             <Text style={styles.menuText}>⋮</Text>
           </TouchableOpacity>
         </View>
-
-        {onOpenSubtasks && (
-          <TouchableOpacity onPress={onOpenSubtasks} style={styles.subtaskBtn} testID="open-subtasks">
-            <Text style={styles.subtaskText}>Subtasks</Text>
-          </TouchableOpacity>
-        )}
 
         <View style={styles.footer}>
           {task.isCompleted ? (
@@ -156,8 +156,7 @@ const styles = StyleSheet.create({
   dragText: { color: '#999', fontSize: 24 },
   menu: { marginLeft: 6, padding: 8 },
   menuText: { color: '#999', fontSize: 24 },
-  subtaskBtn: { marginTop: 10, alignSelf: 'flex-start' },
-  subtaskText: { color: '#00aaff', fontWeight: 'bold' },
+  subtaskIcon: { marginHorizontal: 6 },
   titleRow: { flexDirection: 'row', alignItems: 'center' },
   footer: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 },
 });

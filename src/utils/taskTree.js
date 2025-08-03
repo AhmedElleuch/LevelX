@@ -29,7 +29,7 @@ export const deleteTaskById = (tasks, id) => {
 export const addChildTask = (tasks, parentId, child) => {
   return tasks.map((t) => {
     if (t.id === parentId) {
-      return { ...t, children: [...(t.children || []), child] };
+      return { ...t, children: [child, ...(t.children || [])] };
     }
     if (t.children) {
       return { ...t, children: addChildTask(t.children, parentId, child) };
