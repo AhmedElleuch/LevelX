@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
+import React, { useEffect } from 'react';
+import { NavigationContainer, DefaultTheme, DarkTheme, ThemeProvider } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -11,7 +11,7 @@ import TaskScreen from './src/screens/TaskScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import { useUserStore } from './src/store/userStore';
 import { getThemeColors } from './src/utils/themeColors';
-import { AppState } from 'react-native';
+import { View, AppState, StyleSheet } from 'react-native';
 import { stopProductionTimer } from './src/services/productionTimer';
 import { navigationRef } from './src/navigation/RootNavigation';
 
@@ -35,10 +35,12 @@ const MainTabs = () => (
 
 const App = () => {
   const mode = useUserStore((s) => s.theme);
+  const isFocusModeVisible = useUserStore((s) => s.isFocusModeVisible);
   const colors = getThemeColors(mode);
-  const theme = mode === 'dark'
-    ? { ...DarkTheme, colors: { ...DarkTheme.colors, ...colors } }
-    : { ...DefaultTheme, colors: { ...DefaultTheme.colors, ...colors } };
+  const theme =
+    mode === 'dark'
+      ? { ...DarkTheme, colors: { ...DarkTheme.colors, ...colors } }
+      : { ...DefaultTheme, colors: { ...DefaultTheme.colors, ...colors } };
 
   useEffect(() => {
     const sub = AppState.addEventListener('change', (state) => {
@@ -48,34 +50,27 @@ const App = () => {
     });
     return () => sub.remove();
   }, []);
-  const prevRoute = useRef(null);
-  useEffect(() => {
-    const unsub = useUserStore.subscribe(
-      (v) => {
-        if (v) {
-          const current = navigationRef.getCurrentRoute()?.name;
-          if (current !== 'Focus') {
-            prevRoute.current = current;
-          }
-          navigationRef.navigate('Focus');
-        } else {
-          navigationRef.navigate(prevRoute.current || 'Main');
-          prevRoute.current = null;
-        }
-      },
-      (s) => s.isFocusModeVisible
-    );
-    return unsub;
-  }, []);
   return (
-    <NavigationContainer ref={navigationRef} theme={theme}>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name='Main' component={MainTabs} />
-        <Stack.Screen name='Task' component={TaskScreen} />
-        <Stack.Screen name='Settings' component={SettingsScreen} options={{ headerShown: true, headerRight: () => <DropdownMenu />, title: 'Settings' }} />
-        <Stack.Screen name='Focus' component={FocusScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <View style={{ flex: 1 }}>
+      <NavigationContainer ref={navigationRef} theme={theme}>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name='Main' component={MainTabs} />
+          <Stack.Screen name='Task' component={TaskScreen} />
+          <Stack.Screen
+            name='Settings'
+            component={SettingsScreen}
+            options={{ headerShown: true, headerRight: () => <DropdownMenu />, title: 'Settings' }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+      {isFocusModeVisible && (
+        <ThemeProvider value={theme}>
+          <View style={StyleSheet.absoluteFill}>
+            <FocusScreen />
+          </View>
+        </ThemeProvider>
+      )}
+    </View>
   );
 };
 

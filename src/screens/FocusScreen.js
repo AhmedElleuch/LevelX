@@ -1,7 +1,7 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme, useFocusEffect } from '@react-navigation/native';
+import { useTheme } from '@react-navigation/native';
 import { useUserStore } from '../store/userStore';
 import { stopTimer } from '../services/focusTimer';
 import { tasksAtSameLevelWithChildren } from '../utils/taskTree';
@@ -12,13 +12,7 @@ const FocusScreen = () => {
   const tasks = useUserStore((s) => s.tasks);
   const activeTaskId = useUserStore((s) => s.activeTaskId);
   const toggleTaskCompletion = useUserStore((s) => s.toggleTaskCompletion);
-  const setIsFocusModeVisible = useUserStore((s) => s.setIsFocusModeVisible);
-
-  useFocusEffect(
-    useCallback(() => {
-      return () => setIsFocusModeVisible(false);
-    }, [setIsFocusModeVisible])
-  );
+  
 
   const minutes = String(Math.floor(secondsLeft / 60)).padStart(2, '0');
   const seconds = String(secondsLeft % 60).padStart(2, '0');
@@ -30,14 +24,6 @@ const FocusScreen = () => {
       accessibilityLabel='Focus mode screen'
       style={[styles.container, { backgroundColor: colors.background }]}
     >
-      <TouchableOpacity
-        accessibilityRole='button'
-        accessibilityLabel='Close focus mode'
-        style={styles.close}
-        onPress={() => setIsFocusModeVisible(false)}
-      >
-        <Text style={[styles.closeText, { color: colors.text }]}>✕</Text>
-      </TouchableOpacity>
       <Text
         accessibilityLabel={`Time remaining ${minutes}:${seconds}`}
         style={[styles.timer, { color: colors.text }]}
@@ -81,6 +67,4 @@ const styles = StyleSheet.create({
   task: { padding: 12, borderBottomWidth: 1, borderColor: '#ccc' },
   stop: { backgroundColor: '#ff5555', paddingVertical: 12, borderRadius: 8, alignItems: 'center' },
   stopText: { color: '#fff', fontWeight: 'bold' },
-  close: { position: 'absolute', top: 40, right: 10, padding: 6 },
-  closeText: { fontSize: 18 },
 });
