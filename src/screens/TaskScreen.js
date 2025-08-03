@@ -12,6 +12,7 @@ import { useTheme, useNavigation, useRoute } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useUserStore } from '../store/userStore';
 import { findTaskById, findTaskPath, tasksAtSameLevelWithChildren } from '../utils/taskTree';
+import TaskCard from '../components/Home/TaskCard';
 const TaskScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -57,7 +58,7 @@ const TaskScreen = () => {
     .map((tid) => findTaskById(allMap, tid))
     .filter(Boolean);
 
-    const available = tasksAtSameLevelWithChildren(allMap, current.id).filter(
+  const available = tasksAtSameLevelWithChildren(allMap, current.id).filter(
     (t) => t.id !== current.id
   );
 
@@ -125,10 +126,7 @@ const TaskScreen = () => {
         <Text style={[styles.subHeader, { color: colors.text }]}>Subtasks</Text>
         {current.children && current.children.length ? (
           current.children.map((c) => (
-            <TouchableOpacity key={c.id} onPress={() => openTask(c)} style={styles.relationRow}>
-              <Text style={{ color: colors.primary, flex: 1 }}>{c.title}</Text>
-              {c.isCompleted && <Text style={{ color: 'green' }}>✓</Text>}
-            </TouchableOpacity>
+            <TaskCard key={c.id} task={c} type={type} />
           ))
         ) : (
           <Text style={{ color: colors.text }}>None</Text>
@@ -136,10 +134,7 @@ const TaskScreen = () => {
         <Text style={[styles.subHeader, { color: colors.text }]}>Blocking</Text>
         {blocking.length ? (
           blocking.map((b) => (
-            <TouchableOpacity key={b.id} onPress={() => openTask(b)} style={styles.relationRow}>
-              <Text style={{ color: colors.primary, flex: 1 }}>{b.title}</Text>
-              {b.isCompleted && <Text style={{ color: 'green' }}>✓</Text>}
-            </TouchableOpacity>
+            <TaskCard key={b.id} task={b} type={type} />
           ))
         ) : (
           <Text style={{ color: colors.text }}>None</Text>

@@ -83,6 +83,44 @@ const HomeScreen = () => {
     resumeTimer();
   }, []);
 
+  const headerComponent = (
+    <View>
+      <HomeHeader />
+      <WelcomeSection onSelect={setFocusedTaskId} />
+      <View>
+        <TaskBrowser
+          style={{ marginTop: 20 }}
+          tasks={tasks}
+          addTaskRoot={addTask}
+          addSubtask={addTaskSubtask}
+          rootTitle='Projects'
+          testIDPrefix='project-'
+          focusedTaskId={focusedTaskId}
+        />
+      </View>
+      <View style={{ marginTop: 20 }}>
+        <TaskBrowser
+          tasks={habits}
+          addTaskRoot={addHabit}
+          addSubtask={addHabitSubtask}
+          rootTitle='Habits'
+          testIDPrefix='habit-'
+          focusedTaskId={focusedTaskId}
+        />
+      </View>
+      <View style={{ marginTop: 20 }}>
+        <TaskBrowser
+          tasks={skills}
+          addTaskRoot={addSkill}
+          addSubtask={addSkillSubtask}
+          rootTitle='Skills'
+          testIDPrefix='skill-'
+          focusedTaskId={focusedTaskId}
+        />
+      </View>
+    </View>
+  );
+
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -93,43 +131,7 @@ const HomeScreen = () => {
           data={[]}
           keyExtractor={() => 'dummy'}
           renderItem={null}
-          ListHeaderComponent={() => (
-            <View>
-              <HomeHeader />
-              <WelcomeSection onSelect={setFocusedTaskId} />
-              <View>
-                <TaskBrowser
-                  style={{ marginTop: 20 }}
-                  tasks={tasks}
-                  addTaskRoot={addTask}
-                  addSubtask={addTaskSubtask}
-                  rootTitle='Projects'
-                  testIDPrefix='project-'
-                  focusedTaskId={focusedTaskId}
-                />
-              </View>
-              <View style={{ marginTop: 20 }}>
-                <TaskBrowser
-                  tasks={habits}
-                  addTaskRoot={addHabit}
-                  addSubtask={addHabitSubtask}
-                  rootTitle='Habits'
-                  testIDPrefix='habit-'
-                  focusedTaskId={focusedTaskId}
-                />
-              </View>
-              <View style={{ marginTop: 20 }}>
-                <TaskBrowser
-                  tasks={skills}
-                  addTaskRoot={addSkill}
-                  addSubtask={addSkillSubtask}
-                  rootTitle='Skills'
-                  testIDPrefix='skill-'
-                  focusedTaskId={focusedTaskId}
-                />
-              </View>
-            </View>
-          )}
+          ListHeaderComponent={headerComponent}
           style={{ flex: 1 }}
           contentContainerStyle={{ padding: 20 }}
           keyboardShouldPersistTaps='handled'

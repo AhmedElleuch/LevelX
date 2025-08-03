@@ -14,7 +14,7 @@ const ensureTaskFields = (task) => ({
   priority: task.priority || 'Low',
   isStarted: task.isStarted || false,
   isCompleted: task.isCompleted || false,
-  isManuallyLocked: task.isManuallyLocked || false,
+  isLocked: task.isLocked || false,
   dateCreated: task.dateCreated || new Date().toISOString(),
   dateStarted: 'dateStarted' in task ? task.dateStarted : null,
   dateFinished: 'dateFinished' in task ? task.dateFinished : null,
@@ -43,7 +43,6 @@ const applyLockStatus = (tasks, allMap = null) => {
   return tasks.map((t) => ({
     ...t,
     isLocked:
-      t.isManuallyLocked ||
       t.blockingTasks.some((id) => !allMap[id] || !allMap[id].isCompleted),
     children: t.children ? applyLockStatus(t.children, allMap) : [],
   }));
@@ -105,10 +104,12 @@ const createCategorySlice = (key) => (set, get) => {
     [`toggle${capSingular}Lock`]: (id) =>
       set((state) => ({
         [key]: updateTasksState(
-          updateTaskById(state[key], id, (t) => ({
-            ...t,
-            isManuallyLocked: !t.isManuallyLocked,
-          }))
+          updateTaskById(state[key], id, (t) => {
+            if (t.isLocked) {
+              return { ...t, blockingTasks: [], isLocked: false };
+            }
+            return t;
+          })
         ),
       })),
     [`undo${capSingular}`]: (id) =>
@@ -126,7 +127,8 @@ const createCategorySlice = (key) => (set, get) => {
         [key]: updateTasksState(
           updateTaskById(state[key], id, (t) => ({
             ...t,
-            isManuallyLocked: false,
+            blockingTasks: [],
+            isLocked: false,
           }))
         ),
       })),
