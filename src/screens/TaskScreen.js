@@ -6,13 +6,13 @@ import {
   TextInput,
   FlatList,
   StyleSheet,
-  ScrollView,
 } from 'react-native';
 import { useTheme, useNavigation, useRoute } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useUserStore } from '../store/userStore';
 import { findTaskById, findTaskPath, tasksAtSameLevelWithChildren } from '../utils/taskTree';
 import TaskCard from '../components/Home/TaskCard';
+
 const TaskScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -73,27 +73,27 @@ const TaskScreen = () => {
 
   return (
     <SafeAreaView style={[styles.flex, { backgroundColor: colors.background }]}>
-      <ScrollView contentContainerStyle={[styles.container, { backgroundColor: colors.card }]}>
-        <Text style={[styles.header, { color: colors.text }]}>{current.title}</Text>
-        <Text style={[styles.section, { color: colors.text }]}>Description</Text>
-        <TextInput
-          style={[styles.input, { borderColor: colors.border, color: colors.text }]}
-          value={current.description}
-          onChangeText={(t) => edit(current.id, { description: t })}
-        />
-        <Text style={[styles.section, { color: colors.text }]}>Notes</Text>
-        <FlatList
-          data={current.userNotes}
-          keyExtractor={(_, i) => i.toString()}
-          renderItem={({ item, index }) => (
-            <View style={styles.noteRow}>
-              <Text style={{ color: colors.text, flex: 1 }}>{item}</Text>
-              <TouchableOpacity onPress={() => removeNote(index)}>
-                <Text>✕</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-          ListFooterComponent={(
+      <FlatList
+        data={current.userNotes}
+        keyExtractor={(_, i) => i.toString()}
+        renderItem={({ item, index }) => (
+          <View style={styles.noteRow}>
+            <Text style={{ color: colors.text, flex: 1 }}>{item}</Text>
+            <TouchableOpacity onPress={() => removeNote(index)}>
+              <Text>✕</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        ListHeaderComponent={(
+          <View>
+            <Text style={[styles.header, { color: colors.text }]}>{current.title}</Text>
+            <Text style={[styles.section, { color: colors.text }]}>Description</Text>
+            <TextInput
+              style={[styles.input, { borderColor: colors.border, color: colors.text }]}
+              value={current.description}
+              onChangeText={(t) => edit(current.id, { description: t })}
+            />
+            <Text style={[styles.section, { color: colors.text }]}>Notes</Text>
             <View style={styles.noteRow}>
               <TextInput
                 value={note}
@@ -105,40 +105,46 @@ const TaskScreen = () => {
                 <Text>Add</Text>
               </TouchableOpacity>
             </View>
-          )}
-        />
-        <Text style={[styles.section, { color: colors.text }]}>Definition of Done</Text>
-        <TextInput
-          style={[styles.input, { borderColor: colors.border, color: colors.text }]}
-          value={current.dod}
-          onChangeText={(t) => edit(current.id, { dod: t })}
-        />
-        <Text style={[styles.section, { color: colors.text }]}>Relations</Text>
-        <View style={styles.relationRow}>
-          <Text style={{ color: colors.text, marginRight: 4 }}>Parent:</Text>
-          {parentTask ? (
-            <TouchableOpacity onPress={() => openTask(parentTask)}>
-              <Text style={{ color: colors.primary }}>{parentTask.title}</Text>
-            </TouchableOpacity>
-          ) : (
-            <Text style={{ color: colors.text }}>{rootTitle}</Text>          )}
-        </View>
-        <Text style={[styles.subHeader, { color: colors.text }]}>Subtasks</Text>
-        {current.children && current.children.length ? (
-          current.children.map((c) => (
-            <TaskCard key={c.id} task={c} type={type} />
-          ))
-        ) : (
-          <Text style={{ color: colors.text }}>None</Text>
-        )}
-        <Text style={[styles.subHeader, { color: colors.text }]}>Blocking</Text>
-        {blocking.length ? (
-          blocking.map((b) => (
-            <TaskCard key={b.id} task={b} type={type} />
-          ))
-        ) : (
-          <Text style={{ color: colors.text }}>None</Text>
-        )}
+
+            <Text style={[styles.section, { color: colors.text }]}>Definition of Done</Text>
+            <TextInput
+              style={[styles.input, { borderColor: colors.border, color: colors.text }]}
+              value={current.dod}
+              onChangeText={(t) => edit(current.id, { dod: t })}
+            />
+            <Text style={[styles.section, { color: colors.text }]}>Relations</Text>
+            <View style={styles.relationRow}>
+              <Text style={{ color: colors.text, marginRight: 4 }}>Parent:</Text>
+              {parentTask ? (
+                <TouchableOpacity onPress={() => openTask(parentTask)}>
+                  <Text style={{ color: colors.primary }}>{parentTask.title}</Text>
+                </TouchableOpacity>
+              ) : (
+                <Text style={{ color: colors.text }}>{rootTitle}</Text>
+              )}
+            </View>
+            <Text style={[styles.subHeader, { color: colors.text }]}>Subtasks</Text>
+            {current.children && current.children.length ? (
+              current.children.map((c) => (
+                <TouchableOpacity key={c.id} onPress={() => openTask(c)} style={styles.relationRow}>
+                  <Text style={{ color: colors.primary, flex: 1 }}>{c.title}</Text>
+                  {c.isCompleted && <Text style={{ color: 'green' }}>✓</Text>}
+                </TouchableOpacity>
+              ))
+            ) : (
+              <Text style={{ color: colors.text }}>None</Text>
+            )}
+            <Text style={[styles.subHeader, { color: colors.text }]}>Blocking</Text>
+            {blocking.length ? (
+              blocking.map((b) => (
+                <TouchableOpacity key={b.id} onPress={() => openTask(b)} style={styles.relationRow}>
+                  <Text style={{ color: colors.primary, flex: 1 }}>{b.title}</Text>
+                  {b.isCompleted && <Text style={{ color: 'green' }}>✓</Text>}
+                </TouchableOpacity>
+              ))
+            ) : (
+              <Text style={{ color: colors.text }}>None</Text>
+            )}
             <Text style={[styles.subHeader, { color: colors.text }]}>Manage Blocking</Text>
             {available.map((t) => (
               <TouchableOpacity key={t.id} onPress={() => toggleBlocking(t.id)} style={styles.relationRow}>
@@ -147,10 +153,13 @@ const TaskScreen = () => {
                 </Text>
               </TouchableOpacity>
             ))}
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.closeBtn}>
-          <Text style={styles.closeText}>Close</Text>
-        </TouchableOpacity>
-      </ScrollView>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.closeBtn}>
+              <Text style={styles.closeText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        contentContainerStyle={[styles.container, { backgroundColor: colors.card }]}
+      />
     </SafeAreaView>
   );
 };
