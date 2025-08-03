@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -8,6 +8,7 @@ import HomeScreen from './src/screens/Home';
 import DropdownMenu from './src/components/common/DropdownMenu';
 import FocusScreen from './src/screens/FocusScreen';
 import TaskScreen from './src/screens/TaskScreen';
+import SettingsScreen from './src/screens/SettingsScreen';
 import { useUserStore } from './src/store/userStore';
 import { getThemeColors } from './src/utils/themeColors';
 import { AppState } from 'react-native';
@@ -47,25 +48,29 @@ const App = () => {
     });
     return () => sub.remove();
   }, []);
+  const prevRoute = useRef(null);
   useEffect(() => {
     const unsub = useUserStore.subscribe(
-      (s) => s.isFocusModeVisible,
       (v) => {
         if (v) {
+          prevRoute.current = navigationRef.getCurrentRoute()?.name;
           navigationRef.navigate('Focus');
-        } else if (navigationRef.canGoBack()) {
-          navigationRef.goBack();
+
+        } else if (prevRoute.current) {
+          navigationRef.navigate(prevRoute.current);
+          prevRoute.current = null;
         }
-      }
+      },
+      (s) => s.isFocusModeVisible
     );
     return unsub;
   }, []);
-
   return (
     <NavigationContainer ref={navigationRef} theme={theme}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name='Main' component={MainTabs} />
         <Stack.Screen name='Task' component={TaskScreen} />
+        <Stack.Screen name='Settings' component={SettingsScreen} options={{ headerShown: true, headerRight: () => <DropdownMenu />, title: 'Settings' }} />
         <Stack.Screen name='Focus' component={FocusScreen} />
       </Stack.Navigator>
     </NavigationContainer>

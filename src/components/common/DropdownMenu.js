@@ -10,20 +10,22 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUserStore } from '../../store/userStore';
-import ConfigMenu from './ConfigMenu';
+import { navigate } from '../../navigation/RootNavigation';
 
 const DropdownMenu = () => {
   const [visible, setVisible] = useState(false);
-  const [showConfig, setShowConfig] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const toggleTheme = useUserStore((s) => s.toggleTheme);
   const name = useUserStore((s) => s.name);
   const setName = useUserStore((s) => s.setName);
   const level = useUserStore((s) => s.level);
-  const difficulty = useUserStore((s) => s.difficulty);
-  const setDifficulty = useUserStore((s) => s.setDifficulty);
 
   const close = () => setVisible(false);
+
+  const openSettings = () => {
+    close();
+    navigate('Settings');
+  };
 
   const exportData = async () => {
     const data = await AsyncStorage.getItem('levelx-store');
@@ -48,7 +50,7 @@ const DropdownMenu = () => {
             <TouchableOpacity style={styles.item} onPress={() => setShowProfile(true)}>
               <Text>Profile</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.item} onPress={() => setShowConfig(true)}>
+            <TouchableOpacity style={styles.item} onPress={openSettings}>
               <Text>Settings</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.item} onPress={() => { toggleTheme(); close(); }}>
@@ -74,13 +76,6 @@ const DropdownMenu = () => {
               onChangeText={setName}
             />
             <Text>Level {level}</Text>
-          </View>
-        </TouchableOpacity>
-      </Modal>
-      <Modal transparent visible={showConfig} animationType='slide'>
-        <TouchableOpacity style={styles.overlay} onPress={() => setShowConfig(false)}>
-          <View style={styles.menu}>
-            <ConfigMenu onClose={() => setShowConfig(false)} />
           </View>
         </TouchableOpacity>
       </Modal>
