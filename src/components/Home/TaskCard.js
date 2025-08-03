@@ -23,11 +23,7 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
   const undoTaskAction = useUserStore((s) => s.undoTask);
   const undoHabit = useUserStore((s) => s.undoHabit);
   const undoSkill = useUserStore((s) => s.undoSkill);
-  const unlockTaskAction = useUserStore((s) => s.unlockTask);
-  const unlockHabit = useUserStore((s) => s.unlockHabit);
-  const unlockSkill = useUserStore((s) => s.unlockSkill);
   const isTimerRunning = useUserStore((s) => s.isTimerRunning);
-  const activeTaskId = useUserStore((s) => s.activeTaskId);
 
 
   const completeTask =
@@ -51,13 +47,6 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
       skill: undoSkill,
     }[type] || undoTaskAction;
 
-  const unlockTask =
-    {
-      project: unlockTaskAction,
-      habit: unlockHabit,
-      skill: unlockSkill,
-    }[type] || unlockTaskAction;
-
   const startTask = (id) => {
     const updated = mapTasks(tasks, (t) =>
       t.id === id
@@ -73,53 +62,32 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
       startProductionTimer();
     }
   };
+// Handlers
+const handleMenuPress = () => navigate('Task', { id: task.id, type });
 
-  const resumeTask = (id) => {
-    setActiveTaskId(id);
-    if (!isTimerRunning) {
-      startProductionTimer();
-      startTimer();
-    }
-  };
-
-  const right = () => (
-    <TouchableOpacity
-      style={styles.swipeButton}
-      onPress={() => {
-        toggleTaskLock(task.id);
-      }}
-    >
+  const renderRightActions = () => (
+    <TouchableOpacity style={styles.swipeButton} onPress={() => toggleTaskLock(task.id)}>
       <Text style={styles.lockText}>{task.isLocked ? 'Unlock' : 'Lock'}</Text>
     </TouchableOpacity>
   );
 
-  const left = () => (
+  const renderLeftActions = () => (
     <TouchableOpacity
       style={styles.swipeButton}
-      onPress={() => {
-        task.isCompleted ? undoTask(task.id) : completeTask(task.id);
-      }}
+      onPress={() => (task.isCompleted ? undoTask(task.id) : completeTask(task.id))}
     >
       <Text style={styles.completeText}>{task.isCompleted ? 'Undone' : 'Done'}</Text>
     </TouchableOpacity>
   );
 
   return (
-    <Swipeable renderRightActions={right} renderLeftActions={left}>
-      <TouchableOpacity
+    <Swipeable renderRightActions={renderRightActions} renderLeftActions={renderLeftActions}>
+      <View
         style={[
           styles.card,
           { backgroundColor: colors.card, borderColor: colors.border },
           isActive && styles.dragging,
         ]}
-        onLongPress={onLongPress}
-        onPress={() => {
-          if (onPress) {
-            onPress();
-          } else if (isTimerRunning) {
-            task.isCompleted ? undoTask(task.id) : completeTask(task.id);
-          }
-        }}
         testID={testID}
       >
         <View style={styles.header}>
@@ -127,63 +95,37 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
             <PriorityBadge level={task.priority} />
             <Text style={[styles.text, { color: colors.text }]}>{task.title}</Text>
           </View>
-          <TouchableOpacity onPress={() => navigate('Task', { id: task.id, type })} style={styles.menu}>
+          <TouchableOpacity onPress={handleMenuPress} style={styles.menu}>
             <Text style={styles.menuText}>⋮</Text>
           </TouchableOpacity>
         </View>
+
         {onOpenSubtasks && (
-          <TouchableOpacity
-            onPress={onOpenSubtasks}
-            style={styles.subtaskBtn}
-            testID='open-subtasks'
-          >
+          <TouchableOpacity onPress={onOpenSubtasks} style={styles.subtaskBtn} testID="open-subtasks">
             <Text style={styles.subtaskText}>Subtasks</Text>
           </TouchableOpacity>
         )}
+
         <View style={styles.footer}>
           {task.isCompleted ? (
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => undoTask(task.id)}
-            >
-              <Text style={styles.buttonText}>↩ Undo</Text>
-            </TouchableOpacity>
-          ) : task.isLocked ? (
-            task.isManuallyLocked ? (
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() => unlockTask(task.id)}
-              >
-                <Text style={styles.buttonText}>🔓 Unlock</Text>
-              </TouchableOpacity>
-            ) : (
-              <Text style={styles.locked}>🔒 Locked</Text>
-            )
-          ) : !task.isStarted ? (
+            <Text style={styles.completed}>✔ Done</Text>
+          ) : task.isLocked || task.isStarted ? (
+            <Text style={styles.locked}>🔒 Locked</Text>
+          ) : (
             <TouchableOpacity style={styles.button} onPress={() => startTask(task.id)}>
               <Text style={styles.buttonText}>▶ Start</Text>
             </TouchableOpacity>
-          ) : !activeTaskId && !isTimerRunning ? (
-            <TouchableOpacity style={styles.button} onPress={() => resumeTask(task.id)}>
-              <Text style={styles.buttonText}>▶ Resume</Text>
-            </TouchableOpacity>
-          ) : (
-            <Text style={styles.locked}>🔒 Started</Text>
           )}
           {drag && (
-            <TouchableOpacity
-              onLongPress={drag}
-              style={styles.dragHandle}
-              testID='drag-handle'
-            >
+            <TouchableOpacity onLongPress={drag} style={styles.dragHandle} testID="drag-handle">
               <Text style={styles.dragText}>≡</Text>
             </TouchableOpacity>
           )}
         </View>
-      </TouchableOpacity>
+      </View>
     </Swipeable>
   );
-}
+};
 
 const styles = StyleSheet.create({
   card: {
