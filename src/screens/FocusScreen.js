@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme } from '@react-navigation/native';
+import { useTheme, useFocusEffect } from '@react-navigation/native';
 import { useUserStore } from '../store/userStore';
 import { stopTimer } from '../services/focusTimer';
 import { tasksAtSameLevelWithChildren } from '../utils/taskTree';
@@ -13,6 +13,12 @@ const FocusScreen = () => {
   const activeTaskId = useUserStore((s) => s.activeTaskId);
   const toggleTaskCompletion = useUserStore((s) => s.toggleTaskCompletion);
   const setIsFocusModeVisible = useUserStore((s) => s.setIsFocusModeVisible);
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => setIsFocusModeVisible(false);
+    }, [setIsFocusModeVisible])
+  );
 
   const minutes = String(Math.floor(secondsLeft / 60)).padStart(2, '0');
   const seconds = String(secondsLeft % 60).padStart(2, '0');

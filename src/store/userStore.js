@@ -19,6 +19,10 @@ export const useUserStore = create(
     {
       name: 'levelx-store',
       storage: createJSONStorage(() => AsyncStorage),
+      partialize: (state) => {
+        const { isFocusModeVisible, ...rest } = state;
+        return rest;
+      },
     }
   )
 );

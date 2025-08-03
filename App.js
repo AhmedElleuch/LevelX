@@ -53,11 +53,13 @@ const App = () => {
     const unsub = useUserStore.subscribe(
       (v) => {
         if (v) {
-          prevRoute.current = navigationRef.getCurrentRoute()?.name;
+          const current = navigationRef.getCurrentRoute()?.name;
+          if (current !== 'Focus') {
+            prevRoute.current = current;
+          }
           navigationRef.navigate('Focus');
-
-        } else if (prevRoute.current) {
-          navigationRef.navigate(prevRoute.current);
+        } else {
+          navigationRef.navigate(prevRoute.current || 'Main');
           prevRoute.current = null;
         }
       },
