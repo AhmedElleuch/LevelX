@@ -75,6 +75,8 @@ export const resumeTimer = () => {
     setIsFocusModeVisible,
     xpPerFocus,
     addXp,
+    focusStartTime,
+    setSecondsLeft,
   } = useUserStore.getState();
 
   stopBreakTimer();
@@ -83,15 +85,32 @@ export const resumeTimer = () => {
 
   stopWasteTimer();
 
+  const start = focusStartTime ?? Date.now();
+  const elapsed = Math.floor((Date.now() - start) / 1000);
+  const remaining = secondsLeft - elapsed;
+
   if (!isProductionActive) {
     startProductionTimer();
   } else {
     resumeProductionTimer();
   }
 
+  if (remaining <= 0) {
+    setSecondsLeft(0);
+    setIsTimerRunning(false);
+    setIsFocusModeVisible(false);
+    setFocusStartTime(null);
+    stopProductionTimer();
+    startBreakTimer();
+    notifyFocusEnd();
+    Alert.alert('Focus session complete! ✅');
+    return;
+  }
+
+  setSecondsLeft(remaining);
+  setFocusStartTime(Date.now());
   setIsTimerRunning(true);
   setIsFocusModeVisible(true);
-  setFocusStartTime(Date.now());
 
   const id = setInterval(() => {
     const { secondsLeft: current, activeTaskId, completeTask } =
@@ -116,6 +135,14 @@ export const resumeTimer = () => {
   }, 1000);
 
   useUserStore.getState().setIntervalId(id);
+};
+
+export const pauseTimer = () => {
+  const { intervalId, setIntervalId } = useUserStore.getState();
+  if (intervalId) {
+    clearInterval(intervalId);
+    setIntervalId(null);
+  }
 };
 
 export const stopTimer = () => {

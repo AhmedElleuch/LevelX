@@ -12,7 +12,13 @@ import SettingsScreen from './src/screens/SettingsScreen';
 import { useUserStore } from './src/store/userStore';
 import { getThemeColors } from './src/utils/themeColors';
 import { View, AppState, StyleSheet } from 'react-native';
-import { stopProductionTimer } from './src/services/productionTimer';
+import {
+  resumeProductionTimer,
+  resumeWasteTimer,
+  pauseProductionTimer,
+  pauseWasteTimer,
+} from './src/services/productionTimer';
+import { resumeTimer, pauseTimer } from './src/services/focusTimer';
 import { navigationRef } from './src/navigation/RootNavigation';
 
 const Tab = createBottomTabNavigator();
@@ -44,8 +50,14 @@ const App = () => {
 
   useEffect(() => {
     const sub = AppState.addEventListener('change', (state) => {
-      if (state === 'inactive' || state === 'background') {
-        stopProductionTimer();
+      if (state === 'active') {
+        resumeProductionTimer();
+        resumeWasteTimer();
+        resumeTimer();
+      } else if (state === 'inactive' || state === 'background') {
+        pauseProductionTimer();
+        pauseWasteTimer();
+        pauseTimer();
       }
     });
     return () => sub.remove();
