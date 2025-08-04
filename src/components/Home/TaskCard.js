@@ -18,9 +18,9 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
   const completeTaskAction = useUserStore((s) => s.completeTask);
   const completeHabit = useUserStore((s) => s.completeHabit);
   const completeSkill = useUserStore((s) => s.completeSkill);
-  const toggleTaskLockAction = useUserStore((s) => s.toggleTaskLock);
-  const toggleHabitLock = useUserStore((s) => s.toggleHabitLock);
-  const toggleSkillLock = useUserStore((s) => s.toggleSkillLock);
+  const removeTaskAction = useUserStore((s) => s.removeTask);
+  const removeHabit = useUserStore((s) => s.removeHabit);
+  const removeSkill = useUserStore((s) => s.removeSkill);
   const undoTaskAction = useUserStore((s) => s.undoTask);
   const undoHabit = useUserStore((s) => s.undoHabit);
   const undoSkill = useUserStore((s) => s.undoSkill);
@@ -34,12 +34,12 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
       skill: completeSkill,
     }[type] || completeTaskAction;
 
-  const toggleTaskLock =
+  const removeTask =
     {
-      project: toggleTaskLockAction,
-      habit: toggleHabitLock,
-      skill: toggleSkillLock,
-    }[type] || toggleTaskLockAction;
+      project: removeTaskAction,
+      habit: removeHabit,
+      skill: removeSkill,
+    }[type] || removeTaskAction;
 
   const undoTask =
     {
@@ -67,8 +67,8 @@ const TaskCard = ({ task, onLongPress, drag, isActive, onPress, onOpenSubtasks, 
 const handleMenuPress = () => navigate('Task', { id: task.id, type });
 
   const renderRightActions = () => (
-    <TouchableOpacity style={styles.swipeButton} onPress={() => toggleTaskLock(task.id)}>
-      <Text style={styles.lockText}>{task.isLocked ? 'Unlock' : 'Lock'}</Text>
+    <TouchableOpacity style={styles.swipeButton} onPress={() => removeTask(task.id)}>
+      <Text style={styles.deleteText}>Delete</Text>
     </TouchableOpacity>
   );
 
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
   completed: { marginTop: 10, color: 'green', fontStyle: 'italic' },
   swipeButton: { justifyContent: 'center', paddingHorizontal: 20 },
   completeText: { color: 'green' },
-  lockText: { color: '#ff9900' },
+  deleteText: { color: '#ff3333' },
   dragging: { opacity: 0.7 },
   dragHandle: { marginLeft: 6, padding: 8 },
   dragText: { color: '#999', fontSize: 24 },
