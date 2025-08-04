@@ -14,8 +14,12 @@ import { useTheme } from '@react-navigation/native';
 import { useUserStore } from '../../store/userStore';
 import TimerDisplay from '../../components/Home/TimerDisplay';
 import BreakTimer from '../../components/Home/BreakTimer';
-import { resumeProductionTimer, resumeWasteTimer } from '../../services/productionTimer';
-import { resumeTimer } from '../../services/focusTimer';
+import {
+  resumeProductionTimer,
+  resumeWasteTimer,
+  startProductionTimer,
+} from '../../services/productionTimer';
+import { resumeTimer, startTimer } from '../../services/focusTimer';
 import ProductionTimer from '../../components/Home/ProductionTimer';
 import { flattenTasks } from '../../utils/taskTree';
 
@@ -34,6 +38,9 @@ const WelcomeSection = ({ onSelect }) => {
   const { colors } = useTheme();
   const tasks = useUserStore((s) => s.tasks);
   const editTask = useUserStore((s) => s.editTask);
+  const setActiveTaskId = useUserStore((s) => s.setActiveTaskId);
+  const isTimerRunning = useUserStore((s) => s.isTimerRunning);
+  const isProductionActive = useUserStore((s) => s.isProductionActive);
   const suggestions = useMemo(() => {
     const undone = flattenTasks(tasks).filter((t) => !t.isCompleted);
     const shuffled = [...undone].sort(() => Math.random() - 0.5);
@@ -42,6 +49,13 @@ const WelcomeSection = ({ onSelect }) => {
 
   const start = (id) => {
     editTask(id, { isStarted: true, dateStarted: Date.now() });
+    setActiveTaskId(id);
+    if (!isTimerRunning) {
+      startProductionTimer();
+      startTimer();
+    } else if (!isProductionActive) {
+      startProductionTimer();
+    }
     onSelect(id);
   };
 

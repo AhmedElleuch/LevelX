@@ -5,6 +5,7 @@ import { useTheme } from '@react-navigation/native';
 import { useUserStore } from '../store/userStore';
 import { stopTimer } from '../services/focusTimer';
 import { tasksAtSameLevelWithChildren } from '../utils/taskTree';
+import ProductionTimer  from '../components/Home/ProductionTimer'
 
 const FocusScreen = () => {
   const { colors } = useTheme();
@@ -24,6 +25,7 @@ const FocusScreen = () => {
       accessibilityLabel='Focus mode screen'
       style={[styles.container, { backgroundColor: colors.background }]}
     >
+      <ProductionTimer/>
       <Text
         accessibilityLabel={`Time remaining ${minutes}:${seconds}`}
         style={[styles.timer, { color: colors.text }]}
